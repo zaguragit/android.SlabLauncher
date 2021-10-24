@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background>
+        <shape>
+            <gradient
+                android:angle="315"
+                android:startColor="#5191ec"
+                android:endColor="#0e46b7"/>
+        </shape>
+    </background>
+    <foreground android:drawable="@drawable/launcher_adaptive_foreground"/>
+</adaptive-icon>

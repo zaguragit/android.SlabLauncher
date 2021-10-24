@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="top">
+    <TextClock
+        android:id="@+id/date"
+        style="@style/SlabLauncher.Date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:format24Hour="d MMMM, cccc"
+        android:format12Hour="d MMMM, cccc"/>
+</LinearLayout>

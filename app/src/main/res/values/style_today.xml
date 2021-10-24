@@ -1,0 +1,19 @@
+<resources>
+    <style name="SlabLauncher.Title" parent="SlabLauncher">
+        <item name="android:textSize">36sp</item>
+        <item name="android:gravity">start</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:paddingHorizontal">12dp</item>
+        <item name="android:paddingVertical">6dp</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="SlabLauncher.Today.AllAppsButton" parent="SlabLauncher">
+        <item name="android:background">@drawable/round_bg</item>
+        <item name="android:paddingHorizontal">20dp</item>
+        <item name="android:paddingVertical">10dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_margin">@dimen/item_card_margin</item>
+    </style>
+</resources>

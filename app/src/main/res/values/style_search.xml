@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SlabLauncher.SearchBar.Text" parent="SlabLauncher">
+        <item name="android:background">@null</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:fadingEdgeLength">12dp</item>
+        <item name="android:fadingEdge">horizontal</item>
+        <item name="android:requiresFadingEdge">horizontal</item>
+        <item name="android:clipToPadding">false</item>
+    </style>
+
+    <style name="SlabLauncher.SearchBar.Icon" parent="SlabLauncher">
+        <item name="android:padding">8dp</item>
+    </style>
+
+
+    <style name="SlabLauncher.SearchResult.Container" parent="SlabLauncher">
+        <item name="android:paddingHorizontal">6dp</item>
+        <item name="android:paddingVertical">4dp</item>
+    </style>
+
+
+    <style name="SlabLauncher.SearchResult.Simple.Icon" parent="SlabLauncher">
+        <item name="android:padding">8dp</item>
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+    </style>
+
+    <style name="SlabLauncher.SearchResult.Simple.Title" parent="SlabLauncher">
+        <item name="android:paddingHorizontal">8dp</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="SlabLauncher.SearchResult.Simple.Subtitle" parent="SlabLauncher">
+        <item name="android:paddingHorizontal">8dp</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+
+    <style name="SlabLauncher.SearchResult.InstantAnswer.Card" parent="SlabLauncher">
+        <item name="cardCornerRadius">@dimen/item_card_radius</item>
+
+        <item name="android:layout_margin">@dimen/item_card_margin</item>
+        <item name="android:elevation">@dimen/item_card_elevation</item>
+    </style>
+
+    <style name="SlabLauncher.SearchResult.InstantAnswer.Source" parent="SlabLauncher">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/feed_card_text_dark_description</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="SlabLauncher.SearchResult.InstantAnswer.Title" parent="SlabLauncher">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/feed_card_text_dark_title</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingHorizontal">@dimen/feed_card_spacing</item>
+    </style>
+
+    <style name="SlabLauncher.SearchResult.InstantAnswer.Description" parent="SlabLauncher">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/feed_card_text_dark_description</item>
+        <item name="android:paddingHorizontal">@dimen/feed_card_spacing</item>
+        <item name="android:paddingTop">@dimen/feed_card_spacing</item>
+    </style>
+
+    <style name="SlabLauncher.SearchResult.InstantAnswer.Actions.Container" parent="SlabLauncher">
+        <item name="android:layout_margin">6dp</item>
+        <item name="cardCornerRadius">6dp</item>
+    </style>
+
+    <style name="SlabLauncher.SearchResult.InstantAnswer.ActionText" parent="SlabLauncher">
+        <item name="android:paddingVertical">6dp</item>
+        <item name="android:paddingHorizontal">12dp</item>
+        <item name="android:background">@drawable/ripple</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/accent</item>
+    </style>
+
+    <style name="SlabLauncher.SearchResult.InstantAnswer.Infobox.List" parent="SlabLauncher">
+        <item name="android:paddingTop">@dimen/feed_card_spacing</item>
+    </style>
+
+    <style name="SlabLauncher.SearchResult.InstantAnswer.Infobox.Separator" parent="SlabLauncher">
+        <item name="android:layout_marginHorizontal">@dimen/feed_card_spacing</item>
+    </style>
+
+    <style name="SlabLauncher.SearchResult.InstantAnswer.Infobox.Label" parent="SlabLauncher">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/feed_card_text_dark_title</item>
+        <item name="android:padding">@dimen/feed_card_spacing</item>
+    </style>
+
+    <style name="SlabLauncher.SearchResult.InstantAnswer.Infobox.Value" parent="SlabLauncher">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/feed_card_text_dark_title</item>
+        <item name="android:padding">@dimen/feed_card_spacing</item>
+    </style>
+</resources>

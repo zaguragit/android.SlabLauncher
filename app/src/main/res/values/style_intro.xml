@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="SlabLauncher.Intro.Slash.Icon" parent="SlabLauncher">
+        <item name="android:layout_width">64dp</item>
+        <item name="android:layout_height">64dp</item>
+        <item name="android:layout_marginStart">24dp</item>
+    </style>
+
+    <style name="SlabLauncher.Intro.Slash.Message" parent="SlabLauncher">
+        <item name="android:textSize">32sp</item>
+        <item name="android:padding">24dp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="SlabLauncher.Intro.Slash.Button" parent="SlabLauncher">
+        <item name="android:layout_height">56dp</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:layout_margin">24dp</item>
+        <item name="android:background">@drawable/button_bg_round</item>
+        <item name="android:backgroundTint">@color/accent</item>
+        <item name="android:tint">#ffffff</item>
+    </style>
+
+    <style name="SlabLauncher.Intro.Slash.Permissions.Title" parent="SlabLauncher">
+        <item name="android:textSize">32sp</item>
+        <item name="android:padding">24dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:shadowRadius">36</item>
+        <item name="android:shadowDy">6</item>
+        <item name="android:shadowColor">#33000000</item>
+    </style>
+
+    <style name="SlabLauncher.Intro.Slash.Permissions.Item.Container" parent="SlabLauncher">
+        <item name="android:padding">24dp</item>
+    </style>
+
+    <style name="SlabLauncher.Intro.Slash.Permissions.Item.Title" parent="SlabLauncher">
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_marginBottom">12dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:shadowRadius">36</item>
+        <item name="android:shadowDy">6</item>
+        <item name="android:shadowColor">#33000000</item>
+    </style>
+
+    <style name="SlabLauncher.Intro.Slash.Permissions.Item.Explanation" parent="SlabLauncher">
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_marginBottom">14dp</item>
+        <item name="android:shadowRadius">10</item>
+        <item name="android:shadowDy">3</item>
+        <item name="android:shadowColor">#33000000</item>
+    </style>
+
+    <style name="SlabLauncher.Intro.Slash.Permissions.Item.Grant" parent="SlabLauncher">
+        <item name="android:text">@string/grant_permissions</item>
+        <item name="android:paddingVertical">8dp</item>
+        <item name="android:paddingHorizontal">16dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#000000</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:background">@drawable/button_bg_round</item>
+        <item name="android:backgroundTint">#ffffff</item>
+    </style>
+
+    <style name="SlabLauncher.Intro.Slash.Permissions.Item.Tick" parent="SlabLauncher">
+        <item name="android:layout_width">32dp</item>
+        <item name="android:layout_height">32dp</item>
+        <item name="android:tint">@color/accent</item>
+    </style>
+</resources>

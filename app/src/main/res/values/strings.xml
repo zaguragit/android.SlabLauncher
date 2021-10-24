@@ -1,0 +1,61 @@
+<resources>
+    <string name="slab_launcher_crashed">Slab launcher crashed</string>
+    <string name="send_bug_report">Send bug report</string>
+
+    <string name="read_more_at_source">More at %s</string>
+    <string name="search_in_duckduckgo">Search on DuckDuckGo</string>
+
+    <string name="now">now</string>
+
+    <string name="properties">Properties</string>
+
+    <plurals name="x_notifications">
+        <item quantity="few">%1$d notifications</item>
+        <item quantity="many">%1$d notifications</item>
+        <item quantity="one">%1$d notification</item>
+        <item quantity="other">%1$d notifications</item>
+        <item quantity="two">%1$d notifications</item>
+    </plurals>
+
+    <string name="today">Today</string>
+    <string name="results_for_x">Results for \"%s\"</string>
+    <string name="all_apps">All apps</string>
+
+    <!-- settings start -->
+        <string name="color_theme_gen">Color extraction method</string>
+        <string name="color_theme_day_night">Theme</string>
+
+        <string name="scrollbar_controller">App sorting</string>
+
+        <string name="icons">Icons</string>
+
+        <string name="reshape_adaptive_icons">Reshape adaptive icons</string>
+        <string name="reshape_adaptive_icons_explanation">Attempts to remove icon backgrounds without messing them up</string>
+
+        <string name="icon_packs">Icon packs</string>
+        <string name="chosen">Chosen</string>
+        <string name="available">Available</string>
+        <string name="system">System</string>
+    <!-- settings end -->
+
+    <!-- first time screen start -->
+        <string name="splash_message">Automated customization</string>
+
+        <!-- permissions start -->
+            <string name="permissions">Permissions</string>
+            <string name="grant_permissions">Grant permissions</string>
+
+            <string name="permission_storage">Storage</string>
+            <string name="permission_storage_explanation">To adjust theme colors to the wallpaper &amp; for background blur</string>
+
+            <string name="permission_contacts">Contacts</string>
+            <string name="permission_contacts_explanation">Contacts can be displayed in the search screen</string>
+
+            <string name="permission_notifications">Notifications</string>
+            <string name="permission_notifications_explanation">For displaying notifications in the app cards</string>
+
+            <string name="permission_usage_access">Usage access</string>
+            <string name="permission_usage_access_explanation">Slab launcher will see which apps you use, to improve the app suggestions</string>
+        <!-- permissions end -->
+    <!-- first time screen end -->
+</resources>

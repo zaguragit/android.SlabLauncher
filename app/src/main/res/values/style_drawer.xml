@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SlabLauncher.Drawer.Item.Container" parent="SlabLauncher">
+        <item name="cardCornerRadius">@dimen/item_card_radius</item>
+        <item name="android:layout_margin">@dimen/item_card_margin</item>
+        <item name="cardElevation">@dimen/item_card_elevation</item>
+    </style>
+
+    <style name="SlabLauncher.Drawer.Item.Icon" parent="SlabLauncher">
+        <item name="android:paddingHorizontal">8dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:layout_width">56dp</item>
+        <item name="android:layout_height">48dp</item>
+    </style>
+
+    <style name="SlabLauncher.Drawer.Item.SmallIcon" parent="SlabLauncher">
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:layout_marginEnd">6dp</item>
+    </style>
+
+    <style name="SlabLauncher.Drawer.Item.Label" parent="SlabLauncher">
+        <item name="android:textSize">14sp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:textColor">@color/feed_card_text_light_title</item>
+    </style>
+
+    <style name="SlabLauncher.Drawer.Item.Extra.Line.Title" parent="SlabLauncher">
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">6dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="SlabLauncher.Drawer.Item.Extra.Line.Description" parent="SlabLauncher">
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">6dp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="SlabLauncher.Drawer.SectionHeader" parent="SlabLauncher">
+        <item name="android:paddingVertical">6dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">@font/jet_brains_mono</item>
+    </style>
+</resources>

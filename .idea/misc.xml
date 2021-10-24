@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../../../../layout/custom_preview.xml" value="0.2838541666666667" />
+        <entry key="../../../../../../layout/custom_preview.xml" value="0.3729166666666667" />
+        <entry key="app/src/main/res/drawable/bottom_sheet.xml" value="0.2203125" />
+        <entry key="app/src/main/res/drawable/button_bg_round.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/card.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/gradient_clock_bg.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/ic_close_app_drawer.xml" value="0.2265625" />
+        <entry key="app/src/main/res/drawable/ic_color_dropper.xml" value="0.3890625" />
+        <entry key="app/src/main/res/drawable/ic_cross.xml" value="0.2265625" />
+        <entry key="app/src/main/res/drawable/ic_home.xml" value="0.27760416666666665" />
+        <entry key="app/src/main/res/drawable/ic_info.xml" value="0.2265625" />
+        <entry key="app/src/main/res/drawable/ic_lightness.xml" value="0.21510416666666668" />
+        <entry key="app/src/main/res/drawable/ic_news.xml" value="0.2265625" />
+        <entry key="app/src/main/res/drawable/ic_notification.xml" value="0.27760416666666665" />
+        <entry key="app/src/main/res/drawable/ic_pause.xml" value="0.2265625" />
+        <entry key="app/src/main/res/drawable/ic_play.xml" value="0.2265625" />
+        <entry key="app/src/main/res/drawable/ic_plus.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/ic_search.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/ic_search_old.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/ic_sections.xml" value="0.30833333333333335" />
+        <entry key="app/src/main/res/drawable/ic_shapes.xml" value="0.2703125" />
+        <entry key="app/src/main/res/drawable/ic_sorting.xml" value="0.2703125" />
+        <entry key="app/src/main/res/drawable/ic_swipe_up.xml" value="0.22" />
+        <entry key="app/src/main/res/drawable/ic_tick.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/ic_track_next.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/ic_track_previous.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/input_bg.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/launcher_adaptive_foreground.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/launcher_settings.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/loading.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/notification_indicator.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/placeholder_contact.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/progress_horizontal.xml" value="0.2722222222222222" />
+        <entry key="app/src/main/res/drawable/ripple.xml" value="0.2171875" />
+        <entry key="app/src/main/res/drawable/round_bg.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/sign_continue.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/layout/activity_home.xml" value="0.26145833333333335" />
+        <entry key="app/src/main/res/layout/activity_launcher.xml" value="0.11296859169199595" />
+        <entry key="app/src/main/res/layout/activity_launcher_search_bar.xml" value="0.2572463768115942" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.26145833333333335" />
+        <entry key="app/src/main/res/layout/activity_search.xml" value="0.20416666666666666" />
+        <entry key="app/src/main/res/layout/activity_search_search_bar.xml" value="0.302536231884058" />
+        <entry key="app/src/main/res/layout/activity_settings_feed_chooser.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/activity_stack_trace.xml" value="0.2210144927536232" />
+        <entry key="app/src/main/res/layout/app_card.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/app_card_extra.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/app_card_plain.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/app_drawer.xml" value="0.11296859169199595" />
+        <entry key="app/src/main/res/layout/app_drawer_item.xml" value="0.21041666666666667" />
+        <entry key="app/src/main/res/layout/at_a_glance.xml" value="0.26222826086956524" />
+        <entry key="app/src/main/res/layout/dock.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/feed_chooser_option_edit_dialog.xml" value="0.20416666666666666" />
+        <entry key="app/src/main/res/layout/feed_filter.xml" value="0.26721014492753625" />
+        <entry key="app/src/main/res/layout/feed_home.xml" value="0.24322916666666666" />
+        <entry key="app/src/main/res/layout/feed_home_drop_target.xml" value="0.3079710144927536" />
+        <entry key="app/src/main/res/layout/feed_home_notification_icon.xml" value="0.32472826086956524" />
+        <entry key="app/src/main/res/layout/feed_home_search_bar.xml" value="0.24322916666666666" />
+        <entry key="app/src/main/res/layout/feed_home_suggestion.xml" value="0.2296195652173913" />
+        <entry key="app/src/main/res/layout/feed_item_actions.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/feed_item_big_image.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/feed_item_empty.xml" value="0.22395833333333334" />
+        <entry key="app/src/main/res/layout/feed_item_image.xml" value="0.17401215805471124" />
+        <entry key="app/src/main/res/layout/feed_item_media.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/feed_item_plain.xml" value="0.20742753623188406" />
+        <entry key="app/src/main/res/layout/feed_item_progress.xml" value="0.24818840579710144" />
+        <entry key="app/src/main/res/layout/feed_item_small.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/feed_item_suggested_apps.xml" value="0.1484375" />
+        <entry key="app/src/main/res/layout/feed_summary_media.xml" value="0.24322916666666666" />
+        <entry key="app/src/main/res/layout/feed_summary_notification.xml" value="0.24322916666666666" />
+        <entry key="app/src/main/res/layout/fragment_main.xml" value="0.26145833333333335" />
+        <entry key="app/src/main/res/layout/icon_packs_item.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/intro_settings.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/intro_splash.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/list_popup.xml" value="0.19583333333333333" />
+        <entry key="app/src/main/res/layout/list_popup_switch_item.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/list_popup_title.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/long_press_home_popup.xml" value="0.3729166666666667" />
+        <entry key="app/src/main/res/layout/long_press_home_popup_item.xml" value="0.3729166666666667" />
+        <entry key="app/src/main/res/layout/long_press_home_popup_title.xml" value="0.20104166666666667" />
+        <entry key="app/src/main/res/layout/long_press_item_popup.xml" value="0.21041666666666667" />
+        <entry key="app/src/main/res/layout/long_press_item_popup_extra.xml" value="0.2" />
+        <entry key="app/src/main/res/layout/long_press_item_popup_item.xml" value="0.2980072463768116" />
+        <entry key="app/src/main/res/layout/notification.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/pinned_drop_target.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/pinned_item.xml" value="0.2572463768115942" />
+        <entry key="app/src/main/res/layout/search_result_answer.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/search_result_contact.xml" value="0.20416666666666666" />
+        <entry key="app/src/main/res/layout/search_result_group.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/search_result_shortcut.xml" value="0.20416666666666666" />
+        <entry key="app/src/main/res/layout/settings_popup.xml" value="0.26875" />
+        <entry key="app/src/main/res/layout/settings_popup_item.xml" value="0.26875" />
+        <entry key="app/src/main/res/layout/settings_popup_switch_item.xml" value="0.25416666666666665" />
+        <entry key="app/src/main/res/layout/settings_popup_title.xml" value="0.26875" />
+        <entry key="app/src/main/res/layout/suggestion.xml" value="0.3292572463768116" />
+        <entry key="app/src/main/res/layout/tile.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/tile_drop_target.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/title.xml" value="0.27853260869565216" />
+        <entry key="app/src/main/res/layout/today_suggested_apps.xml" value="0.17401215805471124" />
+        <entry key="app/src/main/res/mipmap-anydpi/ic_launcher.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/xml/settings_main.xml" value="0.2980072463768116" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

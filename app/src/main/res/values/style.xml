@@ -1,0 +1,36 @@
+<resources>
+
+    <style name="SlabLauncher">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+
+        <item name="android:windowShowWallpaper">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <style name="SlabLauncher.Date" parent="SlabLauncher">
+        <item name="android:textSize">28sp</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:fontFamily">@font/barlow_regular</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:paddingVertical">6dp</item>
+        <item name="android:layout_marginBottom">@dimen/item_card_margin</item>
+    </style>
+
+    <style name="SlabLauncher.Settings.Input" parent="SlabLauncher">
+        <item name="android:layout_height">52dp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingEnd">15dp</item>
+        <item name="android:clipToPadding">false</item>
+        <item name="android:textColor">@color/feed_card_text_light_description</item>
+        <item name="android:textColorHint">#252627</item>
+        <item name="android:background">@drawable/input_bg</item>
+    </style>
+</resources>

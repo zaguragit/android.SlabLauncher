@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="SlabLauncher.Notification.Item.Container" parent="SlabLauncher">
+        <item name="cardCornerRadius">@dimen/item_card_radius</item>
+        <item name="android:layout_margin">@dimen/item_card_margin</item>
+        <item name="android:elevation">@dimen/item_card_elevation</item>
+    </style>
+    <style name="SlabLauncher.Notification.Item.Title" parent="SlabLauncher">
+        <item name="android:layout_margin">@dimen/item_card_margin</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    <style name="SlabLauncher.Notification.Item.Text" parent="SlabLauncher">
+        <item name="android:layout_margin">@dimen/item_card_margin</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+    <style name="SlabLauncher.Notification.Item.Icon" parent="SlabLauncher">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+    </style>
+</resources>

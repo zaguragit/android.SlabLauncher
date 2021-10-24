@@ -1,0 +1,277 @@
+package io.posidon.android.slablauncher.ui.home
+
+import android.annotation.SuppressLint
+import android.app.WallpaperColors
+import android.app.WallpaperManager
+import android.content.Intent
+import android.content.pm.LauncherApps
+import android.content.res.Configuration
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.LayerDrawable
+import android.os.Build
+import android.os.Bundle
+import android.util.Log
+import android.view.MotionEvent
+import android.view.View
+import android.view.WindowManager
+import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
+import io.posidon.android.launcherutils.LiveWallpaper
+import io.posidon.android.slablauncher.LauncherContext
+import io.posidon.android.slablauncher.R
+import io.posidon.android.slablauncher.providers.app.AppCallback
+import io.posidon.android.slablauncher.providers.app.AppCollection
+import io.posidon.android.slablauncher.providers.color.ColorThemeOptions
+import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
+import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
+import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
+import io.posidon.android.slablauncher.ui.home.LauncherFragment.Companion.loadBlur
+import io.posidon.android.slablauncher.ui.popup.PopupUtils
+import io.posidon.android.slablauncher.ui.today.TodayFragment
+import io.posidon.android.slablauncher.ui.view.SeeThroughView
+import io.posidon.android.slablauncher.util.StackTraceActivity
+import io.posidon.android.slablauncher.util.storage.ColorThemeDayNightSetting.colorThemeDayNight
+import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorTheme
+import kotlin.concurrent.thread
+
+class MainActivity : FragmentActivity() {
+
+    lateinit var viewPager: ViewPager2
+
+    val launcherContext = LauncherContext()
+    val settings by launcherContext::settings
+
+    private lateinit var wallpaperManager: WallpaperManager
+
+    var colorThemeOptions = ColorThemeOptions(settings.colorThemeDayNight)
+
+    private lateinit var blurBG: SeeThroughView
+
+    @SuppressLint("ClickableViewAccessibility", "WrongConstant")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        StackTraceActivity.init(applicationContext)
+        settings.init(applicationContext)
+
+        wallpaperManager = WallpaperManager.getInstance(this)
+        colorThemeOptions = ColorThemeOptions(settings.colorThemeDayNight)
+
+        setContentView(R.layout.activity_main)
+
+        blurBG = findViewById(R.id.blur_bg)
+
+        viewPager = findViewById(R.id.view_pager)
+
+        viewPager.adapter = object : FragmentStateAdapter(this) {
+            override fun getItemCount() = 2
+
+            override fun createFragment(i: Int): Fragment = when (i) {
+                0 -> LauncherFragment()
+                1 -> TodayFragment()
+                else -> throw IndexOutOfBoundsException("Fragment [$i] doesn't exist")
+            }
+        }
+
+        viewPager.offscreenPageLimit = Int.MAX_VALUE
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            wallpaperManager.addOnColorsChangedListener(::onColorsChangedListener, viewPager.handler)
+            thread(name = "onCreate color update", isDaemon = true) {
+                ColorPalette.onColorsChanged(this, settings.colorTheme, MainActivity::updateColorTheme) {
+                    wallpaperManager.getWallpaperColors(WallpaperManager.FLAG_SYSTEM)
+                }
+            }
+            onWallpaperChanged()
+        }
+
+        val launcherApps = getSystemService(LauncherApps::class.java)
+        launcherApps.registerCallback(AppCallback(::loadApps))
+
+        loadApps()
+
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                val wallpaperOffset = position + positionOffset
+                wallpaperManager.setWallpaperOffsets(viewPager.windowToken, wallpaperOffset, 0f)
+                setBlurLevel(wallpaperOffset)
+                blurBG.offset = wallpaperOffset
+                onPageScrollListeners.forEach { (_, l) -> l(wallpaperOffset) }
+            }
+        })
+
+        viewPager.setOnTouchListener(::onTouch)
+        configureWindow()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        configureWindow()
+    }
+
+    private fun configureWindow() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            window.isNavigationBarContrastEnforced = false
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
+        } else window.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        )
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val isActionMain = Intent.ACTION_MAIN == intent.action
+        if (isActionMain) {
+            handleGestureContract(intent)
+        }
+    }
+
+    private fun handleGestureContract(intent: Intent) {
+        //val gnc = GestureNavContract.fromIntent(intent)
+        //gnc?.sendEndPosition(scrollBar.clipBounds.toRectF(), null)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val shouldUpdate = settings.reload(applicationContext)
+        if (shouldUpdate) {
+            loadApps()
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
+            thread (isDaemon = true) {
+                ColorPalette.onResumePreOMR1(
+                    this,
+                    settings.colorTheme,
+                    MainActivity::updateColorTheme
+                )
+                onWallpaperChanged()
+            }
+        } else {
+            if (acrylicBlur == null) {
+                loadBlur(wallpaperManager, ::updateBlur)
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        PopupUtils.dismissCurrent()
+        SuggestionsManager.onPause(settings, this)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O_MR1)
+    fun onColorsChangedListener(
+        colors: WallpaperColors?,
+        which: Int
+    ) {
+        if (which and WallpaperManager.FLAG_SYSTEM != 0) {
+            onWallpaperChanged()
+            ColorPalette.onColorsChanged(this, settings.colorTheme, MainActivity::updateColorTheme) { colors }
+        }
+    }
+
+    fun reloadColorPaletteSync() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            ColorPalette.onColorsChanged(this, settings.colorTheme, MainActivity::updateColorTheme) {
+                wallpaperManager.getWallpaperColors(WallpaperManager.FLAG_SYSTEM)
+            }
+        } else ColorPalette.onResumePreOMR1(this, settings.colorTheme, MainActivity::updateColorTheme)
+    }
+
+    fun updateColorTheme(colorPalette: ColorPalette) {
+        colorThemeOptions = ColorThemeOptions(settings.colorThemeDayNight)
+        ColorTheme.updateColorTheme(colorThemeOptions.createColorTheme(colorPalette))
+        runOnUiThread {
+            viewPager.setBackgroundColor(ColorTheme.uiBG and 0xffffff or 0xcc000000.toInt())
+            updateCurrentBlurBackground()
+        }
+        onColorThemeUpdateListeners.forEach { (_, l) -> l() }
+    }
+
+    private fun onWallpaperChanged() {
+        loadBlur(wallpaperManager, ::updateBlur)
+    }
+
+    fun loadApps() {
+        launcherContext.appManager.loadApps(this) { apps: AppCollection ->
+            onAppsLoadedListeners.forEach { (_, l) -> l(apps) }
+            Log.d("SlabLauncher", "updated apps (${apps.size} items)")
+        }
+    }
+
+    fun onTouch(v: View, event: MotionEvent): Boolean {
+        if (event.action == MotionEvent.ACTION_UP)
+            LiveWallpaper.tap(v, event.rawX.toInt(), event.rawY.toInt())
+        return false
+    }
+
+    fun setOnColorThemeUpdateListener(key: String, listener: () -> Unit) {
+        onColorThemeUpdateListeners[key] = listener
+    }
+
+    fun setOnBlurUpdateListener(key: String, listener: () -> Unit) {
+        onBlurUpdateListeners[key] = listener
+    }
+
+    fun setOnPageScrollListener(key: String, listener: (Float) -> Unit) {
+        onPageScrollListeners[key] = listener
+    }
+
+    fun setOnAppsLoadedListener(key: String, listener: (AppCollection) -> Unit) {
+        onAppsLoadedListeners[key] = listener
+    }
+
+    private val onColorThemeUpdateListeners = HashMap<String, () -> Unit>()
+    private val onBlurUpdateListeners = HashMap<String, () -> Unit>()
+    private val onPageScrollListeners = HashMap<String, (Float) -> Unit>()
+    private val onAppsLoadedListeners = HashMap<String, (AppCollection) -> Unit>()
+
+    private fun updateBlur() {
+        onBlurUpdateListeners.forEach { (_, l) -> l() }
+        runOnUiThread {
+            updateCurrentBlurBackground()
+        }
+    }
+
+    private fun updateCurrentBlurBackground() {
+        blurBG.drawable = acrylicBlur?.let { b ->
+            LayerDrawable(
+                arrayOf(
+                    BitmapDrawable(resources, b.partialBlurSmall),
+                    BitmapDrawable(resources, b.partialBlurMedium),
+                    BitmapDrawable(resources, b.fullBlur),
+                    BitmapDrawable(resources, b.insaneBlur),
+                    //ColorDrawable(ColorTheme.uiBG),
+                )
+            )
+        }
+        setBlurLevel(0f)
+        viewPager.currentItem = 0
+    }
+
+    private fun setBlurLevel(f: Float) {
+        if (f == 0f) {
+            blurBG.isVisible = false
+            return
+        }
+        blurBG.isVisible = true
+        val l = blurBG.drawable as? LayerDrawable ?: return
+        val x = f * 3f
+        l.getDrawable(0).alpha = (255 * (x).coerceAtMost(1f)).toInt()
+        l.getDrawable(1).alpha = (255 * (x - 1f).coerceAtLeast(0f).coerceAtMost(1f)).toInt()
+        l.getDrawable(2).alpha = (255 * (x - 2f).coerceAtLeast(0f)).toInt()
+        l.getDrawable(3).alpha = (150 * ((x - .5f) / 2.5f).coerceAtLeast(0f)).toInt()
+        //l.getDrawable(4).alpha = (160 * ((x - .5f) / 2.5f).coerceAtLeast(0f)).toInt()
+    }
+}

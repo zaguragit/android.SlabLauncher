@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/card"
+    style="@style/SlabLauncher.ItemPopup.Container">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:id="@+id/properties_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+            <ImageView
+                style="@style/SlabLauncher.ItemPopup.Shortcut.Icon"
+                android:id="@+id/properties_icon"
+                android:src="@drawable/ic_info"/>
+            <TextView
+                style="@style/SlabLauncher.ItemPopup.Shortcut.Label"
+                android:id="@+id/properties_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:text="@string/properties"/>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
