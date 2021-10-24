@@ -10,13 +10,13 @@
 
 </div>
 
-#### A scrollable feed that acts as your homescreen.
-Feel free to fork, contribute or use parts of the code in your own projects.
+A weird launcher inspired in windows phone's ui
 
-### Contribute
+
+## Contribute
 
 #### Code
-You can contribute to this repo, but you could help a lot more if you contribute to one of these libraries:
+You can contribute to this repo, or to one of these libraries:
  - [android.loader](https://github.com/lposidon/android.loader)
  - [android.convenienceLib](https://github.com/lposidon/android.convenienceLib)
  - [android.launcherUtils](https://github.com/lposidon/android.launcherUtils)
