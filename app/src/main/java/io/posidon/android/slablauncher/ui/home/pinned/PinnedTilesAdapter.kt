@@ -127,7 +127,7 @@ class PinnedTilesAdapter(
 
     fun onDrop(v: View, i: Int, clipData: ClipData) {
         if (i != dropTargetIndex) throw IllegalStateException("PinnedItemsAdapter -> i = $i, dropTargetIndex = $dropTargetIndex")
-        val item = launcherContext.appManager.parseLauncherItem(clipData.getItemAt(0).text.toString())
+        val item = launcherContext.appManager.tryParseLauncherItem(clipData.getItemAt(0).text.toString(), v.context)
         item?.let { items.add(i - 1, it) }
         dropTargetIndex = -1
         notifyDataSetChanged()

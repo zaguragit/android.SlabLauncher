@@ -13,7 +13,6 @@ import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
-import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.acrylicBlur
 import io.posidon.android.slablauncher.ui.home.pinned.TileArea
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
@@ -63,7 +62,7 @@ class TileViewHolder(
         lineTitle.setTextColor(ColorTheme.titleColorForBG(itemView.context, backgroundColor))
         lineDescription.setTextColor(ColorTheme.textColorForBG(itemView.context, backgroundColor))
 
-        val banner = (item as? App)?.getBanner()
+        val banner = item.getBanner()
         if (banner?.text == null && banner?.title == null) {
             iconSmall.isVisible = false
             spacer.isVisible = true
@@ -96,19 +95,25 @@ class TileViewHolder(
             lineTitle.setTextColor(titleColor)
             lineDescription.setTextColor(textColor)
         }
+        if (banner?.hideIcon == true) {
+            icon.isVisible = false
+            iconSmall.isVisible = false
+        }
 
         itemView.setOnClickListener {
-            SuggestionsManager.onItemOpened(it.context, item)
             item.open(it.context.applicationContext, it)
         }
         itemView.setOnLongClickListener {
-            ItemLongPress.onItemLongPress(
-                it,
-                backgroundColor,
-                ColorTheme.titleColorForBG(itemView.context, backgroundColor),
-                item,
-                activity.getNavigationBarHeight(),
-            )
+            if (item is App) {
+                ItemLongPress.onItemLongPress(
+                    it,
+                    backgroundColor,
+                    ColorTheme.titleColorForBG(itemView.context, backgroundColor),
+                    item,
+                    activity.getNavigationBarHeight(),
+                )
+            }
+            else ItemLongPress.onItemLongPress(it, item)
             onDragStart(it)
             true
         }

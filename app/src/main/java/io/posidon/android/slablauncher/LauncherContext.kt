@@ -28,14 +28,18 @@ class LauncherContext {
             ) { apps: AppCollection ->
                 this.apps = apps.list
                 appsByName = apps.byName
-                _pinnedItems = settings.getStrings(PINNED_KEY)?.mapNotNull { LauncherItem.parse(it, appsByName) }?.toMutableList() ?: ArrayList()
+                _pinnedItems = settings.getStrings(PINNED_KEY)?.mapNotNull { LauncherItem.tryParse(it, appsByName, context) }?.toMutableList() ?: ArrayList()
                 SuggestionsManager.onAppsLoaded(this, context, settings)
                 onEnd(context, apps)
             }
         }
 
-        fun parseLauncherItem(string: String): LauncherItem? {
-            return App.parse(string, appsByName)
+        fun tryParseLauncherItem(string: String, context: Context): LauncherItem? {
+            return LauncherItem.tryParse(string, appsByName, context)
+        }
+
+        fun tryParseApp(string: String): App? {
+            return App.tryParse(string, appsByName)
         }
 
         fun getAppByPackage(packageName: String): LauncherItem? = appsByName[packageName]?.first()

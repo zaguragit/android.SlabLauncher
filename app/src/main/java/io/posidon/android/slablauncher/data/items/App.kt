@@ -12,6 +12,7 @@ import android.os.UserHandle
 import android.view.View
 import io.posidon.android.slablauncher.providers.notification.NotificationService
 import io.posidon.android.slablauncher.providers.notification.NotificationSorter
+import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import posidon.android.conveniencelib.isInstalled
 import java.util.*
 
@@ -25,11 +26,11 @@ class App(
     private val _color: Int,
 ) : LauncherItem {
 
-    inline fun getBanner(): Banner? {
+    override fun getBanner(): LauncherItem.Banner? {
         val notifications = NotificationService.notifications.filter { it.sourcePackageName == packageName }
         val mediaItem = NotificationService.mediaItem
         if (background == null && notifications.isEmpty() && mediaItem == null) return null
-        if (mediaItem != null && mediaItem.sourcePackageName == packageName) return Banner(
+        if (mediaItem != null && mediaItem.sourcePackageName == packageName) return LauncherItem.Banner(
             mediaItem.title,
             mediaItem.subtitle,
             mediaItem.image,
@@ -37,14 +38,14 @@ class App(
         )
         val notification = NotificationSorter.getMostRelevant(notifications)
         val image = notification?.image
-        if (image != null) return Banner(
+        if (image != null) return LauncherItem.Banner(
             notification.title.takeIf { label != it },
             notification.description,
             image,
             .4f
         )
 
-        return Banner(
+        return LauncherItem.Banner(
             notification?.title.takeIf { label != it },
             notification?.description,
             background,
@@ -52,14 +53,8 @@ class App(
         )
     }
 
-    class Banner(
-        val title: String?,
-        val text: String?,
-        val background: Drawable?,
-        val bgOpacity: Float,
-    )
-
     override fun open(context: Context, view: View?) {
+        SuggestionsManager.onItemOpened(context, this)
         try {
             context.getSystemService(LauncherApps::class.java).startMainActivity(ComponentName(packageName, name), userHandle, view?.clipBounds,
                 ActivityOptions.makeScaleUpAnimation(view, 0, 0, view?.measuredWidth ?: 0, view?.measuredHeight ?: 0).toBundle())
@@ -109,6 +104,10 @@ class App(
 
 
     companion object {
+        fun tryParse(string: String, appsByName: HashMap<String, MutableList<App>>): App? =
+            try { parse(string, appsByName) }
+            catch (e: Exception) { null }
+
         fun parse(string: String, appsByName: HashMap<String, MutableList<App>>): App? {
             val (packageName, name, u) = string.split('/')
             val userHandle = u.toInt()

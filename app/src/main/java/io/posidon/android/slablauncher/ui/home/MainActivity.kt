@@ -252,7 +252,6 @@ class MainActivity : FragmentActivity() {
                     BitmapDrawable(resources, b.partialBlurMedium),
                     BitmapDrawable(resources, b.fullBlur),
                     BitmapDrawable(resources, b.insaneBlur),
-                    //ColorDrawable(ColorTheme.uiBG),
                 )
             )
         }
@@ -272,6 +271,5 @@ class MainActivity : FragmentActivity() {
         l.getDrawable(1).alpha = (255 * (x - 1f).coerceAtLeast(0f).coerceAtMost(1f)).toInt()
         l.getDrawable(2).alpha = (255 * (x - 2f).coerceAtLeast(0f)).toInt()
         l.getDrawable(3).alpha = (150 * ((x - .5f) / 2.5f).coerceAtLeast(0f)).toInt()
-        //l.getDrawable(4).alpha = (160 * ((x - .5f) / 2.5f).coerceAtLeast(0f)).toInt()
     }
 }

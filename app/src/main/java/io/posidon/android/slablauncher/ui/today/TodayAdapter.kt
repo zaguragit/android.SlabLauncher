@@ -6,12 +6,16 @@ import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.App
-import io.posidon.android.slablauncher.data.search.*
+import io.posidon.android.slablauncher.data.items.LauncherItem
+import io.posidon.android.slablauncher.data.search.AppResult
+import io.posidon.android.slablauncher.data.search.CompactResult
+import io.posidon.android.slablauncher.data.search.InstantAnswerResult
+import io.posidon.android.slablauncher.data.search.SearchResult
 import io.posidon.android.slablauncher.providers.search.SearchQuery
+import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.today.viewHolders.TitleViewHolder
 import io.posidon.android.slablauncher.ui.today.viewHolders.search.CompactSearchViewHolder
-import io.posidon.android.slablauncher.ui.today.viewHolders.search.ContactSearchViewHolder
 import io.posidon.android.slablauncher.ui.today.viewHolders.search.SearchViewHolder
 import io.posidon.android.slablauncher.ui.today.viewHolders.search.instantAnswer.AnswerSearchViewHolder
 import io.posidon.android.slablauncher.ui.today.viewHolders.suggestion.SuggestedAppsViewHolder
@@ -43,7 +47,6 @@ class TodayAdapter(
             return TITLE
         return when (items[realI]) {
             is CompactResult -> RESULT_COMPACT
-            is ContactResult -> RESULT_CONTACT
             is InstantAnswerResult -> RESULT_ANSWER
             is SuggestionsTodayItem -> SUGGESTED_APPS
             else -> throw Exception("Invalid search result")
@@ -54,7 +57,6 @@ class TodayAdapter(
         return when (viewType) {
             TITLE -> TitleViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.title, parent, false))
             RESULT_COMPACT -> CompactSearchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.search_result_compact, parent, false), activity)
-            RESULT_CONTACT -> ContactSearchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.search_result_contact, parent, false))
             RESULT_ANSWER -> AnswerSearchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.search_result_answer, parent, false), activity)
             SUGGESTED_APPS -> SuggestedAppsViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.today_suggested_apps, parent, false), activity)
             else -> throw Exception("Invalid view type")
@@ -85,14 +87,36 @@ class TodayAdapter(
         notifyDataSetChanged()
     }
 
+    private var suggested = emptyList<LauncherItem>()
+
     fun updateTodayView() {
+        val list = run {
+            val s = SuggestionsManager.getSuggestions()
+            val targetSize = SuggestedAppsViewHolder.COLUMNS * 3
+            if (s.size > targetSize) {
+                s.subList(0, targetSize)
+            } else {
+                val sa = ArrayList(s)
+                while (sa.size < targetSize) {
+                    sa += activity.launcherContext.appManager.apps.firstOrNull { it !in sa } ?: break
+                }
+                sa
+            }
+        }
+        if (currentScreen == SCREEN_TODAY && list == suggested) {
+            return
+        }
         currentScreen = SCREEN_TODAY
         setTitle(R.string.today)
         val resultCount = items.size
         this.items = emptyList()
         notifyItemRangeRemoved(1, resultCount)
+        suggested = list
         this.items = listOf(
-            SuggestionsTodayItem(fragment::setAppsList)
+            SuggestionsTodayItem(
+                suggested,
+                fragment::setAppsList,
+            ),
         )
         notifyItemRangeInserted(1, items.size)
     }
@@ -110,9 +134,8 @@ class TodayAdapter(
     companion object {
         const val SUGGESTED_APPS = -2
         const val TITLE = -1
-        const val RESULT_CONTACT = 0
-        const val RESULT_ANSWER = 1
-        const val RESULT_COMPACT = 2
+        const val RESULT_ANSWER = 0
+        const val RESULT_COMPACT = 1
 
         const val SCREEN_TODAY = 0
         const val SCREEN_SEARCH = 1

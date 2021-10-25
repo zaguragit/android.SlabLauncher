@@ -13,8 +13,7 @@
             android:id="@+id/background_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:alpha="0.1"/>
+            android:scaleType="centerCrop"/>
         <io.posidon.android.slablauncher.ui.view.SeeThroughView
             android:id="@+id/blur_bg"
             android:layout_width="match_parent"

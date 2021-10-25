@@ -158,7 +158,7 @@ object SuggestionsManager {
         settings.getStrings("stats:app_opening_contexts")?.let {
             val contextMap = ContextMap<LauncherItem>(CONTEXT_DATA_SIZE, ::differentiator)
             it.forEach { app ->
-                appManager.parseLauncherItem(app)?.let { item ->
+                appManager.tryParseApp(app)?.let { item ->
                     settings.getStrings("stats:app_opening_context:$app")
                         ?.map(String::toFloat)?.let { floats ->
                             contextMap[item] = floats.chunked(CONTEXT_DATA_SIZE).map(List<Float>::toFloatArray)

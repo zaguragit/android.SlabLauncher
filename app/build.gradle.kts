@@ -28,7 +28,6 @@ android {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.5.31")
     implementation("com.willowtreeapps:fuzzywuzzy-kotlin-jvm:0.9.0")
-    implementation("com.github.bumptech.glide:glide:4.12.0")
 
     implementation("io.posidon:android.launcherUtils:master-SNAPSHOT")
     implementation("io.posidon:android.loader:master-SNAPSHOT")

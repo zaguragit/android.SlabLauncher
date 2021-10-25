@@ -13,6 +13,7 @@ interface LauncherItem {
     val label: String
 
     fun getColor(): Int = 0
+    fun getBanner(): Banner?
 
     /**
      * What to do when the item is clicked
@@ -26,10 +27,21 @@ interface LauncherItem {
     override fun toString(): String
 
     companion object {
-        fun parse(string: String, appsByName: HashMap<String, MutableList<App>>): LauncherItem? {
-            return App.parse(string, appsByName)
-        }
+        fun tryParse(
+            string: String,
+            appsByName: HashMap<String, MutableList<App>>,
+            context: Context
+        ): LauncherItem? = App.tryParse(string, appsByName)
+            ?: ContactItem.tryParse(string, ContactItem.getList(context))
     }
+
+    class Banner(
+        val title: String?,
+        val text: String?,
+        val background: Drawable?,
+        val bgOpacity: Float,
+        val hideIcon: Boolean = false,
+    )
 }
 
 fun LauncherItem.showProperties(view: View, backgroundColor: Int, textColor: Int) {

@@ -5,11 +5,16 @@
     android:layout_height="wrap_content"
     android:id="@+id/card"
     style="@style/SlabLauncher.Drawer.Item.Container">
+    <io.posidon.android.slablauncher.ui.view.BackdropImageView
+        android:id="@+id/background_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
     <io.posidon.android.slablauncher.ui.view.SeeThroughView
         android:id="@+id/blur_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.5"/>
+        android:alpha="0.4"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/suggestion_height"

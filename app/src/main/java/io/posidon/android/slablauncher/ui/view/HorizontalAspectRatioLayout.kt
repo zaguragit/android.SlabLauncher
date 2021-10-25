@@ -1,6 +1,8 @@
 package io.posidon.android.slablauncher.ui.view
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Canvas
 import android.util.AttributeSet
 import android.widget.FrameLayout
 
@@ -26,4 +28,7 @@ class HorizontalAspectRatioLayout : FrameLayout {
             MeasureSpec.makeMeasureSpec((MeasureSpec.getSize(widthMeasureSpec) / widthToHeight).toInt(), MeasureSpec.EXACTLY),
         )
     }
+
+    @SuppressLint("MissingSuperCall")
+    override fun draw(canvas: Canvas?) {}
 }

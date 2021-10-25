@@ -12,19 +12,19 @@ class LightColorTheme(
 
     override val accentColor = palette.primary
 
-    override val uiBG = palette.neutralVeryLight
+    override val uiBG = palette.neutralLight
     override val uiTitle = palette.neutralVeryDark
     override val uiDescription = palette.neutralDark
     override val uiHint = palette.neutralMedium
 
-    override val cardBG = palette.neutralLight
+    override val cardBG = palette.neutralVeryLight
     override val cardTitle = palette.neutralVeryDark
     override val cardDescription = palette.neutralDark
     override val cardHint = palette.neutralMedium
 
     override val buttonColor = palette.primary
 
-    override val appCardBase = palette.neutralMedium
+    override val appCardBase = palette.neutralVeryLight
 
     override val searchBarBG = palette.neutralLight
     override val searchBarFG = palette.neutralDark

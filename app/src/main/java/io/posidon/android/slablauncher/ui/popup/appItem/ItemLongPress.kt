@@ -105,9 +105,31 @@ object ItemLongPress {
         currentPopup = popupWindow
 
         if (hasDynamicShortcuts) popupWindow.contentView.post {
-            extraPopupWindow!!.showAtLocation(view, gravity, x, y + popupWindow.contentView.height + (view.resources.getDimension(R.dimen.item_card_margin) * 4).toInt())
+            if (currentPopup?.isShowing == true) {
+                extraPopupWindow!!.showAtLocation(
+                    view,
+                    gravity,
+                    x,
+                    y + popupWindow.contentView.height + (view.resources.getDimension(R.dimen.item_card_margin) * 4).toInt()
+                )
+            }
         }
 
+        val shadow = View.DragShadowBuilder(view)
+        val clipData = ClipData(
+            item.label,
+            arrayOf(ClipDescription.MIMETYPE_TEXT_PLAIN),
+            ClipData.Item(item.toString()))
+
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        view.startDragAndDrop(clipData, shadow, view to location, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
+    }
+
+    fun onItemLongPress(
+        view: View,
+        item: LauncherItem,
+    ) {
         val shadow = View.DragShadowBuilder(view)
         val clipData = ClipData(
             item.label,

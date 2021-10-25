@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
-import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.acrylicBlur
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
@@ -50,7 +49,7 @@ class SuggestedAppsViewHolder(
         allAppsButton.backgroundTintList = ColorStateList.valueOf(ColorTheme.uiTitle)
         allAppsButton.setTextColor(ColorTheme.uiBG)
 
-        val suggestions = SuggestionsManager.getSuggestions()
+        val suggestions = suggestionsTodayItem.suggestions
         if (suggestions.isEmpty()) {
             card.isVisible = false
         } else {
