@@ -29,13 +29,12 @@ import io.posidon.android.slablauncher.providers.color.ColorThemeOptions
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
-import io.posidon.android.slablauncher.ui.home.LauncherFragment.Companion.loadBlur
 import io.posidon.android.slablauncher.ui.popup.PopupUtils
 import io.posidon.android.slablauncher.ui.today.TodayFragment
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.util.StackTraceActivity
-import io.posidon.android.slablauncher.util.storage.ColorThemeDayNightSetting.colorThemeDayNight
-import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorTheme
+import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorTheme
+import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
 import kotlin.concurrent.thread
 
 class MainActivity : FragmentActivity() {
@@ -86,7 +85,7 @@ class MainActivity : FragmentActivity() {
                     wallpaperManager.getWallpaperColors(WallpaperManager.FLAG_SYSTEM)
                 }
             }
-            onWallpaperChanged()
+            loadBlur(::updateBlur)
         }
 
         val launcherApps = getSystemService(LauncherApps::class.java)
@@ -102,8 +101,10 @@ class MainActivity : FragmentActivity() {
             ) {
                 val wallpaperOffset = position + positionOffset
                 wallpaperManager.setWallpaperOffsets(viewPager.windowToken, wallpaperOffset, 0f)
-                setBlurLevel(wallpaperOffset)
-                blurBG.offset = wallpaperOffset
+                if (blurBG.drawable != null) {
+                    setBlurLevel(wallpaperOffset)
+                    blurBG.offset = wallpaperOffset
+                }
                 onPageScrollListeners.forEach { (_, l) -> l(wallpaperOffset) }
             }
         })
@@ -149,19 +150,26 @@ class MainActivity : FragmentActivity() {
             loadApps()
         }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
-            thread (isDaemon = true) {
+            thread(isDaemon = true) {
                 ColorPalette.onResumePreOMR1(
                     this,
                     settings.colorTheme,
                     MainActivity::updateColorTheme
                 )
-                onWallpaperChanged()
+                loadBlur(::updateBlur)
             }
         } else {
             if (acrylicBlur == null) {
-                loadBlur(wallpaperManager, ::updateBlur)
+                loadBlur(::updateBlur)
             }
         }
+    }
+
+    fun loadBlur(updateBlur: () -> Unit) = loadBlur(settings, wallpaperManager, updateBlur)
+
+    fun reloadBlur(block: () -> Unit) = loadBlur(settings, wallpaperManager) {
+        updateBlur()
+        block()
     }
 
     override fun onPause() {
@@ -176,7 +184,7 @@ class MainActivity : FragmentActivity() {
         which: Int
     ) {
         if (which and WallpaperManager.FLAG_SYSTEM != 0) {
-            onWallpaperChanged()
+            loadBlur(::updateBlur)
             ColorPalette.onColorsChanged(this, settings.colorTheme, MainActivity::updateColorTheme) { colors }
         }
     }
@@ -197,10 +205,6 @@ class MainActivity : FragmentActivity() {
             updateCurrentBlurBackground()
         }
         onColorThemeUpdateListeners.forEach { (_, l) -> l() }
-    }
-
-    private fun onWallpaperChanged() {
-        loadBlur(wallpaperManager, ::updateBlur)
     }
 
     fun loadApps() {

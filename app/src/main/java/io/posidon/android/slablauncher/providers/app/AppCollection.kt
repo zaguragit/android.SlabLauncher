@@ -5,13 +5,13 @@ import android.graphics.*
 import android.graphics.drawable.*
 import android.graphics.drawable.shapes.RectShape
 import android.os.UserHandle
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.toXfermode
 import androidx.palette.graphics.Palette
 import io.posidon.android.launcherutils.AppLoader
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.util.storage.DoReshapeAdaptiveIconsSetting.doReshapeAdaptiveIcons
 import io.posidon.android.slablauncher.util.storage.Settings
-import posidon.android.conveniencelib.toBitmap
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -96,7 +96,7 @@ class AppCollection(
             }
 
             if (color == 0) {
-                val palette = Palette.from(icon.toBitmap()).generate()
+                val palette = Palette.from(icon.toBitmap(32, 32)).generate()
                 val d = palette.dominantSwatch
                 color = run {
                     val c = d?.rgb ?: return@run color

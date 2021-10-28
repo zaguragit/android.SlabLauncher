@@ -27,6 +27,7 @@ import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.ui.today.TodayAdapter.Companion.SCREEN_ALL_APPS
+import io.posidon.android.slablauncher.ui.today.TodayAdapter.Companion.SCREEN_SEARCH
 import io.posidon.android.slablauncher.ui.today.TodayAdapter.Companion.SCREEN_TODAY
 import posidon.android.conveniencelib.getNavigationBarHeight
 import posidon.android.conveniencelib.getStatusBarHeight
@@ -93,9 +94,11 @@ class TodayFragment : Fragment() {
         val a = requireActivity() as MainActivity
         a.setOnColorThemeUpdateListener(TodayFragment::class.simpleName!!, ::updateColorTheme)
         a.setOnPageScrollListener(TodayFragment::class.simpleName!!, ::onOffsetUpdate)
+        a.setOnBlurUpdateListener(TodayFragment::class.simpleName!!, ::updateBlur)
         a.setOnAppsLoadedListener(TodayFragment::class.simpleName!!) {
             appList = it.list
             searcher.onAppsLoaded(requireContext(), it)
+            reloadResults()
         }
         adapter = TodayAdapter(a, this@TodayFragment)
         recyclerView.run {
@@ -107,7 +110,7 @@ class TodayFragment : Fragment() {
             doOnTextChanged { text, _, _, _ ->
                 if (text.isNullOrEmpty())
                     setTodayView()
-                else thread (isDaemon = true) {
+                else thread(isDaemon = true) {
                     searcher.query(text)
                 }
             }
@@ -156,14 +159,14 @@ class TodayFragment : Fragment() {
         SuggestionsManager.onResume(requireContext()) {
             if (adapter.currentScreen == SCREEN_TODAY) {
                 requireActivity().runOnUiThread {
-                    adapter.updateTodayView()
+                    adapter.updateTodayView(appList)
                 }
             }
         }
     }
 
     private fun setTodayView() {
-        adapter.updateTodayView()
+        adapter.updateTodayView(appList)
     }
 
     fun setAppsList() {
@@ -180,7 +183,7 @@ class TodayFragment : Fragment() {
         }
         requireActivity().onBackPressedDispatcher.addCallback(owner = viewLifecycleOwner) {
             if (adapter.currentScreen == SCREEN_ALL_APPS)
-                adapter.updateTodayView()
+                adapter.updateTodayView(appList, force = true)
             else {
                 val a = requireActivity() as MainActivity
                 if (a.viewPager.currentItem != 0) {
@@ -204,18 +207,33 @@ class TodayFragment : Fragment() {
             ) ?: 0
         } else a.getNavigationBarHeight()
         container.setPadding(0, 0, 0, bottomInset)
-        container.post {
-            recyclerView.setPadding(
-                recyclerView.paddingLeft,
-                requireContext().getStatusBarHeight(),
-                recyclerView.paddingRight,
-                bottomInset + container.measuredHeight,
-            )
-        }
+        recyclerView.setPadding(
+            recyclerView.paddingLeft,
+            requireContext().getStatusBarHeight(),
+            recyclerView.paddingRight,
+            recyclerView.paddingBottom,
+        )
     }
 
+    private var lastQuery = SearchQuery.EMPTY
     private fun updateResults(query: SearchQuery, list: List<SearchResult>) = requireActivity().runOnUiThread {
+        lastQuery = query
         adapter.updateSearchResults(query, list)
+    }
+
+
+    private fun reloadResults() {
+        when (adapter.currentScreen) {
+            SCREEN_TODAY -> requireActivity().runOnUiThread {
+                adapter.updateTodayView(appList, force = true)
+            }
+            SCREEN_ALL_APPS -> requireActivity().runOnUiThread {
+                adapter.updateApps(appList)
+            }
+            SCREEN_SEARCH -> thread(isDaemon = true) {
+                searcher.query(lastQuery)
+            }
+        }
     }
 
     private fun onOffsetUpdate(offset: Float) {
@@ -248,5 +266,9 @@ class TodayFragment : Fragment() {
             searchBarIcon.imageTintList =
                 ColorStateList.valueOf(ColorTheme.searchBarFG)
         }
+    }
+
+    private fun updateBlur() {
+        reloadResults()
     }
 }

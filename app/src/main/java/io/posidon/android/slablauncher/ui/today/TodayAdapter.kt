@@ -80,6 +80,8 @@ class TodayAdapter(
     var currentScreen: Int = -1
         private set
 
+    private var suggested = emptyList<LauncherItem>()
+
     fun updateSearchResults(query: SearchQuery, results: List<SearchResult>) {
         currentScreen = SCREEN_SEARCH
         this.title = activity.getString(R.string.results_for_x, query.text.toString())
@@ -87,9 +89,7 @@ class TodayAdapter(
         notifyDataSetChanged()
     }
 
-    private var suggested = emptyList<LauncherItem>()
-
-    fun updateTodayView() {
+    fun updateTodayView(appList: List<App>, force: Boolean = false) {
         val list = run {
             val s = SuggestionsManager.getSuggestions()
             val targetSize = SuggestedAppsViewHolder.COLUMNS * 3
@@ -98,12 +98,12 @@ class TodayAdapter(
             } else {
                 val sa = ArrayList(s)
                 while (sa.size < targetSize) {
-                    sa += activity.launcherContext.appManager.apps.firstOrNull { it !in sa } ?: break
+                    sa += appList.firstOrNull { it !in sa } ?: break
                 }
                 sa
             }
         }
-        if (currentScreen == SCREEN_TODAY && list == suggested) {
+        if (currentScreen == SCREEN_TODAY && list == suggested && !force) {
             return
         }
         currentScreen = SCREEN_TODAY

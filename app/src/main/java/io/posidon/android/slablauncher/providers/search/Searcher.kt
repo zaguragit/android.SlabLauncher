@@ -16,19 +16,20 @@ class Searcher(
 
     val providers = providers.map { it(this) }
 
-    private fun query(query: SearchQuery): List<SearchResult> {
+    fun query(query: SearchQuery) {
         val r = LinkedList<SearchResult>()
         providers.flatMapTo(r) { it.getResults(query) }
         r.sortWith { a, b ->
             b.relevance.compareTo(a.relevance)
         }
-        return r
+        update(query, r)
     }
 
     fun query(query: CharSequence?) {
-        val q = SearchQuery(query ?: "")
-        update(q, if (query == null) emptyList()
-        else query(q))
+        val q = query?.let(::SearchQuery) ?: SearchQuery.EMPTY
+        if (query == null)
+            update(q, emptyList())
+        else query(q)
     }
 
     fun onCreate(activity: Activity) {

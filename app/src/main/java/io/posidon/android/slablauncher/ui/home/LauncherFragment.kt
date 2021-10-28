@@ -18,6 +18,7 @@ import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.ui.home.pinned.TileArea
 import io.posidon.android.slablauncher.util.blur.AcrylicBlur
 import io.posidon.android.slablauncher.util.storage.*
+import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
 import posidon.android.conveniencelib.*
 import kotlin.concurrent.thread
 
@@ -95,29 +96,27 @@ class LauncherFragment : Fragment() {
         val i = (1 - offset * offset)
         view?.alpha = i * 1.1f
     }
+}
 
-    companion object {
-        fun Activity.loadBlur(wallpaperManager: WallpaperManager, updateBlur: () -> Unit) = thread(isDaemon = true, name = "Blur thread") {
-            if (ActivityCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                ) != PackageManager.PERMISSION_GRANTED) {
-                if (acrylicBlur == null) return@thread
-                acrylicBlur = null
-                runOnUiThread(updateBlur)
-                return@thread
-            }
-            val drawable = wallpaperManager.peekDrawable()
-            if (drawable == null) {
-                if (acrylicBlur == null) return@thread
-                acrylicBlur = null
-                runOnUiThread(updateBlur)
-                return@thread
-            }
-            AcrylicBlur.blurWallpaper(this, drawable) {
-                acrylicBlur = it
-                updateBlur()
-            }
-        }
+fun Activity.loadBlur(settings: Settings, wallpaperManager: WallpaperManager, updateBlur: () -> Unit) = thread(isDaemon = true, name = "Blur thread") {
+    if (!settings.doBlur || ActivityCompat.checkSelfPermission(
+        this,
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    ) != PackageManager.PERMISSION_GRANTED) {
+        if (acrylicBlur == null) return@thread
+        acrylicBlur = null
+        runOnUiThread(updateBlur)
+        return@thread
+    }
+    val drawable = wallpaperManager.peekDrawable()
+    if (drawable == null) {
+        if (acrylicBlur == null) return@thread
+        acrylicBlur = null
+        runOnUiThread(updateBlur)
+        return@thread
+    }
+    AcrylicBlur.blurWallpaper(this, drawable) {
+        acrylicBlur = it
+        updateBlur()
     }
 }

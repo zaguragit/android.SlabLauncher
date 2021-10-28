@@ -43,7 +43,7 @@
         <entry key="app/src/main/res/layout/activity_launcher.xml" value="0.11296859169199595" />
         <entry key="app/src/main/res/layout/activity_launcher_search_bar.xml" value="0.2572463768115942" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.26145833333333335" />
-        <entry key="app/src/main/res/layout/activity_search.xml" value="0.20416666666666666" />
+        <entry key="app/src/main/res/layout/activity_search.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_search_search_bar.xml" value="0.302536231884058" />
         <entry key="app/src/main/res/layout/activity_settings_feed_chooser.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_stack_trace.xml" value="0.2210144927536232" />

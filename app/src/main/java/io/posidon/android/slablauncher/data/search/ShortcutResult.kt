@@ -5,9 +5,9 @@ import android.content.pm.ShortcutInfo
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.View
+import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
 import io.posidon.android.slablauncher.data.items.App
-import posidon.android.conveniencelib.toBitmap
 
 class ShortcutResult(
     val shortcutInfo: ShortcutInfo,
@@ -16,14 +16,12 @@ class ShortcutResult(
     val app: App
 ) : CompactResult() {
 
-    var showSubtitle = true
-
-    override val subtitle get() = if (showSubtitle) app.label else null
+    override val subtitle get() = app.label
     override var relevance = Relevance(0f)
     override val onLongPress = null
 
     private val _color = run {
-        val palette = Palette.from(icon.toBitmap()).generate()
+        val palette = Palette.from(icon.toBitmap(32, 32)).generate()
         val def = -0xdad9d9
         var color = palette.getDominantColor(def)
         val hsv = FloatArray(3)

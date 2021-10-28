@@ -21,9 +21,10 @@ import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupAdapter
 import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupItem
 import io.posidon.android.slablauncher.ui.settings.iconPackPicker.IconPackPickerActivity
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
-import io.posidon.android.slablauncher.util.storage.ColorThemeDayNightSetting.colorThemeDayNight
-import io.posidon.android.slablauncher.util.storage.ColorThemeDayNightSetting.setColorThemeDayNight
-import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorTheme
+import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorTheme
+import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
+import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.setColorThemeDayNight
+import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
 import io.posidon.android.slablauncher.util.storage.DoReshapeAdaptiveIconsSetting.doReshapeAdaptiveIcons
 import io.posidon.android.slablauncher.util.storage.Settings
 import posidon.android.conveniencelib.Device
@@ -42,13 +43,13 @@ object HomeLongPressPopup {
         reloadColorPalette: () -> Unit,
         updateColorTheme: (ColorPalette) -> Unit,
         reloadApps: () -> Unit,
+        reloadBlur: (() -> Unit) -> Unit,
     ) {
         val content = LayoutInflater.from(parent.context).inflate(R.layout.list_popup, null)
         val window = PopupWindow(content, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)
         PopupUtils.setCurrent(window)
 
-        content.findViewById<SeeThroughView>(R.id.blur_bg).run {
-            drawable = acrylicBlur?.fullBlurDrawable
+        val blurBG = content.findViewById<SeeThroughView>(R.id.blur_bg).apply {
             viewTreeObserver.addOnPreDrawListener {
                 invalidate()
                 true
@@ -56,32 +57,32 @@ object HomeLongPressPopup {
         }
 
         val cardView = content.findViewById<CardView>(R.id.card)
-        cardView.setCardBackgroundColor(ColorTheme.cardBG)
         content.findViewById<RecyclerView>(R.id.recycler).apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = ListPopupAdapter().apply {
                 val updateLock = ReentrantLock()
                 fun update() {
+                    blurBG.drawable = acrylicBlur?.insaneBlurDrawable
+                    cardView.setCardBackgroundColor(ColorTheme.cardBG)
                     updateItems(createMainAdapter(parent.context, settings,
                         reloadColorPalette = {
                             thread(name = "Reloading color palette", isDaemon = true) {
                                 updateLock.withLock {
                                     reloadColorPalette()
-                                    cardView.post {
-                                        cardView.setCardBackgroundColor(ColorTheme.cardBG)
-                                        update()
-                                    }
+                                    cardView.post(::update)
                                 }
                             }
                         },
                         updateColorTheme = {
                             updateColorTheme(ColorPalette.getCurrent())
-                            cardView.post {
-                                cardView.setCardBackgroundColor(ColorTheme.cardBG)
-                                update()
-                            }
+                            cardView.post(::update)
                         },
                         reloadApps = reloadApps,
+                        reloadBlur = {
+                            reloadBlur {
+                                cardView.post(::update)
+                            }
+                        },
                     ))
                 }
                 update()
@@ -100,6 +101,7 @@ object HomeLongPressPopup {
         reloadColorPalette: () -> Unit,
         updateColorTheme: () -> Unit,
         reloadApps: () -> Unit,
+        reloadBlur: () -> Unit,
     ): List<ListPopupItem> {
         return listOf(
             ListPopupItem(
@@ -132,6 +134,17 @@ object HomeLongPressPopup {
                     }
                     .show()
             },
+            ListPopupItem(
+                context.getString(R.string.blur),
+                icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),
+                value = settings.doBlur,
+                onToggle = { _, value ->
+                    settings.edit(context) {
+                        doBlur = value
+                        reloadBlur()
+                    }
+                }
+            ),
             ListPopupItem(context.getString(R.string.icons), isTitle = true),
             ListPopupItem(
                 context.getString(R.string.icon_packs),
@@ -144,7 +157,7 @@ object HomeLongPressPopup {
                 description = context.getString(R.string.reshape_adaptive_icons_explanation),
                 icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),
                 value = settings.doReshapeAdaptiveIcons,
-                onToggle = { v, value ->
+                onToggle = { _, value ->
                     settings.edit(context) {
                         doReshapeAdaptiveIcons = value
                         reloadApps()

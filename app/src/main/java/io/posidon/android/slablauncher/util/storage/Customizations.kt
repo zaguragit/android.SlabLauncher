@@ -2,7 +2,7 @@ package io.posidon.android.slablauncher.util.storage
 
 import io.posidon.android.slablauncher.providers.color.ColorThemeOptions
 
-object ColorThemeSetting {
+object ColorExtractorSetting {
     val Settings.colorTheme: Int
         get() = get(KEY_COLOR_THEME, COLOR_THEME_DEFAULT)
 
@@ -19,7 +19,7 @@ object ColorThemeSetting {
     const val COLOR_THEME_DEFAULT = COLOR_THEME_WALLPAPER_TINT
 }
 
-object ColorThemeDayNightSetting {
+object ColorThemeSetting {
     val Settings.colorThemeDayNight: ColorThemeOptions.DayNight
         get() = ColorThemeOptions.DayNight.values()[get(KEY, DEFAULT)]
 
@@ -34,22 +34,6 @@ object ColorThemeDayNightSetting {
     const val DEFAULT = 0
 }
 
-object ScrollbarControllerSetting {
-    val Settings.scrollbarController: Int
-        get() = get(KEY_SCROLLBAR_CONTROLLER, SCROLLBAR_CONTROLLER_DEFAULT)
-
-    var Settings.SettingsEditor.scrollbarController: Int
-        get() = settings[KEY_SCROLLBAR_CONTROLLER, SCROLLBAR_CONTROLLER_DEFAULT]
-        set(value) = KEY_SCROLLBAR_CONTROLLER set value
-
-    private const val KEY_SCROLLBAR_CONTROLLER = "scrollbar_controller"
-
-    const val SCROLLBAR_CONTROLLER_ALPHABETIC = 0
-    const val SCROLLBAR_CONTROLLER_BY_HUE = 1
-
-    const val SCROLLBAR_CONTROLLER_DEFAULT = SCROLLBAR_CONTROLLER_ALPHABETIC
-}
-
 object DoReshapeAdaptiveIconsSetting {
     val Settings.doReshapeAdaptiveIcons: Boolean
         get() = get(KEY, DEFAULT)
@@ -61,4 +45,17 @@ object DoReshapeAdaptiveIconsSetting {
     private const val KEY = "icons:reshape_adaptive"
 
     const val DEFAULT = false
+}
+
+object DoBlurSetting {
+    val Settings.doBlur: Boolean
+        get() = get(KEY, DEFAULT)
+
+    var Settings.SettingsEditor.doBlur: Boolean
+        get() = settings[KEY, DEFAULT]
+        set(value) = KEY set value
+
+    private const val KEY = "blur"
+
+    const val DEFAULT = true
 }

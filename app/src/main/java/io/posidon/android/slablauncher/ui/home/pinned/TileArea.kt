@@ -50,7 +50,8 @@ class TileArea(view: View, val fragment: LauncherFragment, val launcherContext: 
                 launcherContext.settings,
                 activity::reloadColorPaletteSync,
                 activity::updateColorTheme,
-                activity::loadApps
+                activity::loadApps,
+                activity::reloadBlur,
             )
         }
         var lastRecyclerViewDownTouchEvent: MotionEvent? = null
@@ -90,9 +91,10 @@ class TileArea(view: View, val fragment: LauncherFragment, val launcherContext: 
 
     fun getPinnedItemIndex(x: Float, y: Float): Int {
         var y = y - pinnedAdapter.verticalOffset + pinnedRecycler.scrollY
+        if (y < 0) return -1
         val x = x / pinnedRecycler.width * COLUMNS
         y = ((y - pinnedRecycler.paddingTop) / pinnedRecycler.width * COLUMNS) * WIDTH_TO_HEIGHT
-        val i = y.toInt() * COLUMNS + x.toInt() + 1
+        val i = y.toInt() * COLUMNS + x.toInt()
         return if (i >= pinnedAdapter.itemCount) -1 else i
     }
 

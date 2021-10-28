@@ -29,12 +29,12 @@ class AppProvider(
 
     override fun Activity.onCreate() {
         launcherApps = getSystemService(LauncherApps::class.java)
-        updateAppCashe(resources, searcher.launcherContext.appManager.apps)
+        updateAppCache(resources, searcher.launcherContext.appManager.apps)
     }
 
-    private fun updateAppCashe(resources: Resources, list: List<App>) {
+    private fun updateAppCache(resources: Resources, list: List<App>) {
         appList = list
-        thread (isDaemon = true) {
+        thread(isDaemon = true) {
             staticShortcuts = appList.flatMap { app ->
                 app.getStaticShortcuts(launcherApps).map {
                     ShortcutResult(
@@ -65,7 +65,7 @@ class AppProvider(
     }
 
     override fun onAppsLoaded(context: Context, apps: AppCollection) {
-        updateAppCashe(context.resources, apps.list)
+        updateAppCache(context.resources, apps.list)
     }
 
     override fun getResults(query: SearchQuery): List<SearchResult> {

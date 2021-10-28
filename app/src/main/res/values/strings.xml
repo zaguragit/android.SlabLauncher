@@ -22,7 +22,7 @@
     <string name="all_apps">All apps</string>
 
     <!-- settings start -->
-        <string name="color_theme_gen">Color extraction method</string>
+        <string name="color_theme_gen">Color extraction</string>
         <string name="color_theme_day_night">Theme</string>
 
         <string name="scrollbar_controller">App sorting</string>
@@ -30,12 +30,13 @@
         <string name="icons">Icons</string>
 
         <string name="reshape_adaptive_icons">Reshape adaptive icons</string>
-        <string name="reshape_adaptive_icons_explanation">Attempts to remove icon backgrounds without messing them up</string>
+        <string name="reshape_adaptive_icons_explanation">Uses icon backgrounds to cover app cards</string>
 
         <string name="icon_packs">Icon packs</string>
         <string name="chosen">Chosen</string>
         <string name="available">Available</string>
         <string name="system">System</string>
+        <string name="blur">Translucency</string>
     <!-- settings end -->
 
     <!-- first time screen start -->
@@ -52,10 +53,10 @@
             <string name="permission_contacts_explanation">Contacts can be displayed in the search screen</string>
 
             <string name="permission_notifications">Notifications</string>
-            <string name="permission_notifications_explanation">For displaying notifications in the app cards</string>
+            <string name="permission_notifications_explanation">For displaying notifications in app cards</string>
 
             <string name="permission_usage_access">Usage access</string>
-            <string name="permission_usage_access_explanation">Slab launcher will see which apps you use, to improve the app suggestions</string>
+            <string name="permission_usage_access_explanation">To improve app suggestions</string>
         <!-- permissions end -->
     <!-- first time screen end -->
 </resources>

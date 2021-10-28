@@ -62,7 +62,7 @@ object SuggestionsManager {
     }
 
     fun onResume(context: Context, onEnd: () -> Unit) {
-        thread (isDaemon = true, name = "SuggestionManager: onResume") {
+        thread(isDaemon = true, name = "SuggestionManager: onResume") {
             updateSuggestions(context)
             onEnd()
         }

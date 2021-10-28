@@ -40,7 +40,8 @@ class AtAGlanceViewHolder(
                 mainActivity.settings,
                 mainActivity::reloadColorPaletteSync,
                 mainActivity::updateColorTheme,
-                mainActivity::loadApps
+                mainActivity::loadApps,
+                mainActivity::reloadBlur,
             )
             true
         }

@@ -8,10 +8,10 @@ import android.content.pm.PackageManager
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
-import io.posidon.android.slablauncher.util.storage.ColorThemeSetting
+import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting
 import posidon.android.conveniencelib.Device
-import posidon.android.conveniencelib.toBitmap
 import kotlin.math.min
 
 interface ColorPalette {
@@ -80,8 +80,8 @@ interface ColorPalette {
             colors: () -> WallpaperColors?,
         ) {
             when (colorTheme) {
-                ColorThemeSetting.COLOR_THEME_WALLPAPER_TINT -> loadWallColorTheme(context, onFinished)
-                ColorThemeSetting.COLOR_THEME_WALLPAPER_TINT_SYSTEM_ASSISTED -> colors()?.let {
+                ColorExtractorSetting.COLOR_THEME_WALLPAPER_TINT -> loadWallColorTheme(context, onFinished)
+                ColorExtractorSetting.COLOR_THEME_WALLPAPER_TINT_SYSTEM_ASSISTED -> colors()?.let {
                     loadSystemWallColorTheme(context, onFinished, it)
                 } ?: loadDefaultColorTheme(context, onFinished)
                 else -> loadDefaultColorTheme(context, onFinished)
@@ -94,8 +94,8 @@ interface ColorPalette {
             onFinished: (A, ColorPalette) -> Unit,
         ) {
             when (colorTheme) {
-                ColorThemeSetting.COLOR_THEME_WALLPAPER_TINT_SYSTEM_ASSISTED,
-                ColorThemeSetting.COLOR_THEME_WALLPAPER_TINT -> loadWallColorTheme(context, onFinished)
+                ColorExtractorSetting.COLOR_THEME_WALLPAPER_TINT_SYSTEM_ASSISTED,
+                ColorExtractorSetting.COLOR_THEME_WALLPAPER_TINT -> loadWallColorTheme(context, onFinished)
                 else -> loadDefaultColorTheme(context, onFinished)
             }
         }

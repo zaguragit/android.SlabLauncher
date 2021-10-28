@@ -30,7 +30,7 @@ class PinnedTilesAdapter(
     override fun getItemViewType(i: Int): Int {
         return when (i) {
             0 -> 2
-            dropTargetIndex -> 1
+            dropTargetIndex + 1 -> 1
             else -> 0
         }
     }
@@ -38,7 +38,7 @@ class PinnedTilesAdapter(
     fun adapterPositionToI(position: Int): Int {
         return when {
             dropTargetIndex == -1 -> position - 1
-            dropTargetIndex <= position -> position - 2
+            dropTargetIndex + 1 <= position -> position - 2
             else -> position - 1
         }
     }
@@ -73,7 +73,7 @@ class PinnedTilesAdapter(
             holder.onBind()
             return
         }
-        if (ii == dropTargetIndex) {
+        if (ii == dropTargetIndex + 1) {
             holder as DropTargetViewHolder
             bindDropTargetViewHolder(holder)
             return
@@ -110,16 +110,16 @@ class PinnedTilesAdapter(
                 i == -1 -> {
                     val old = dropTargetIndex
                     dropTargetIndex = -1
-                    notifyItemRemoved(old)
+                    notifyItemRemoved(old + 1)
                 }
                 dropTargetIndex == -1 -> {
                     dropTargetIndex = i
-                    notifyItemInserted(i)
+                    notifyItemInserted(i + 1)
                 }
                 else -> {
                     val old = dropTargetIndex
                     dropTargetIndex = i
-                    notifyItemMoved(old, i)
+                    notifyItemMoved(old, i + 1)
                 }
             }
         }
@@ -128,7 +128,7 @@ class PinnedTilesAdapter(
     fun onDrop(v: View, i: Int, clipData: ClipData) {
         if (i != dropTargetIndex) throw IllegalStateException("PinnedItemsAdapter -> i = $i, dropTargetIndex = $dropTargetIndex")
         val item = launcherContext.appManager.tryParseLauncherItem(clipData.getItemAt(0).text.toString(), v.context)
-        item?.let { items.add(i - 1, it) }
+        item?.let { items.add(i, it) }
         dropTargetIndex = -1
         notifyDataSetChanged()
         updatePins(v)
