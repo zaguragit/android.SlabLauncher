@@ -97,7 +97,7 @@ class TodayFragment : Fragment() {
         a.setOnBlurUpdateListener(TodayFragment::class.simpleName!!, ::updateBlur)
         a.setOnAppsLoadedListener(TodayFragment::class.simpleName!!) {
             appList = it.list
-            searcher.onAppsLoaded(requireContext(), it)
+            searcher.onAppsLoaded(a, it)
             reloadResults()
         }
         adapter = TodayAdapter(a, this@TodayFragment)
@@ -224,10 +224,10 @@ class TodayFragment : Fragment() {
 
     private fun reloadResults() {
         when (adapter.currentScreen) {
-            SCREEN_TODAY -> requireActivity().runOnUiThread {
+            SCREEN_TODAY -> activity?.runOnUiThread {
                 adapter.updateTodayView(appList, force = true)
             }
-            SCREEN_ALL_APPS -> requireActivity().runOnUiThread {
+            SCREEN_ALL_APPS -> activity?.runOnUiThread {
                 adapter.updateApps(appList)
             }
             SCREEN_SEARCH -> thread(isDaemon = true) {
@@ -256,7 +256,7 @@ class TodayFragment : Fragment() {
     }
 
     fun updateColorTheme() {
-        requireActivity().runOnUiThread {
+        activity?.runOnUiThread {
             adapter.notifyItemRangeChanged(0, adapter.itemCount)
             container.setBackgroundColor(ColorTheme.searchBarBG)
             searchBarText.run {

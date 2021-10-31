@@ -11,7 +11,7 @@ import android.widget.Switch
 import android.widget.TextView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
-import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.applyIfNotNull
+import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.hideIfNullOr
 import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupItem
 import posidon.android.conveniencelib.dp
 
@@ -45,13 +45,13 @@ class ListPopupSwitchItemViewHolder(itemView: View) : ListPopupViewHolder(itemVi
 
         ripple.setColor(ColorStateList.valueOf(ColorTheme.accentColor and 0xffffff or 0x33000000))
 
-        applyIfNotNull(description, item.description) { view, value ->
-            view.text = value
-            description.setTextColor(ColorTheme.cardDescription)
+        description.hideIfNullOr(item.description) {
+            text = it
+            setTextColor(ColorTheme.cardDescription)
         }
-        applyIfNotNull(icon, item.icon) { view, value ->
-            view.setImageDrawable(value)
-            view.imageTintList = ColorStateList.valueOf(ColorTheme.cardDescription)
+        icon.hideIfNullOr(item.icon) {
+            setImageDrawable(it)
+            imageTintList = ColorStateList.valueOf(ColorTheme.cardDescription)
         }
         switch.isChecked = (item.value as? Boolean) ?: false
         switch.setOnCheckedChangeListener(item.onToggle!!)

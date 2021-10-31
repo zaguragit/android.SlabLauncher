@@ -15,7 +15,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import androidx.annotation.RequiresApi
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -30,6 +29,7 @@ import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.popup.PopupUtils
+import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.ui.today.TodayFragment
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.util.StackTraceActivity
@@ -201,8 +201,8 @@ class MainActivity : FragmentActivity() {
         colorThemeOptions = ColorThemeOptions(settings.colorThemeDayNight)
         ColorTheme.updateColorTheme(colorThemeOptions.createColorTheme(colorPalette))
         runOnUiThread {
-            viewPager.setBackgroundColor(ColorTheme.uiBG and 0xffffff or 0xcc000000.toInt())
-            updateCurrentBlurBackground()
+            viewPager.setBackgroundColor(ColorTheme.uiBG and 0xffffff or 0x88000000.toInt())
+            HomeLongPressPopup.updateCurrent()
         }
         onColorThemeUpdateListeners.forEach { (_, l) -> l() }
     }
@@ -245,6 +245,7 @@ class MainActivity : FragmentActivity() {
         onBlurUpdateListeners.forEach { (_, l) -> l() }
         runOnUiThread {
             updateCurrentBlurBackground()
+            HomeLongPressPopup.updateCurrent()
         }
     }
 
@@ -264,16 +265,12 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun setBlurLevel(f: Float) {
-        if (f == 0f) {
-            blurBG.isVisible = false
-            return
-        }
-        blurBG.isVisible = true
         val l = blurBG.drawable as? LayerDrawable ?: return
         val x = f * 3f
         l.getDrawable(0).alpha = (255 * (x).coerceAtMost(1f)).toInt()
         l.getDrawable(1).alpha = (255 * (x - 1f).coerceAtLeast(0f).coerceAtMost(1f)).toInt()
         l.getDrawable(2).alpha = (255 * (x - 2f).coerceAtLeast(0f)).toInt()
-        l.getDrawable(3).alpha = (150 * ((x - .5f) / 2.5f).coerceAtLeast(0f)).toInt()
+        l.getDrawable(3).alpha = 200 - (100 * f).toInt()
+        viewPager.background.alpha = 255 + (128 * f).toInt()
     }
 }

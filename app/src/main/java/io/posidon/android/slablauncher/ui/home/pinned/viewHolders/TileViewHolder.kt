@@ -1,6 +1,7 @@
 package io.posidon.android.slablauncher.ui.home.pinned.viewHolders
 
 import android.app.Activity
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -20,6 +21,9 @@ import io.posidon.android.slablauncher.ui.view.HorizontalAspectRatioLayout
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.getNavigationBarHeight
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 class TileViewHolder(
     val card: CardView
@@ -58,9 +62,8 @@ class TileViewHolder(
         val backgroundColor = ColorTheme.tintAppDrawerItem(item.getColor())
         card.setCardBackgroundColor(backgroundColor)
         label.text = item.label
-        label.setTextColor(ColorTheme.titleColorForBG(itemView.context, backgroundColor))
-        lineTitle.setTextColor(ColorTheme.titleColorForBG(itemView.context, backgroundColor))
-        lineDescription.setTextColor(ColorTheme.textColorForBG(itemView.context, backgroundColor))
+        val title = ColorTheme.titleColorForBG(itemView.context, backgroundColor)
+        label.setTextColor(title)
 
         val banner = item.getBanner()
         if (banner?.text == null && banner?.title == null) {
@@ -68,14 +71,24 @@ class TileViewHolder(
             spacer.isVisible = true
             icon.isVisible = true
             icon.setImageDrawable(item.icon)
+            lineTitle.isVisible = false
+            lineDescription.isVisible = false
+            label.gravity = Gravity.CENTER_HORIZONTAL
         } else {
             iconSmall.isVisible = true
             spacer.isVisible = false
             icon.isVisible = false
             iconSmall.setImageDrawable(item.icon)
+            label.gravity = Gravity.START
+            lineTitle.hideIfNullOr(banner.title) {
+                text = it
+                setTextColor(title)
+            }
+            lineDescription.hideIfNullOr(banner.text) {
+                text = it
+                setTextColor(ColorTheme.textColorForBG(itemView.context, backgroundColor))
+            }
         }
-        applyIfNotNull(lineTitle, banner?.title, TextView::setText)
-        applyIfNotNull(lineDescription, banner?.text, TextView::setText)
         if (banner?.background == null) {
             imageView.isVisible = false
         } else {
@@ -120,11 +133,13 @@ class TileViewHolder(
     }
 }
 
-inline fun <T: View, R> applyIfNotNull(view: T, value: R, block: (T, R) -> Unit) {
+@OptIn(ExperimentalContracts::class)
+inline fun <T: View, R> T.hideIfNullOr(value: R?, block: T.(R) -> Unit) {
+    contract { callsInPlace(block, InvocationKind.AT_MOST_ONCE) }
     if (value == null) {
-        view.isVisible = false
+        isVisible = false
     } else {
-        view.isVisible = true
-        block(view, value)
+        isVisible = true
+        block(value)
     }
 }

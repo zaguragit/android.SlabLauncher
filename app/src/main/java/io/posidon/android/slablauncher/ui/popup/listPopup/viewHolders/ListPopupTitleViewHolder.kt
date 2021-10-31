@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.TextView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
-import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.applyIfNotNull
+import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.hideIfNullOr
 import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupItem
 
 class ListPopupTitleViewHolder(itemView: View) : ListPopupViewHolder(itemView) {
@@ -22,9 +22,9 @@ class ListPopupTitleViewHolder(itemView: View) : ListPopupViewHolder(itemView) {
 
         itemView.setOnClickListener(item.onClick)
 
-        applyIfNotNull(description, item.description) { view, value ->
-            view.text = value
-            description.setTextColor(ColorTheme.cardDescription)
+        description.hideIfNullOr(item.description) {
+            text = it
+            setTextColor(ColorTheme.cardDescription)
         }
     }
 }

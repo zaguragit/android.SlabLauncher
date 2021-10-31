@@ -3,7 +3,6 @@ package io.posidon.android.slablauncher.providers.app
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.*
-import android.graphics.drawable.shapes.RectShape
 import android.os.UserHandle
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.toXfermode
@@ -171,15 +170,11 @@ class AppCollection(
                 }
                 is ShapeDrawable -> {
                     color = b.paint.color
-                    (if (isForegroundDangerous) icon else scale(icon.foreground)) to b.apply {
-                        shape = RectShape()
-                    }
+                    (if (isForegroundDangerous) icon else scale(icon.foreground)) to ColorDrawable(color)
                 }
                 is GradientDrawable -> {
                     color = b.color?.defaultColor ?: Palette.from(b.toBitmap(8, 8)).generate().getDominantColor(0)
-                    (if (isForegroundDangerous) icon else scale(icon.foreground)) to b.apply {
-                        cornerRadius = 0f
-                    }
+                    (if (isForegroundDangerous) icon else scale(icon.foreground)) to ColorDrawable(color)
                 }
                 else -> if (b != null) {
                     val bitmap = b.toBitmap(32, 32)
@@ -197,7 +192,7 @@ class AppCollection(
                     }
                     if (isOneColor) {
                         color = px
-                        (if (isForegroundDangerous) icon else scale(icon.foreground)) to b
+                        (if (isForegroundDangerous) icon else scale(icon.foreground)) to ColorDrawable(color)
                     } else {
                         val palette = Palette.from(bitmap).generate()
                         color = palette.vibrantSwatch?.rgb ?: palette.dominantSwatch?.rgb ?: 0

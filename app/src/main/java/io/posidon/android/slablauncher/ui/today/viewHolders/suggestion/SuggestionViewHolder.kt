@@ -14,6 +14,7 @@ import io.posidon.android.slablauncher.ui.home.acrylicBlur
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import posidon.android.conveniencelib.Colors
+import posidon.android.conveniencelib.clone
 
 class SuggestionViewHolder(
     val card: CardView
@@ -62,7 +63,7 @@ class SuggestionViewHolder(
             imageView.isVisible = false
         } else {
             imageView.isVisible = true
-            imageView.setImageDrawable(banner.background)
+            imageView.setImageDrawable(banner.background.clone())
             imageView.alpha = banner.bgOpacity
             val palette = Palette.from(banner.background.toBitmap(32, 32)).generate()
             val color = item.getColor()

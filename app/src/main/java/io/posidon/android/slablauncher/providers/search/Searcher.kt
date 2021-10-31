@@ -22,7 +22,8 @@ class Searcher(
         r.sortWith { a, b ->
             b.relevance.compareTo(a.relevance)
         }
-        update(query, r)
+        val tr = if (r.size > MAX_RESULTS) r.subList(0, MAX_RESULTS) else r
+        update(query, tr)
     }
 
     fun query(query: CharSequence?) {
@@ -42,5 +43,9 @@ class Searcher(
         providers.forEach {
             it.onAppsLoaded(context, apps)
         }
+    }
+
+    companion object {
+        const val MAX_RESULTS = 32
     }
 }

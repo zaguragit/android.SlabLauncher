@@ -72,13 +72,13 @@ class LauncherFragment : Fragment() {
     }
 
     private fun updateBlur() {
-        requireActivity().runOnUiThread {
-            tileArea.pinnedAdapter.notifyItemRangeChanged(0, tileArea.pinnedAdapter.itemCount)
+        activity?.runOnUiThread {
+            tileArea.pinnedAdapter.notifyItemRangeChanged(1, tileArea.pinnedAdapter.itemCount - 1)
         }
     }
 
     private fun updateColorTheme() {
-        requireActivity().runOnUiThread {
+        activity?.runOnUiThread {
             tileArea.pinnedAdapter.notifyItemRangeChanged(0, tileArea.pinnedAdapter.itemCount)
         }
     }

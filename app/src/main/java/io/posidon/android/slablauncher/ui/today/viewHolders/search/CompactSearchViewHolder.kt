@@ -8,7 +8,7 @@ import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.search.CompactResult
 import io.posidon.android.slablauncher.data.search.SearchResult
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
-import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.applyIfNotNull
+import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.hideIfNullOr
 
 class CompactSearchViewHolder(
     itemView: View,
@@ -24,9 +24,9 @@ class CompactSearchViewHolder(
         icon.setImageDrawable(result.icon)
         text.text = result.title
         text.setTextColor(ColorTheme.uiTitle)
-        applyIfNotNull(subtitle, result.subtitle) { s, t ->
-            s.text = t
-            subtitle.setTextColor(ColorTheme.uiDescription)
+        subtitle.hideIfNullOr(result.subtitle) {
+            text = it
+            setTextColor(ColorTheme.uiDescription)
         }
         itemView.setOnClickListener(result::open)
         itemView.setOnLongClickListener(result.onLongPress?.let { { v -> it(v, activity) } })

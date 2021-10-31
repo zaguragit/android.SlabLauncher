@@ -95,7 +95,7 @@ class TileArea(view: View, val fragment: LauncherFragment, val launcherContext: 
         val x = x / pinnedRecycler.width * COLUMNS
         y = ((y - pinnedRecycler.paddingTop) / pinnedRecycler.width * COLUMNS) * WIDTH_TO_HEIGHT
         val i = y.toInt() * COLUMNS + x.toInt()
-        return if (i >= pinnedAdapter.itemCount) -1 else i
+        return if (i > pinnedAdapter.tileCount) -1 else i
     }
 
     fun onDrop(v: View, i: Int, clipData: ClipData) {
@@ -112,8 +112,7 @@ class TileArea(view: View, val fragment: LauncherFragment, val launcherContext: 
             DragEvent.ACTION_DRAG_STARTED -> {
                 ((event.localState as? Pair<*, *>?)?.first as? View)?.visibility = View.INVISIBLE
                 val i = getPinnedItemIndex(event.x, event.y)
-                val pinnedItems = launcherContext.appManager.pinnedItems
-                showDropTarget(if (i == -1) pinnedItems.size else i)
+                showDropTarget(i)
             }
             DragEvent.ACTION_DRAG_LOCATION -> {
                 val pair = (event.localState as? Pair<*, *>?)
@@ -128,8 +127,7 @@ class TileArea(view: View, val fragment: LauncherFragment, val launcherContext: 
                 }
 
                 val i = getPinnedItemIndex(event.x, event.y)
-                val pinnedItems = launcherContext.appManager.pinnedItems
-                showDropTarget(if (i == -1) pinnedItems.size else i)
+                showDropTarget(i)
             }
             DragEvent.ACTION_DRAG_ENDED -> {
                 updatePinned()

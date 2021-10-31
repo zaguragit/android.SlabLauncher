@@ -36,10 +36,10 @@ class AcrylicBlur private constructor(
 
     companion object {
         fun blurWallpaper(context: Context, drawable: Drawable): AcrylicBlur {
-            val w = Device.screenHeight(context) * drawable.intrinsicWidth / drawable.intrinsicHeight
-            val h = Device.screenHeight(context)
+            val h = Device.screenHeight(context).coerceAtMost(2040)
+            val w = h * drawable.intrinsicWidth / drawable.intrinsicHeight
             val b = drawable.toBitmap(w / 12, h / 12)
-            val sb = drawable.toBitmap(48, h * 48 / w)
+            val sb = drawable.toBitmap(48, 48 * h / w)
             val insaneBlur = Graphics.fastBlur(sb, 8)
             val smoothBlur = Graphics.fastBlur(b, context.dp(1f).toInt())
             val partialBlurMedium = Graphics.fastBlur(b, context.dp(.6f).toInt())

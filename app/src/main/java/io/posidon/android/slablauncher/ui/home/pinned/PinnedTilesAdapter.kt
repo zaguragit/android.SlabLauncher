@@ -25,7 +25,9 @@ class PinnedTilesAdapter(
     private var dropTargetIndex = -1
     private var items: MutableList<LauncherItem> = ArrayList()
 
-    override fun getItemCount(): Int = iToAdapterPosition(items.size)
+    override fun getItemCount(): Int = items.size + if (dropTargetIndex == -1) 1 else 2
+
+    val tileCount get() = items.size
 
     override fun getItemViewType(i: Int): Int {
         return when (i) {
@@ -38,7 +40,7 @@ class PinnedTilesAdapter(
     fun adapterPositionToI(position: Int): Int {
         return when {
             dropTargetIndex == -1 -> position - 1
-            dropTargetIndex + 1 <= position -> position - 2
+            dropTargetIndex + 1 < position -> position - 2
             else -> position - 1
         }
     }
@@ -46,7 +48,7 @@ class PinnedTilesAdapter(
     fun iToAdapterPosition(i: Int): Int {
         return when {
             dropTargetIndex == -1 -> i + 1
-            dropTargetIndex <= i -> i + 2
+            dropTargetIndex < i -> i + 2
             else -> i + 1
         }
     }
@@ -86,7 +88,7 @@ class PinnedTilesAdapter(
             onDragStart = {
                 val i = adapterPositionToI(holder.bindingAdapterPosition)
                 items.removeAt(i)
-                dropTargetIndex = holder.bindingAdapterPosition
+                dropTargetIndex = i
                 notifyItemChanged(holder.bindingAdapterPosition)
                 updatePins(it)
             },
@@ -119,7 +121,7 @@ class PinnedTilesAdapter(
                 else -> {
                     val old = dropTargetIndex
                     dropTargetIndex = i
-                    notifyItemMoved(old, i + 1)
+                    notifyItemMoved(old + 1, i + 1)
                 }
             }
         }

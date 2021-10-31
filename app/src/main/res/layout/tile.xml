@@ -19,15 +19,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="0.4"/>
+        <ImageView
+            style="@style/SlabLauncher.Drawer.Item.Icon"
+            android:id="@+id/icon_image"
+            android:cropToPadding="false"
+            android:layout_gravity="center"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="bottom">
-            <ImageView
-                style="@style/SlabLauncher.Drawer.Item.Icon"
-                android:id="@+id/icon_image"
-                android:cropToPadding="false"/>
             <View
                 android:id="@+id/spacer"
                 android:layout_width="0dp"
@@ -37,12 +38,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                style="@style/SlabLauncher.Drawer.Item.Label">
+                style="@style/SlabLauncher.Drawer.Item.LabelContainer">
                 <ImageView
                     style="@style/SlabLauncher.Drawer.Item.SmallIcon"
                     android:visibility="gone"
                     android:id="@+id/icon_image_small"/>
                 <TextView
+                    style="@style/SlabLauncher.Drawer.Item.LabelText"
                     android:id="@+id/icon_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

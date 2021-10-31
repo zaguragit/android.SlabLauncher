@@ -32,138 +32,164 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.thread
 import kotlin.concurrent.withLock
 
-object HomeLongPressPopup {
+class HomeLongPressPopup(
+    private val update: HomeLongPressPopup.() -> Unit
+) {
 
-    fun show(
-        parent: View,
-        touchX: Float,
-        touchY: Float,
-        navbarHeight: Int,
-        settings: Settings,
-        reloadColorPalette: () -> Unit,
-        updateColorTheme: (ColorPalette) -> Unit,
-        reloadApps: () -> Unit,
-        reloadBlur: (() -> Unit) -> Unit,
-    ) {
-        val content = LayoutInflater.from(parent.context).inflate(R.layout.list_popup, null)
-        val window = PopupWindow(content, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)
-        PopupUtils.setCurrent(window)
+    private inline fun update() = update(this)
 
-        val blurBG = content.findViewById<SeeThroughView>(R.id.blur_bg).apply {
-            viewTreeObserver.addOnPreDrawListener {
-                invalidate()
+    companion object {
+
+        fun show(
+            parent: View,
+            touchX: Float,
+            touchY: Float,
+            navbarHeight: Int,
+            settings: Settings,
+            reloadColorPalette: () -> Unit,
+            updateColorTheme: (ColorPalette) -> Unit,
+            reloadApps: () -> Unit,
+            reloadBlur: (() -> Unit) -> Unit,
+        ) {
+            val content = LayoutInflater.from(parent.context).inflate(R.layout.list_popup, null)
+            val window = PopupWindow(
+                content,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
                 true
-            }
-        }
+            )
+            PopupUtils.setCurrent(window)
 
-        val cardView = content.findViewById<CardView>(R.id.card)
-        content.findViewById<RecyclerView>(R.id.recycler).apply {
-            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            adapter = ListPopupAdapter().apply {
-                val updateLock = ReentrantLock()
-                fun update() {
-                    blurBG.drawable = acrylicBlur?.insaneBlurDrawable
-                    cardView.setCardBackgroundColor(ColorTheme.cardBG)
-                    updateItems(createMainAdapter(parent.context, settings,
+            val blurBG = content.findViewById<SeeThroughView>(R.id.blur_bg)
+
+            val cardView = content.findViewById<CardView>(R.id.card)
+            val popupAdapter = ListPopupAdapter()
+            val updateLock = ReentrantLock()
+
+            val popup = HomeLongPressPopup {
+                blurBG.drawable = acrylicBlur?.insaneBlurDrawable
+                cardView.setCardBackgroundColor(ColorTheme.cardBG)
+                popupAdapter.updateItems(
+                    createMainAdapter(
+                        parent.context, settings,
                         reloadColorPalette = {
                             thread(name = "Reloading color palette", isDaemon = true) {
                                 updateLock.withLock {
                                     reloadColorPalette()
-                                    cardView.post(::update)
+                                    cardView.post { update() }
                                 }
                             }
                         },
                         updateColorTheme = {
                             updateColorTheme(ColorPalette.getCurrent())
-                            cardView.post(::update)
+                            cardView.post { update() }
                         },
                         reloadApps = reloadApps,
                         reloadBlur = {
                             reloadBlur {
-                                cardView.post(::update)
+                                cardView.post { update() }
                             }
                         },
-                    ))
-                }
-                update()
+                    )
+                )
             }
+
+            content.findViewById<RecyclerView>(R.id.recycler).apply {
+                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                adapter = popupAdapter
+            }
+
+            popup.update()
+
+            val gravity = Gravity.CENTER
+            val x = touchX.toInt() - Device.screenWidth(parent.context) / 2
+            val y = touchY.toInt() - Device.screenHeight(parent.context) / 2 + navbarHeight
+            window.showAtLocation(parent, gravity, x, y)
         }
 
-        val gravity = Gravity.CENTER
-        val x = touchX.toInt() - Device.screenWidth(parent.context) / 2
-        val y = touchY.toInt() - Device.screenHeight(parent.context) / 2 + navbarHeight
-        window.showAtLocation(parent, gravity, x, y)
-    }
+        fun updateCurrent() {
+            current?.update()
+        }
 
-    private fun createMainAdapter(
-        context: Context,
-        settings: Settings,
-        reloadColorPalette: () -> Unit,
-        updateColorTheme: () -> Unit,
-        reloadApps: () -> Unit,
-        reloadBlur: () -> Unit,
-    ): List<ListPopupItem> {
-        return listOf(
-            ListPopupItem(
-                context.getString(R.string.color_theme_gen),
-                description = context.resources.getStringArray(R.array.color_theme_gens)[settings.colorTheme],
-                icon = ContextCompat.getDrawable(context, R.drawable.ic_color_dropper),
-            ) {
-                AlertDialog.Builder(context)
-                    .setSingleChoiceItems(R.array.color_theme_gens, settings.colorTheme) { d, i ->
-                        settings.edit(context) {
-                            colorTheme = context.resources.getStringArray(R.array.color_theme_gens_data)[i].toInt()
-                            reloadColorPalette()
+        private var current: HomeLongPressPopup? = null
+
+        private fun createMainAdapter(
+            context: Context,
+            settings: Settings,
+            reloadColorPalette: () -> Unit,
+            updateColorTheme: () -> Unit,
+            reloadApps: () -> Unit,
+            reloadBlur: () -> Unit,
+        ): List<ListPopupItem> {
+            return listOf(
+                ListPopupItem(
+                    context.getString(R.string.color_theme_gen),
+                    description = context.resources.getStringArray(R.array.color_theme_gens)[settings.colorTheme],
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_color_dropper),
+                ) {
+                    AlertDialog.Builder(context)
+                        .setSingleChoiceItems(
+                            R.array.color_theme_gens,
+                            settings.colorTheme
+                        ) { d, i ->
+                            settings.edit(context) {
+                                colorTheme =
+                                    context.resources.getStringArray(R.array.color_theme_gens_data)[i].toInt()
+                                reloadColorPalette()
+                            }
+                            d.dismiss()
                         }
-                        d.dismiss()
-                    }
-                    .show()
-            },
-            ListPopupItem(
-                context.getString(R.string.color_theme_day_night),
-                description = context.resources.getStringArray(R.array.color_theme_day_night)[settings.colorThemeDayNight.ordinal],
-                icon = ContextCompat.getDrawable(context, R.drawable.ic_lightness),
-            ) {
-                AlertDialog.Builder(context)
-                    .setSingleChoiceItems(R.array.color_theme_day_night, settings.colorThemeDayNight.ordinal) { d, i ->
-                        settings.edit(context) {
-                            setColorThemeDayNight(context.resources.getStringArray(R.array.color_theme_day_night_data)[i].toInt())
-                            updateColorTheme()
+                        .show()
+                },
+                ListPopupItem(
+                    context.getString(R.string.color_theme_day_night),
+                    description = context.resources.getStringArray(R.array.color_theme_day_night)[settings.colorThemeDayNight.ordinal],
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_lightness),
+                ) {
+                    AlertDialog.Builder(context)
+                        .setSingleChoiceItems(
+                            R.array.color_theme_day_night,
+                            settings.colorThemeDayNight.ordinal
+                        ) { d, i ->
+                            settings.edit(context) {
+                                setColorThemeDayNight(context.resources.getStringArray(R.array.color_theme_day_night_data)[i].toInt())
+                                updateColorTheme()
+                            }
+                            d.dismiss()
                         }
-                        d.dismiss()
+                        .show()
+                },
+                ListPopupItem(
+                    context.getString(R.string.blur),
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),
+                    value = settings.doBlur,
+                    onToggle = { _, value ->
+                        settings.edit(context) {
+                            doBlur = value
+                            reloadBlur()
+                        }
                     }
-                    .show()
-            },
-            ListPopupItem(
-                context.getString(R.string.blur),
-                icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),
-                value = settings.doBlur,
-                onToggle = { _, value ->
-                    settings.edit(context) {
-                        doBlur = value
-                        reloadBlur()
+                ),
+                ListPopupItem(context.getString(R.string.icons), isTitle = true),
+                ListPopupItem(
+                    context.getString(R.string.icon_packs),
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),
+                ) {
+                    context.startActivity(Intent(context, IconPackPickerActivity::class.java))
+                },
+                ListPopupItem(
+                    context.getString(R.string.reshape_adaptive_icons),
+                    description = context.getString(R.string.reshape_adaptive_icons_explanation),
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),
+                    value = settings.doReshapeAdaptiveIcons,
+                    onToggle = { _, value ->
+                        settings.edit(context) {
+                            doReshapeAdaptiveIcons = value
+                            reloadApps()
+                        }
                     }
-                }
-            ),
-            ListPopupItem(context.getString(R.string.icons), isTitle = true),
-            ListPopupItem(
-                context.getString(R.string.icon_packs),
-                icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),
-            ) {
-                context.startActivity(Intent(context, IconPackPickerActivity::class.java))
-            },
-            ListPopupItem(
-                context.getString(R.string.reshape_adaptive_icons),
-                description = context.getString(R.string.reshape_adaptive_icons_explanation),
-                icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),
-                value = settings.doReshapeAdaptiveIcons,
-                onToggle = { _, value ->
-                    settings.edit(context) {
-                        doReshapeAdaptiveIcons = value
-                        reloadApps()
-                    }
-                }
-            ),
-        )
+                ),
+            )
+        }
     }
 }
