@@ -13,6 +13,7 @@ import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.hideIfNullOr
 import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupItem
+import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import posidon.android.conveniencelib.dp
 
 class ListPopupSwitchItemViewHolder(itemView: View) : ListPopupViewHolder(itemView) {
@@ -25,7 +26,7 @@ class ListPopupSwitchItemViewHolder(itemView: View) : ListPopupViewHolder(itemVi
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     val switch = itemView.findViewById<Switch>(R.id.toggle)
 
-    val ripple = RippleDrawable(ColorStateList.valueOf(0), null, ColorDrawable(0xffffffff.toInt()))
+    val ripple = RippleDrawable(ColorStateList.valueOf(0), null, FastColorDrawable(0xffffffff.toInt()))
 
     init {
         itemView.background = ripple

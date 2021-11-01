@@ -13,11 +13,14 @@ android {
         versionCode = 1
         versionName = "2021.0.0"
 
+        val plainName = "SlabLauncher"
+        setProperty("archivesBaseName", "$plainName-v$versionName($versionCode)")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -33,7 +36,7 @@ dependencies {
     implementation("io.posidon:android.loader:master-SNAPSHOT")
     implementation("io.posidon:android.convenienceLib:master-SNAPSHOT")
 
-    implementation("androidx.core:core-ktx:1.6.0")
+    implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.palette:palette-ktx:1.0.0")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.fragment:fragment-ktx:1.3.6")

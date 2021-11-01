@@ -9,6 +9,8 @@ import androidx.core.graphics.toXfermode
 import androidx.palette.graphics.Palette
 import io.posidon.android.launcherutils.AppLoader
 import io.posidon.android.slablauncher.data.items.App
+import io.posidon.android.slablauncher.util.drawable.FastBitmapDrawable
+import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import io.posidon.android.slablauncher.util.storage.DoReshapeAdaptiveIconsSetting.doReshapeAdaptiveIcons
 import io.posidon.android.slablauncher.util.storage.Settings
 import java.util.*
@@ -87,7 +89,12 @@ class AppCollection(
                 val d = palette.dominantSwatch
                 color = d?.rgb ?: color
             }
-            else if (settings.doReshapeAdaptiveIcons && icon is AdaptiveIconDrawable) {
+            else if (
+                settings.doReshapeAdaptiveIcons &&
+                icon is AdaptiveIconDrawable &&
+                icon.background != null &&
+                icon.foreground != null
+            ) {
                 val (i, b, c) = reshapeAdaptiveIcon(icon)
                 icon = i
                 background = b ?: background
@@ -107,7 +114,10 @@ class AppCollection(
 
             color = color and 0xffffff or 0xff000000.toInt()
 
-            return icon to ExtraIconData(
+            return icon.let {
+                if (it is BitmapDrawable) FastBitmapDrawable(it.bitmap)
+                else it
+            } to ExtraIconData(
                 background, color
             )
         }
@@ -170,11 +180,11 @@ class AppCollection(
                 }
                 is ShapeDrawable -> {
                     color = b.paint.color
-                    (if (isForegroundDangerous) icon else scale(icon.foreground)) to ColorDrawable(color)
+                    (if (isForegroundDangerous) icon else scale(icon.foreground)) to FastColorDrawable(color)
                 }
                 is GradientDrawable -> {
                     color = b.color?.defaultColor ?: Palette.from(b.toBitmap(8, 8)).generate().getDominantColor(0)
-                    (if (isForegroundDangerous) icon else scale(icon.foreground)) to ColorDrawable(color)
+                    (if (isForegroundDangerous) icon else scale(icon.foreground)) to FastColorDrawable(color)
                 }
                 else -> if (b != null) {
                     val bitmap = b.toBitmap(32, 32)
@@ -192,7 +202,7 @@ class AppCollection(
                     }
                     if (isOneColor) {
                         color = px
-                        (if (isForegroundDangerous) icon else scale(icon.foreground)) to ColorDrawable(color)
+                        (if (isForegroundDangerous) icon else scale(icon.foreground)) to FastColorDrawable(color)
                     } else {
                         val palette = Palette.from(bitmap).generate()
                         color = palette.vibrantSwatch?.rgb ?: palette.dominantSwatch?.rgb ?: 0

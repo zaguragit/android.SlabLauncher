@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.LauncherApps
 import android.content.res.Resources
-import android.graphics.drawable.ColorDrawable
 import com.willowtreeapps.fuzzywuzzy.diffutils.FuzzySearch
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.search.AppResult
@@ -13,6 +12,7 @@ import io.posidon.android.slablauncher.data.search.SearchResult
 import io.posidon.android.slablauncher.data.search.ShortcutResult
 import io.posidon.android.slablauncher.providers.app.AppCollection
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
+import io.posidon.android.slablauncher.util.drawable.NonDrawable
 import java.util.*
 import kotlin.concurrent.thread
 import kotlin.math.pow
@@ -43,7 +43,7 @@ class AppProvider(
                         launcherApps.getShortcutIconDrawable(
                             it,
                             resources.displayMetrics.densityDpi
-                        ) ?: ColorDrawable(),
+                        ) ?: NonDrawable(),
                         app
                     )
                 }
@@ -56,7 +56,7 @@ class AppProvider(
                         launcherApps.getShortcutIconDrawable(
                             it,
                             resources.displayMetrics.densityDpi
-                        ) ?: ColorDrawable(),
+                        ) ?: NonDrawable(),
                         app
                     )
                 }

@@ -2,6 +2,7 @@ package io.posidon.android.slablauncher
 
 import android.content.Context
 import io.posidon.android.launcherutils.AppLoader
+import io.posidon.android.launcherutils.IconConfig
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.providers.app.AppCollection
@@ -22,15 +23,18 @@ class LauncherContext {
             private set
 
         fun <T : Context> loadApps(context: T, onEnd: T.(apps: AppCollection) -> Unit) {
-            appLoader.async(
-                context,
-                settings.getStrings("icon_packs") ?: emptyArray()
-            ) { apps: AppCollection ->
-                this.apps = apps.list
-                appsByName = apps.byName
+            val iconConfig = IconConfig(
+                size = (context.resources.displayMetrics.density * 128f).toInt(),
+                density = context.resources.configuration.densityDpi,
+                packPackages = settings.getStrings("icon_packs") ?: emptyArray(),
+            )
+
+            appLoader.async(context, iconConfig) {
+                apps = it.list
+                appsByName = it.byName
                 _pinnedItems = settings.getStrings(PINNED_KEY)?.mapNotNull { LauncherItem.tryParse(it, appsByName, context) }?.toMutableList() ?: ArrayList()
                 SuggestionsManager.onAppsLoaded(this, context, settings)
-                onEnd(context, apps)
+                onEnd(context, it)
             }
         }
 

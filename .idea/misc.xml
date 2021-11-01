@@ -77,6 +77,7 @@
         <entry key="app/src/main/res/layout/intro_settings.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/intro_splash.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/list_popup.xml" value="0.19583333333333333" />
+        <entry key="app/src/main/res/layout/list_popup_item.xml" value="0.35054347826086957" />
         <entry key="app/src/main/res/layout/list_popup_switch_item.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/list_popup_title.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/long_press_home_popup.xml" value="0.3729166666666667" />

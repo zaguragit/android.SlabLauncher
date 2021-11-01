@@ -1,7 +1,6 @@
 package io.posidon.android.slablauncher.ui.popup.listPopup.viewHolders
 
 import android.content.res.ColorStateList
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.RippleDrawable
 import android.view.View
 import android.widget.ImageView
@@ -10,6 +9,7 @@ import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.hideIfNullOr
 import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupItem
+import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 
 class ListPopupItemViewHolder(itemView: View) : ListPopupViewHolder(itemView) {
 
@@ -18,7 +18,7 @@ class ListPopupItemViewHolder(itemView: View) : ListPopupViewHolder(itemView) {
     val text = itemView.findViewById<TextView>(R.id.text)
     val description = itemView.findViewById<TextView>(R.id.description)
 
-    val ripple = RippleDrawable(ColorStateList.valueOf(0), null, ColorDrawable(0xffffffff.toInt()))
+    val ripple = RippleDrawable(ColorStateList.valueOf(0), null, FastColorDrawable(0xffffffff.toInt()))
 
     init {
         itemView.background = ripple

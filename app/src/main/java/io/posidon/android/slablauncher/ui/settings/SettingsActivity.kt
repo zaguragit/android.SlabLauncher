@@ -1,13 +1,13 @@
 package io.posidon.android.slablauncher.ui.settings
 
 import android.app.Activity
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.acrylicBlur
+import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import io.posidon.android.slablauncher.util.storage.Settings
 
 abstract class SettingsActivity : Activity() {
@@ -30,7 +30,7 @@ abstract class SettingsActivity : Activity() {
     private fun loadColors() {
         window.decorView.background = LayerDrawable(arrayOf(
             acrylicBlur?.fullBlurDrawable,
-            ColorDrawable(ColorTheme.uiBG),
+            FastColorDrawable(ColorTheme.uiBG),
         ))
     }
 }
