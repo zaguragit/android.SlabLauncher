@@ -101,6 +101,7 @@
         <entry key="app/src/main/res/layout/suggestion.xml" value="0.1" />
         <entry key="app/src/main/res/layout/tile.xml" value="0.1" />
         <entry key="app/src/main/res/layout/tile_drop_target.xml" value="0.3578125" />
+        <entry key="app/src/main/res/layout/tile_old.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/title.xml" value="0.27853260869565216" />
         <entry key="app/src/main/res/layout/today_suggested_apps.xml" value="0.17401215805471124" />
         <entry key="app/src/main/res/mipmap-anydpi/ic_launcher.xml" value="0.37395833333333334" />

@@ -267,9 +267,9 @@ class MainActivity : FragmentActivity() {
     private fun setBlurLevel(f: Float) {
         val l = blurBG.drawable as? LayerDrawable ?: return
         val x = f * 3f
-        l.getDrawable(0).alpha = (255 * (x).coerceAtMost(1f)).toInt()
-        l.getDrawable(1).alpha = (255 * (x - 1f).coerceAtLeast(0f).coerceAtMost(1f)).toInt()
-        l.getDrawable(2).alpha = (255 * (x - 2f).coerceAtLeast(0f)).toInt()
+        l.getDrawable(0).alpha = if (x > 2f) 0 else (255 * x.coerceAtMost(1f)).toInt()
+        l.getDrawable(1).alpha = if (x < 1f) 0 else (255 * (x - 1f).coerceAtMost(1f)).toInt()
+        l.getDrawable(2).alpha = if (x < 2f) 0 else (255 * (x - 2f)).toInt()
         l.getDrawable(3).alpha = 200 - (100 * f).toInt()
         viewPager.background.alpha = 255 + (128 * f).toInt()
     }

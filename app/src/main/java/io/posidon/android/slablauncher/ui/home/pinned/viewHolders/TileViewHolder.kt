@@ -1,10 +1,8 @@
 package io.posidon.android.slablauncher.ui.home.pinned.viewHolders
 
 import android.app.Activity
-import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
@@ -17,8 +15,8 @@ import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.acrylicBlur
 import io.posidon.android.slablauncher.ui.home.pinned.TileArea
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
-import io.posidon.android.slablauncher.ui.view.HorizontalAspectRatioLayout
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
+import io.posidon.android.slablauncher.ui.view.tile.TileContentView
 import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.getNavigationBarHeight
 import kotlin.contracts.ExperimentalContracts
@@ -29,15 +27,9 @@ class TileViewHolder(
     val card: CardView
 ) : RecyclerView.ViewHolder(card) {
 
-    val icon = itemView.findViewById<ImageView>(R.id.icon_image)!!
-    val label = itemView.findViewById<TextView>(R.id.icon_text)!!
-
-    val iconSmall = itemView.findViewById<ImageView>(R.id.icon_image_small)!!
-
-    val spacer = itemView.findViewById<View>(R.id.spacer)!!
-
-    val lineTitle = itemView.findViewById<TextView>(R.id.line_title)!!
-    val lineDescription = itemView.findViewById<TextView>(R.id.line_description)!!
+    val contentView = itemView.findViewById<TileContentView>(R.id.tile_content)!!.apply {
+        widthToHeight = TileArea.WIDTH_TO_HEIGHT
+    }
 
     val imageView = itemView.findViewById<ImageView>(R.id.background_image)!!
 
@@ -48,47 +40,28 @@ class TileViewHolder(
         }
     }
 
-    val aspect = itemView.findViewById<HorizontalAspectRatioLayout>(R.id.aspect)!!.apply {
-        widthToHeight = TileArea.WIDTH_TO_HEIGHT
-    }
-
     fun bind(
         item: LauncherItem,
         activity: Activity,
         onDragStart: (View) -> Unit,
     ) {
-        blurBG.drawable = acrylicBlur?.insaneBlurDrawable
+        val banner = item.getBanner()
+        contentView.label = item.label
+        contentView.icon = item.icon.takeIf { banner?.hideIcon != true }
+        contentView.extraTitle = banner?.title
+        contentView.extraText = banner?.text
 
         val backgroundColor = ColorTheme.tintAppDrawerItem(item.getColor())
-        card.setCardBackgroundColor(backgroundColor)
-        label.text = item.label
         val title = ColorTheme.titleColorForBG(itemView.context, backgroundColor)
-        label.setTextColor(title)
+        val text = ColorTheme.textColorForBG(itemView.context, backgroundColor)
 
-        val banner = item.getBanner()
-        if (banner?.text == null && banner?.title == null) {
-            iconSmall.isVisible = false
-            spacer.isVisible = true
-            icon.isVisible = true
-            icon.setImageDrawable(item.icon)
-            lineTitle.isVisible = false
-            lineDescription.isVisible = false
-            label.gravity = Gravity.CENTER_HORIZONTAL
-        } else {
-            iconSmall.isVisible = true
-            spacer.isVisible = false
-            icon.isVisible = false
-            iconSmall.setImageDrawable(item.icon)
-            label.gravity = Gravity.START
-            lineTitle.hideIfNullOr(banner.title) {
-                text = it
-                setTextColor(title)
-            }
-            lineDescription.hideIfNullOr(banner.text) {
-                text = it
-                setTextColor(ColorTheme.textColorForBG(itemView.context, backgroundColor))
-            }
-        }
+        contentView.titleColor = title
+        contentView.textColor = text
+
+        blurBG.drawable = acrylicBlur?.insaneBlurDrawable
+
+        card.setCardBackgroundColor(backgroundColor)
+
         if (banner?.background == null) {
             imageView.isVisible = false
         } else {
@@ -104,13 +77,8 @@ class TileViewHolder(
             val textColor = ColorTheme.textColorForBG(itemView.context, actuallyBackgroundColor)
 
             card.setCardBackgroundColor(backgroundColor)
-            label.setTextColor(titleColor)
-            lineTitle.setTextColor(titleColor)
-            lineDescription.setTextColor(textColor)
-        }
-        if (banner?.hideIcon == true) {
-            icon.isVisible = false
-            iconSmall.isVisible = false
+            contentView.titleColor = titleColor
+            contentView.textColor = textColor
         }
 
         itemView.setOnClickListener {

@@ -130,6 +130,8 @@ class TileArea(view: View, val fragment: LauncherFragment, val launcherContext: 
                 showDropTarget(i)
             }
             DragEvent.ACTION_DRAG_ENDED -> {
+                ItemLongPress.currentPopup?.isFocusable = true
+                ItemLongPress.currentPopup?.update()
                 updatePinned()
                 showDropTarget(-1)
             }
