@@ -104,6 +104,7 @@
         <entry key="app/src/main/res/layout/tile_old.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/title.xml" value="0.27853260869565216" />
         <entry key="app/src/main/res/layout/today_suggested_apps.xml" value="0.17401215805471124" />
+        <entry key="app/src/main/res/layout/today_suggested_apps_show_all.xml" value="0.3578125" />
         <entry key="app/src/main/res/mipmap-anydpi/ic_launcher.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/xml/settings_main.xml" value="0.2980072463768116" />
       </map>

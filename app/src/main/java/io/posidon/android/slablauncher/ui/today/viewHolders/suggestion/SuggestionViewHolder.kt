@@ -10,9 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
-import io.posidon.android.slablauncher.ui.home.acrylicBlur
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
-import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.clone
 
@@ -20,29 +18,24 @@ class SuggestionViewHolder(
     val card: CardView
 ) : RecyclerView.ViewHolder(card) {
 
-    val icon = itemView.findViewById<ImageView>(R.id.icon_image)!!
-    val label = itemView.findViewById<TextView>(R.id.icon_text)!!
+    val icon = itemView.findViewById<ImageView>(R.id.image)!!
+    val label = itemView.findViewById<TextView>(R.id.text)!!
 
     val imageView = itemView.findViewById<ImageView>(R.id.background_image)!!
-
-    val blurBG = itemView.findViewById<SeeThroughView>(R.id.blur_bg)!!.apply {
-        viewTreeObserver.addOnPreDrawListener {
-            invalidate()
-            true
-        }
-    }
 
     fun onBind(
         item: LauncherItem,
         navbarHeight: Int,
     ) {
-        blurBG.drawable = acrylicBlur?.insaneBlurDrawable
-
         val backgroundColor = ColorTheme.tintAppDrawerItem(item.getColor())
+
         card.setCardBackgroundColor(backgroundColor)
         label.text = item.label
         label.setTextColor(ColorTheme.titleColorForBG(itemView.context, backgroundColor))
-        icon.setImageDrawable(item.icon)
+
+        val ic = item.icon
+
+        icon.setImageDrawable(ic)
 
         itemView.setOnClickListener {
             item.open(it.context.applicationContext, it)
@@ -64,7 +57,7 @@ class SuggestionViewHolder(
         } else {
             imageView.isVisible = true
             imageView.setImageDrawable(banner.background.clone())
-            imageView.alpha = banner.bgOpacity
+            imageView.alpha = banner.bgOpacity * .6f
             val palette = Palette.from(banner.background.toBitmap(32, 32)).generate()
             val color = item.getColor()
             val imageColor = palette.getDominantColor(color)

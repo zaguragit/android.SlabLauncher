@@ -11,19 +11,35 @@ import posidon.android.conveniencelib.getNavigationBarHeight
 
 class SuggestionsAdapter(
     val activity: Activity,
-) : RecyclerView.Adapter<SuggestionViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: List<LauncherItem> = emptyList()
+    var openAllApps: () -> Unit = {}
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int = items.size + 1
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestionViewHolder {
-        return SuggestionViewHolder(LayoutInflater.from(parent.context)
-            .inflate(R.layout.suggestion, parent, false) as CardView)
+    override fun getItemViewType(i: Int) = if (i == items.size)
+        R.layout.today_suggested_apps_show_all
+    else R.layout.today_suggested_apps_item
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            R.layout.today_suggested_apps_item -> SuggestionViewHolder(LayoutInflater.from(parent.context)
+                .inflate(viewType, parent, false) as CardView)
+            R.layout.today_suggested_apps_show_all -> ShowAllAppsViewHolder(LayoutInflater.from(parent.context)
+                .inflate(viewType, parent, false))
+            else -> throw IllegalStateException()
+        }
     }
 
-    override fun onBindViewHolder(holder: SuggestionViewHolder, i: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, i: Int) {
+        if (i == items.size) {
+            holder as ShowAllAppsViewHolder
+            holder.onBind(openAllApps)
+            return
+        }
         val item = items[i]
+        holder as SuggestionViewHolder
         holder.onBind(
             item,
             activity.getNavigationBarHeight(),

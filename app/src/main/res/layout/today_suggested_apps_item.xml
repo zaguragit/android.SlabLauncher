@@ -4,17 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/card"
-    style="@style/SlabLauncher.Drawer.Item.Container">
+    style="@style/SlabLauncher.Suggestions.Item.Card">
     <io.posidon.android.slablauncher.ui.view.BackdropImageView
         android:id="@+id/background_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"/>
-    <io.posidon.android.slablauncher.ui.view.SeeThroughView
-        android:id="@+id/blur_bg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.4"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/suggestion_height"
@@ -22,10 +17,10 @@
         android:gravity="center_vertical">
         <ImageView
             style="@style/SlabLauncher.Suggestions.Item.Icon"
-            android:id="@+id/icon_image"/>
+            android:id="@+id/image"/>
         <TextView
             style="@style/SlabLauncher.Suggestions.Item.Label"
-            android:id="@+id/icon_text"
+            android:id="@+id/text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

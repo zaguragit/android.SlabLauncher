@@ -64,14 +64,18 @@ class TodayAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, i: Int) {
-        if (holder is SearchViewHolder) {
-            val realI = if (title != null) i - 1 else i
-            holder.onBind(items[realI] as SearchResult)
-        } else if (holder is TitleViewHolder) {
-            holder.onBind(title!!)
-        } else if (holder is SuggestedAppsViewHolder) {
-            val realI = if (title != null) i - 1 else i
-            holder.onBind(items[realI] as SuggestionsTodayItem)
+        when (holder) {
+            is SearchViewHolder -> {
+                val realI = if (title != null) i - 1 else i
+                holder.onBind(items[realI] as SearchResult)
+            }
+            is TitleViewHolder -> {
+                holder.onBind(title!!)
+            }
+            is SuggestedAppsViewHolder -> {
+                val realI = if (title != null) i - 1 else i
+                holder.onBind(items[realI] as SuggestionsTodayItem)
+            }
         }
     }
 
@@ -92,10 +96,10 @@ class TodayAdapter(
     fun updateTodayView(appList: List<App>, force: Boolean = false) {
         val list = run {
             val s = SuggestionsManager.getSuggestions()
-            val targetSize = SuggestedAppsViewHolder.COLUMNS * 3
+            val targetSize = SuggestedAppsViewHolder.COLUMNS * 3 - 1
             if (s.size > targetSize) {
                 s.subList(0, targetSize)
-            } else {
+            } else if (s.size == targetSize) s else {
                 val sa = ArrayList(s)
                 while (sa.size < targetSize) {
                     sa += appList.firstOrNull { it !in sa } ?: break
