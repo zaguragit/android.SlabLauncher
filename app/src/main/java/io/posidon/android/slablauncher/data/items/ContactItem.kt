@@ -3,29 +3,37 @@ package io.posidon.android.slablauncher.data.items
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.ContactsContract
 import android.view.View
-import androidx.core.content.ContextCompat
-import io.posidon.android.slablauncher.R
-import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
+import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.drawable.toDrawable
+import io.posidon.android.launcherutils.IconTheming
+import io.posidon.android.slablauncher.util.drawable.NonDrawable
+import posidon.android.conveniencelib.drawable.MaskedDrawable
 import java.io.FileNotFoundException
-import java.util.*
+import kotlin.random.Random
 
 class ContactItem(
     override var label: String,
-    override val icon: Drawable,
+    private val pic: Drawable,
     val lookupKey: String,
     val phone: String,
     val id: Int,
     val isStarred: Boolean,
 ) : LauncherItem {
 
+    override val icon: Drawable get() = MaskedDrawable(pic, IconTheming.getSystemAdaptiveIconPath(pic.intrinsicWidth, pic.intrinsicHeight))
+
     override fun getBanner() = LauncherItem.Banner(
         null,
         null,
-        icon,
+        pic,
         1f,
         hideIcon = true
     )
@@ -92,11 +100,10 @@ class ContactItem(
                 val photoIdIndex = cur.getColumnIndex(ContactsContract.Contacts.PHOTO_ID)
                 val contactIdIndex = cur.getColumnIndex(ContactsContract.Contacts._ID)
 
-                val default = ContextCompat.getDrawable(context, R.drawable.placeholder_contact)!!.apply {
-                    setTint(ColorTheme.uiHint)
-                }
-
                 if (cur.count != 0) {
+
+                    val tmpLAB = DoubleArray(3)
+
                     while (cur.moveToNext()) {
                         val starred = cur.getInt(starredIndex) != 0
                         val lookupKey = cur.getString(lookupIndex)
@@ -109,12 +116,13 @@ class ContactItem(
                             ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, photoId.toLong())
                         } else null
 
-                        val icon = if (iconUri == null) default else try {
+                        val pic = if (iconUri == null) genProfilePic(name, tmpLAB)?.toDrawable(context.resources) ?: NonDrawable() else try {
                             val inputStream = context.contentResolver.openInputStream(iconUri)
                             Drawable.createFromStream(inputStream, iconUri.toString())
-                        } catch (e: FileNotFoundException) { default }
+                        } catch (e: FileNotFoundException) { genProfilePic(name, tmpLAB)?.toDrawable(context.resources) ?: NonDrawable() }
+                        pic.setBounds(0, 0, pic.intrinsicWidth, pic.intrinsicHeight)
 
-                        val contact = ContactItem(name, icon, lookupKey, phone, contactId, starred)
+                        val contact = ContactItem(name, pic, lookupKey, phone, contactId, starred)
 
                         if (!contactMap.containsKey(lookupKey)) {
                             contactMap[lookupKey] = contact
@@ -146,6 +154,36 @@ class ContactItem(
             }
 
             return contactMap.values
+        }
+
+        private val pics = HashMap<Int, Bitmap>()
+        private fun genProfilePic(name: String, tmpLab: DoubleArray): Bitmap? {
+            if (name.isEmpty()) return null
+            val key = (name[0].code shl 16) + name[name.length / 2].code
+            return pics.getOrPut(key) {
+                val bitmap = Bitmap.createBitmap(108, 108, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(bitmap)
+                val random = Random(key)
+                val base = Color.HSVToColor(floatArrayOf(random.nextFloat() * 360f, 1f, 1f))
+                ColorUtils.colorToLAB(base, tmpLab)
+                canvas.drawColor(
+                    ColorUtils.LABToColor(
+                        50.0,
+                        tmpLab[1] / 2.0,
+                        tmpLab[2] / 2.0
+                    )
+                )
+                val textP = Paint().apply {
+                    color = 0xffffffff.toInt()
+                    textAlign = Paint.Align.CENTER
+                    textSize = 64f
+                    isAntiAlias = true
+                }
+                val x = canvas.width / 2f
+                val y = (canvas.height / 2f - (textP.descent() + textP.ascent()) / 2f)
+                canvas.drawText(charArrayOf(name[0]), 0, 1, x, y, textP)
+                bitmap
+            }
         }
     }
 }

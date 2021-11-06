@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.core.view.marginBottom
 import androidx.core.view.marginTop
@@ -128,7 +129,11 @@ class PinnedTilesAdapter(
     }
 
     fun onDrop(v: View, i: Int, clipData: ClipData) {
-        if (i != dropTargetIndex) throw IllegalStateException("PinnedItemsAdapter -> i = $i, dropTargetIndex = $dropTargetIndex")
+        if (i != dropTargetIndex) Toast.makeText(
+            v.context,
+            "PinnedTilesAdapter -> i = $i, dropTargetIndex = $dropTargetIndex",
+            Toast.LENGTH_LONG
+        ).show()
         val item = launcherContext.appManager.tryParseLauncherItem(clipData.getItemAt(0).text.toString(), v.context)
         item?.let { items.add(i, it) }
         dropTargetIndex = -1

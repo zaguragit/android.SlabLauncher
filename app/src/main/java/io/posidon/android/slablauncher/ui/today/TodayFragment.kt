@@ -165,14 +165,6 @@ class TodayFragment : Fragment() {
         }
     }
 
-    private fun setTodayView() {
-        adapter.updateTodayView(appList)
-    }
-
-    fun setAppsList() {
-        adapter.updateApps(appList)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         updateColorTheme()
@@ -216,11 +208,18 @@ class TodayFragment : Fragment() {
     }
 
     private var lastQuery = SearchQuery.EMPTY
-    private fun updateResults(query: SearchQuery, list: List<SearchResult>) = requireActivity().runOnUiThread {
+    private fun updateResults(query: SearchQuery, list: List<SearchResult>) = activity?.runOnUiThread {
         lastQuery = query
         adapter.updateSearchResults(query, list)
     }
 
+    private fun setTodayView() {
+        adapter.updateTodayView(appList)
+    }
+
+    fun setAppsList() {
+        adapter.updateApps(appList)
+    }
 
     private fun reloadResults() {
         when (adapter.currentScreen) {
