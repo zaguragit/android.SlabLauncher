@@ -37,6 +37,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:textSize="14sp"
-            android:fontFamily="@font/jet_brains_mono"/>
+            android:fontFamily="monospace"/>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

@@ -47,7 +47,7 @@ class TileViewHolder(
     ) {
         val banner = item.getBanner()
         contentView.label = item.label
-        contentView.icon = item.icon.takeIf { banner?.hideIcon != true }
+        contentView.icon = if (banner?.hideIcon == true) null else item.icon
         contentView.extraTitle = banner?.title
         contentView.extraText = banner?.text
 

@@ -3,8 +3,6 @@ package io.posidon.android.slablauncher.data.items
 import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
@@ -12,8 +10,9 @@ import android.net.Uri
 import android.provider.ContactsContract
 import android.view.View
 import androidx.core.graphics.ColorUtils
-import androidx.core.graphics.drawable.toDrawable
 import io.posidon.android.launcherutils.IconTheming
+import io.posidon.android.slablauncher.R
+import io.posidon.android.slablauncher.util.drawable.ContactDrawable
 import io.posidon.android.slablauncher.util.drawable.NonDrawable
 import posidon.android.conveniencelib.drawable.MaskedDrawable
 import java.io.FileNotFoundException
@@ -103,6 +102,14 @@ class ContactItem(
                 if (cur.count != 0) {
 
                     val tmpLAB = DoubleArray(3)
+                    val textP = Paint().apply {
+                        color = 0xffffffff.toInt()
+                        typeface = context.resources.getFont(R.font.rubik_medium_caps)
+                        textAlign = Paint.Align.CENTER
+                        textSize = 64f
+                        isAntiAlias = true
+                        isSubpixelText = true
+                    }
 
                     while (cur.moveToNext()) {
                         val starred = cur.getInt(starredIndex) != 0
@@ -116,10 +123,10 @@ class ContactItem(
                             ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, photoId.toLong())
                         } else null
 
-                        val pic = if (iconUri == null) genProfilePic(name, tmpLAB)?.toDrawable(context.resources) ?: NonDrawable() else try {
+                        val pic = if (iconUri == null) genProfilePic(name, tmpLAB, textP) ?: NonDrawable() else try {
                             val inputStream = context.contentResolver.openInputStream(iconUri)
                             Drawable.createFromStream(inputStream, iconUri.toString())
-                        } catch (e: FileNotFoundException) { genProfilePic(name, tmpLAB)?.toDrawable(context.resources) ?: NonDrawable() }
+                        } catch (e: FileNotFoundException) { genProfilePic(name, tmpLAB, textP) ?: NonDrawable() }
                         pic.setBounds(0, 0, pic.intrinsicWidth, pic.intrinsicHeight)
 
                         val contact = ContactItem(name, pic, lookupKey, phone, contactId, starred)
@@ -156,33 +163,25 @@ class ContactItem(
             return contactMap.values
         }
 
-        private val pics = HashMap<Int, Bitmap>()
-        private fun genProfilePic(name: String, tmpLab: DoubleArray): Bitmap? {
+        private val pics = HashMap<Int, ContactDrawable>()
+        private fun genProfilePic(name: String, tmpLab: DoubleArray, paint: Paint): Drawable? {
             if (name.isEmpty()) return null
-            val key = (name[0].code shl 16) + name[name.length / 2].code
+            val realName = name.trim { !it.isLetterOrDigit() }.uppercase()
+            if (realName.isEmpty()) return null
+            val key = (realName[0].code shl 16) + realName[realName.length / 2].code
             return pics.getOrPut(key) {
-                val bitmap = Bitmap.createBitmap(108, 108, Bitmap.Config.ARGB_8888)
-                val canvas = Canvas(bitmap)
                 val random = Random(key)
                 val base = Color.HSVToColor(floatArrayOf(random.nextFloat() * 360f, 1f, 1f))
                 ColorUtils.colorToLAB(base, tmpLab)
-                canvas.drawColor(
+                ContactDrawable(
                     ColorUtils.LABToColor(
                         50.0,
                         tmpLab[1] / 2.0,
                         tmpLab[2] / 2.0
-                    )
+                    ),
+                    realName[0],
+                    paint
                 )
-                val textP = Paint().apply {
-                    color = 0xffffffff.toInt()
-                    textAlign = Paint.Align.CENTER
-                    textSize = 64f
-                    isAntiAlias = true
-                }
-                val x = canvas.width / 2f
-                val y = (canvas.height / 2f - (textP.descent() + textP.ascent()) / 2f)
-                canvas.drawText(charArrayOf(name[0]), 0, 1, x, y, textP)
-                bitmap
             }
         }
     }

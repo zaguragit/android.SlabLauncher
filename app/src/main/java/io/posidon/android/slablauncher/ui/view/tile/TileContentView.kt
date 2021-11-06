@@ -194,8 +194,9 @@ class TileContentView : View {
     }
 
     internal fun getLabelBounds(bounds: Rect) = label?.let { labelPaint.getTextBounds(it, 0, it.length, bounds) } ?: bounds.setEmpty()
-    internal fun getExtraTitleBounds(bounds: Rect) = extraTitle?.let { titlePaint.getTextBounds(it, 0, it.length, bounds) } ?: bounds.setEmpty()
-    internal fun getExtraTextBounds(bounds: Rect) = extraText?.let { textPaint.getTextBounds(it, 0, it.length, bounds) } ?: bounds.setEmpty()
+
+    internal fun getExtraTitleHeight() = if (extraTitle == null) 0f else titlePaint.descent() - titlePaint.ascent()
+    internal fun getExtraTextHeight() = if (extraText == null) 0f else textPaint.descent() - textPaint.ascent()
 
     internal val smallIconSize: Float
         get() = dp(24)

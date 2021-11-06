@@ -56,8 +56,7 @@ class TileContentMover(
 
         val maxLabelWidth = innerWidth - (labelX - sideMargin)
 
-        view.getExtraTitleBounds(tmpTextBounds)
-        val originalTitleHeight = tmpTextBounds.height()
+        val originalTitleHeight = view.getExtraTitleHeight()
 
         extraTitleX = sideMargin
         extraTextX = sideMargin
@@ -68,8 +67,7 @@ class TileContentMover(
             f
         )
 
-        view.getExtraTextBounds(tmpTextBounds)
-        val originalTextHeight = tmpTextBounds.height()
+        val originalTextHeight = view.getExtraTextHeight()
 
         extraTextY = extraTitleY + originalTextHeight + sideMargin / 2f
 
