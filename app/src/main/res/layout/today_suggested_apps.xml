@@ -1,24 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/SlabLauncher.Today.SuggestionCard"
+    android:id="@+id/card"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:gravity="center_horizontal">
-    <androidx.cardview.widget.CardView
-        style="@style/SlabLauncher.Today.SuggestionCard"
-        android:id="@+id/card"
+    android:layout_height="wrap_content">
+    <io.posidon.android.slablauncher.util.view.SeeThroughView
+        android:id="@+id/blur_bg"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <io.posidon.android.slablauncher.ui.view.SeeThroughView
-            android:id="@+id/blur_bg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha="0.18"/>
-        <androidx.recyclerview.widget.RecyclerView
-            style="@style/SlabLauncher.Today.SuggestionCard.Recycler"
-            android:id="@+id/recycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </androidx.cardview.widget.CardView>
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:alpha="0.18"/>
+    <androidx.recyclerview.widget.RecyclerView
+        style="@style/SlabLauncher.Today.SuggestionCard.Recycler"
+        android:id="@+id/recycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</androidx.cardview.widget.CardView>

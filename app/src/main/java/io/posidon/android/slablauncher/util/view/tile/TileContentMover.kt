@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.view.tile
+package io.posidon.android.slablauncher.util.view.tile
 
 import android.graphics.Rect
 import kotlin.math.min

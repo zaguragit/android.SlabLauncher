@@ -31,10 +31,10 @@ import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.popup.PopupUtils
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.ui.today.TodayFragment
-import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.util.StackTraceActivity
 import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorTheme
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
+import io.posidon.android.slablauncher.util.view.SeeThroughView
 import kotlin.concurrent.thread
 
 class MainActivity : FragmentActivity() {

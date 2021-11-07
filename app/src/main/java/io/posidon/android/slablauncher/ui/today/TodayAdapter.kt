@@ -56,8 +56,8 @@ class TodayAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TITLE -> TitleViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.title, parent, false))
-            RESULT_COMPACT -> CompactSearchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.search_result_compact, parent, false), activity)
-            RESULT_ANSWER -> AnswerSearchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.search_result_answer, parent, false), activity)
+            RESULT_COMPACT -> CompactSearchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.search_result_compact, parent, false))
+            RESULT_ANSWER -> AnswerSearchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.search_result_answer, parent, false))
             SUGGESTED_APPS -> SuggestedAppsViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.today_suggested_apps, parent, false), activity)
             else -> throw Exception("Invalid view type")
         }
@@ -67,14 +67,14 @@ class TodayAdapter(
         when (holder) {
             is SearchViewHolder -> {
                 val realI = if (title != null) i - 1 else i
-                holder.onBind(items[realI] as SearchResult)
+                holder.onBind(items[realI] as SearchResult, activity)
             }
             is TitleViewHolder -> {
                 holder.onBind(title!!)
             }
             is SuggestedAppsViewHolder -> {
                 val realI = if (title != null) i - 1 else i
-                holder.onBind(items[realI] as SuggestionsTodayItem)
+                holder.onBind(items[realI] as SuggestionsTodayItem, activity)
             }
         }
     }

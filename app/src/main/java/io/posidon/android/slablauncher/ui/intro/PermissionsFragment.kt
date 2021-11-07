@@ -6,10 +6,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -22,15 +21,28 @@ import io.posidon.android.slablauncher.util.FakeLauncherActivity
 
 class PermissionsFragment : FragmentWithNext(R.layout.intro_permissions) {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)?.apply(::updatePermissionStatus)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        updatePermissionStatus(view)
     }
 
     fun updatePermissionStatus() = updatePermissionStatus(requireView())
+
+    fun updateColorTheme() {
+        val v = requireView()
+        arrayOf(
+            R.id.title,
+            R.id.storage_title,
+            R.id.contacts_title,
+            R.id.notifications_title,
+            R.id.usage_title
+        ).forEach { v.findViewById<TextView>(it).setTextColor(ColorTheme.uiTitle) }
+        arrayOf(
+            R.id.storage_description,
+            R.id.contacts_description,
+            R.id.notifications_description,
+            R.id.usage_description
+        ).forEach { v.findViewById<TextView>(it).setTextColor(ColorTheme.uiDescription) }
+    }
 
     private fun updatePermissionStatus(v: View) = v.apply {
         val tickStorage = findViewById<ImageView>(R.id.tick_storage)!!
@@ -47,6 +59,7 @@ class PermissionsFragment : FragmentWithNext(R.layout.intro_permissions) {
             tickStorage.isVisible = true
             ColorPalette.loadWallColorTheme(requireActivity() as IntroActivity) { a, p ->
                 a.updateColorTheme(p)
+                updateColorTheme()
                 val tl = ColorStateList.valueOf(ColorTheme.accentColor)
                 tickStorage.imageTintList = tl
                 tickContacts.imageTintList = tl
@@ -56,6 +69,7 @@ class PermissionsFragment : FragmentWithNext(R.layout.intro_permissions) {
         } else {
             findViewById<View>(R.id.button_storage)!!
                 .setOnClickListener(::requestStoragePermission)
+            updateColorTheme()
         }
 
         if (

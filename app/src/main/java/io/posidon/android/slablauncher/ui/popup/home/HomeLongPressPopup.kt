@@ -20,13 +20,13 @@ import io.posidon.android.slablauncher.ui.popup.PopupUtils
 import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupAdapter
 import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupItem
 import io.posidon.android.slablauncher.ui.settings.iconPackPicker.IconPackPickerActivity
-import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorTheme
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.setColorThemeDayNight
 import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
 import io.posidon.android.slablauncher.util.storage.DoReshapeAdaptiveIconsSetting.doReshapeAdaptiveIcons
 import io.posidon.android.slablauncher.util.storage.Settings
+import io.posidon.android.slablauncher.util.view.SeeThroughView
 import posidon.android.conveniencelib.Device
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.thread

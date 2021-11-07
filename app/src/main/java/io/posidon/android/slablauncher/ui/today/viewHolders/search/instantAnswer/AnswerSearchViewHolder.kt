@@ -13,11 +13,10 @@ import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.acrylicBlur
 import io.posidon.android.slablauncher.ui.today.viewHolders.search.SearchViewHolder
-import io.posidon.android.slablauncher.ui.view.SeeThroughView
+import io.posidon.android.slablauncher.util.view.SeeThroughView
 
 class AnswerSearchViewHolder(
-    itemView: View,
-    val activity: MainActivity
+    itemView: View
 ) : SearchViewHolder(itemView) {
 
     val card = itemView.findViewById<CardView>(R.id.card)!!
@@ -42,7 +41,10 @@ class AnswerSearchViewHolder(
         }
     }
 
-    override fun onBind(result: SearchResult) {
+    override fun onBind(
+        result: SearchResult,
+        activity: MainActivity,
+    ) {
         result as InstantAnswerResult
 
         blurBG.drawable = acrylicBlur?.smoothBlurDrawable

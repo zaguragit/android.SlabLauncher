@@ -40,7 +40,7 @@
     <!-- settings end -->
 
     <!-- first time screen start -->
-        <string name="splash_message">Automated customization</string>
+        <string name="splash_message">@string/app_name</string>
 
         <!-- permissions start -->
             <string name="permissions">Permissions</string>

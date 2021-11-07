@@ -2,18 +2,17 @@ package io.posidon.android.slablauncher.ui.today.viewHolders.suggestion
 
 import android.view.View
 import androidx.cardview.widget.CardView
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.acrylicBlur
-import io.posidon.android.slablauncher.ui.view.SeeThroughView
+import io.posidon.android.slablauncher.util.view.SeeThroughView
 
 class SuggestedAppsViewHolder(
     itemView: View,
-    val activity: MainActivity
+    activity: MainActivity,
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -35,7 +34,10 @@ class SuggestedAppsViewHolder(
         }
     }
 
-    fun onBind(suggestionsTodayItem: SuggestionsTodayItem) {
+    fun onBind(
+        suggestionsTodayItem: SuggestionsTodayItem,
+        activity: MainActivity,
+    ) {
         blurBG.drawable = acrylicBlur?.smoothBlurDrawable
         blurBG.offset = 1f
         activity.setOnPageScrollListener(SuggestedAppsViewHolder::class.simpleName!!) { blurBG.offset = it }
@@ -43,12 +45,7 @@ class SuggestedAppsViewHolder(
         card.setCardBackgroundColor(ColorTheme.cardBG)
 
         val suggestions = suggestionsTodayItem.suggestions
-        if (suggestions.isEmpty()) {
-            card.isVisible = false
-        } else {
-            card.isVisible = true
-            suggestionsAdapter.updateItems(suggestions)
-        }
+        suggestionsAdapter.updateItems(suggestions)
 
         suggestionsAdapter.openAllApps = suggestionsTodayItem.openAllApps
     }

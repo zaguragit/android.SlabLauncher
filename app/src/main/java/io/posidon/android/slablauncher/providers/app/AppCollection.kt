@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.*
 import android.os.UserHandle
+import androidx.core.graphics.alpha
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.toXfermode
 import androidx.palette.graphics.Palette
@@ -167,7 +168,7 @@ class AppCollection(
                 val pixels = IntArray(width * height)
                 fg.getPixels(pixels, 0, width, 0, 0, width, height)
                 for (pixel in pixels) {
-                    if (Color.alpha(pixel) != 0) {
+                    if (pixel.alpha != 0) {
                         return@run true
                     }
                 }

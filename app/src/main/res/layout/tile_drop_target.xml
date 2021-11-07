@@ -5,14 +5,14 @@
     android:layout_height="wrap_content"
     android:id="@+id/card"
     style="@style/SlabLauncher.Drawer.Item.Container">
-    <io.posidon.android.slablauncher.ui.view.HorizontalAspectRatioLayout
+    <io.posidon.android.slablauncher.util.view.HorizontalAspectRatioLayout
         android:id="@+id/aspect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <io.posidon.android.slablauncher.ui.view.SeeThroughView
+        <io.posidon.android.slablauncher.util.view.SeeThroughView
             android:id="@+id/blur_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="0.7"/>
-    </io.posidon.android.slablauncher.ui.view.HorizontalAspectRatioLayout>
+    </io.posidon.android.slablauncher.util.view.HorizontalAspectRatioLayout>
 </androidx.cardview.widget.CardView>

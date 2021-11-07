@@ -8,6 +8,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <TextView
+            android:id="@+id/title"
             style="@style/SlabLauncher.Intro.Slash.Permissions.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,11 +20,13 @@
             android:orientation="vertical"
             style="@style/SlabLauncher.Intro.Slash.Permissions.Item.Container">
             <TextView
+                android:id="@+id/storage_title"
                 style="@style/SlabLauncher.Intro.Slash.Permissions.Item.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/permission_storage"/>
             <TextView
+                android:id="@+id/storage_description"
                 style="@style/SlabLauncher.Intro.Slash.Permissions.Item.Explanation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,11 +49,13 @@
             android:orientation="vertical"
             style="@style/SlabLauncher.Intro.Slash.Permissions.Item.Container">
             <TextView
+                android:id="@+id/contacts_title"
                 style="@style/SlabLauncher.Intro.Slash.Permissions.Item.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/permission_contacts"/>
             <TextView
+                android:id="@+id/contacts_description"
                 style="@style/SlabLauncher.Intro.Slash.Permissions.Item.Explanation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,11 +78,13 @@
             android:orientation="vertical"
             style="@style/SlabLauncher.Intro.Slash.Permissions.Item.Container">
             <TextView
+                android:id="@+id/notifications_title"
                 style="@style/SlabLauncher.Intro.Slash.Permissions.Item.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/permission_notifications"/>
             <TextView
+                android:id="@+id/notifications_description"
                 style="@style/SlabLauncher.Intro.Slash.Permissions.Item.Explanation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -100,11 +107,13 @@
             android:orientation="vertical"
             style="@style/SlabLauncher.Intro.Slash.Permissions.Item.Container">
             <TextView
+                android:id="@+id/usage_title"
                 style="@style/SlabLauncher.Intro.Slash.Permissions.Item.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/permission_usage_access"/>
             <TextView
+                android:id="@+id/usage_description"
                 style="@style/SlabLauncher.Intro.Slash.Permissions.Item.Explanation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

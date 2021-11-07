@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.view
+package io.posidon.android.slablauncher.util.view
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -21,6 +21,10 @@ class HorizontalAspectRatioLayout : FrameLayout {
         defStyleAttr: Int,
         defStyleRes: Int
     ) : super(context, attrs, defStyleAttr, defStyleRes)
+
+    init {
+        setWillNotDraw(true)
+    }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(

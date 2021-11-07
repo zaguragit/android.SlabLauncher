@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.view
+package io.posidon.android.slablauncher.util.view
 
 import android.annotation.SuppressLint
 import android.app.Activity

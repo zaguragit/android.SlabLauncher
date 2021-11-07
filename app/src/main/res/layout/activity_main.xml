@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <io.posidon.android.slablauncher.ui.view.SeeThroughView
+    <io.posidon.android.slablauncher.util.view.SeeThroughView
         android:id="@+id/blur_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
