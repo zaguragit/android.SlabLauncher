@@ -271,6 +271,6 @@ class MainActivity : FragmentActivity() {
         l.getDrawable(1).alpha = if (x < 1f) 0 else (255 * (x - 1f).coerceAtMost(1f)).toInt()
         l.getDrawable(2).alpha = if (x < 2f) 0 else (255 * (x - 2f)).toInt()
         l.getDrawable(3).alpha = 200 - (100 * f).toInt()
-        viewPager.background.alpha = 255 + (128 * f).toInt()
+        viewPager.background?.alpha = 255 + (128 * f).toInt()
     }
 }
