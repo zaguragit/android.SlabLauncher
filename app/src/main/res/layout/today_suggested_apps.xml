@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/SlabLauncher.Today.SuggestionCard"
+    style="@style/SlabLauncher.Today.ItemCard"
     android:id="@+id/card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">

@@ -7,14 +7,17 @@ import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.LauncherItem
+import io.posidon.android.slablauncher.data.notification.MediaPlayerData
 import io.posidon.android.slablauncher.data.search.AppResult
 import io.posidon.android.slablauncher.data.search.CompactResult
 import io.posidon.android.slablauncher.data.search.InstantAnswerResult
 import io.posidon.android.slablauncher.data.search.SearchResult
+import io.posidon.android.slablauncher.providers.notification.NotificationService
 import io.posidon.android.slablauncher.providers.search.SearchQuery
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.today.viewHolders.TitleViewHolder
+import io.posidon.android.slablauncher.ui.today.viewHolders.media.MediaPlayerViewHolder
 import io.posidon.android.slablauncher.ui.today.viewHolders.search.CompactSearchViewHolder
 import io.posidon.android.slablauncher.ui.today.viewHolders.search.SearchViewHolder
 import io.posidon.android.slablauncher.ui.today.viewHolders.search.instantAnswer.AnswerSearchViewHolder
@@ -49,6 +52,7 @@ class TodayAdapter(
             is CompactResult -> RESULT_COMPACT
             is InstantAnswerResult -> RESULT_ANSWER
             is SuggestionsTodayItem -> SUGGESTED_APPS
+            is MediaPlayerData -> MEDIA_PLAYER
             else -> throw Exception("Invalid search result")
         }
     }
@@ -59,6 +63,7 @@ class TodayAdapter(
             RESULT_COMPACT -> CompactSearchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.search_result_compact, parent, false))
             RESULT_ANSWER -> AnswerSearchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.search_result_answer, parent, false))
             SUGGESTED_APPS -> SuggestedAppsViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.today_suggested_apps, parent, false), activity)
+            MEDIA_PLAYER -> MediaPlayerViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.today_media_player, parent, false))
             else -> throw Exception("Invalid view type")
         }
     }
@@ -75,6 +80,10 @@ class TodayAdapter(
             is SuggestedAppsViewHolder -> {
                 val realI = if (title != null) i - 1 else i
                 holder.onBind(items[realI] as SuggestionsTodayItem, activity)
+            }
+            is MediaPlayerViewHolder -> {
+                val realI = if (title != null) i - 1 else i
+                holder.onBind(items[realI] as MediaPlayerData, activity)
             }
         }
     }
@@ -116,7 +125,8 @@ class TodayAdapter(
         this.items = emptyList()
         notifyItemRangeRemoved(1, resultCount)
         suggested = list
-        this.items = listOf(
+        this.items = listOfNotNull(
+            NotificationService.mediaItem,
             SuggestionsTodayItem(
                 suggested,
                 fragment::setAppsList,
@@ -136,6 +146,7 @@ class TodayAdapter(
     }
 
     companion object {
+        const val MEDIA_PLAYER = -3
         const val SUGGESTED_APPS = -2
         const val TITLE = -1
         const val RESULT_ANSWER = 0

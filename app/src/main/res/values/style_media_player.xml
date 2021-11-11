@@ -1,0 +1,21 @@
+<resources>
+    <style name="SlabLauncher.MediaPlayer.Card" parent="SlabLauncher.Today.ItemCard"/>
+
+    <style name="SlabLauncher.MediaPlayer.Container" parent="SlabLauncher">
+        <item name="android:padding">@dimen/feed_card_padding</item>
+    </style>
+
+    <style name="SlabLauncher.MediaPlayer.Title" parent="SlabLauncher">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/feed_card_text_dark_title</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingHorizontal">@dimen/feed_card_spacing</item>
+    </style>
+
+    <style name="SlabLauncher.MediaPlayer.Subtitle" parent="SlabLauncher">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/feed_card_text_dark_description</item>
+        <item name="android:paddingHorizontal">@dimen/feed_card_spacing</item>
+        <item name="android:paddingTop">@dimen/feed_card_spacing</item>
+    </style>
+</resources>

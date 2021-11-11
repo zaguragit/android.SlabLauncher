@@ -11,7 +11,7 @@ class MediaPlayerData(
     val image: Drawable?,
     val color: Int,
 
-    val onTap: () -> Unit?,
+    val onTap: ((View) -> Unit)?,
     val previous: (View) -> Unit,
     val next: (View) -> Unit,
     val togglePause: (ImageView) -> Unit,

@@ -22,6 +22,7 @@ import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.search.SearchResult
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
+import io.posidon.android.slablauncher.providers.notification.NotificationService
 import io.posidon.android.slablauncher.providers.search.*
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.MainActivity
@@ -182,6 +183,9 @@ class TodayFragment : Fragment() {
                     a.viewPager.currentItem--
                 }
             }
+        }
+        NotificationService.setOnMediaUpdate {
+            adapter.updateTodayView(appList, force = true)
         }
     }
 

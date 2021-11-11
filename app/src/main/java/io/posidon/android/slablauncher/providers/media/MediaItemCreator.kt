@@ -28,9 +28,6 @@ object MediaItemCreator {
             ?: mediaMetadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART)
             ?: null
 
-        val albumBmp = mediaMetadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART)
-            ?: null
-
         val cover = coverBmp?.let(::BitmapDrawable) ?: ContextCompat.getDrawable(context, R.drawable.ic_play)!!
 
         val color = coverBmp?.let {

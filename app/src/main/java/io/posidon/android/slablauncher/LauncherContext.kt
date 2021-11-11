@@ -1,8 +1,8 @@
 package io.posidon.android.slablauncher
 
 import android.content.Context
-import io.posidon.android.launcherutils.AppLoader
-import io.posidon.android.launcherutils.IconConfig
+import io.posidon.android.launcherutils.appLoading.AppLoader
+import io.posidon.android.launcherutils.appLoading.IconConfig
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.providers.app.AppCollection

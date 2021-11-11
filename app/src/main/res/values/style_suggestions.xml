@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="SlabLauncher.Today.SuggestionCard" parent="SlabLauncher">
-        <item name="cardCornerRadius">@dimen/suggestion_card_radius</item>
-
-        <item name="android:layout_margin">@dimen/item_card_margin</item>
-        <item name="android:elevation">@dimen/item_card_elevation</item>
-    </style>
 
     <style name="SlabLauncher.Today.SuggestionCard.Recycler" parent="SlabLauncher">
         <item name="android:layout_margin">@dimen/suggestion_card_margin</item>

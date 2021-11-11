@@ -8,7 +8,7 @@ import androidx.core.graphics.alpha
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.toXfermode
 import androidx.palette.graphics.Palette
-import io.posidon.android.launcherutils.AppLoader
+import io.posidon.android.launcherutils.appLoading.AppLoader
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.util.drawable.FastBitmapDrawable
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
@@ -51,7 +51,13 @@ class AppCollection(
         putInMap(app)
     }
 
-    override fun modifyIcon(icon: Drawable, expandableBackground: Drawable?): Pair<Drawable, ExtraIconData> {
+    override fun modifyIcon(
+        icon: Drawable,
+        packageName: String,
+        name: String,
+        profile: UserHandle,
+        expandableBackground: Drawable?
+    ): Pair<Drawable, ExtraIconData> {
         return modifyIcon(icon, expandableBackground, settings)
     }
 

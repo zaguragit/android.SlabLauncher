@@ -19,7 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import io.posidon.android.launcherutils.LiveWallpaper
+import io.posidon.android.launcherutils.liveWallpaper.LiveWallpaper
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.app.AppCallback

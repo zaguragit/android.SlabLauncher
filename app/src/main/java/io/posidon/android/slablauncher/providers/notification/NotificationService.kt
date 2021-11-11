@@ -106,19 +106,19 @@ class NotificationService : NotificationListenerService() {
         if (controllers.isNullOrEmpty()) {
             mediaItem = null
             if (old != mediaItem) {
-                onSummaryUpdate()
+                onMediaUpdate()
             }
             return
         }
         val controller = pickController(controllers)
         mediaItem = controller.metadata?.let { MediaItemCreator.create(applicationContext, controller, it) }
         if (old != mediaItem) {
-            onSummaryUpdate()
+            onMediaUpdate()
         }
         controller.registerCallback(object : MediaController.Callback() {
             override fun onMetadataChanged(metadata: MediaMetadata?) {
                 mediaItem = metadata?.let { MediaItemCreator.create(applicationContext, controller, it) }
-                onSummaryUpdate()
+                onMediaUpdate()
             }
         })
     }
@@ -136,7 +136,7 @@ class NotificationService : NotificationListenerService() {
         var mediaItem: MediaPlayerData? = null
             private set
 
-        private var onSummaryUpdate: () -> Unit = {}
+        private var onMediaUpdate: () -> Unit = {}
 
         private val lock = ReentrantLock()
 
@@ -154,6 +154,10 @@ class NotificationService : NotificationListenerService() {
 
         fun setOnUpdate(key: String, onUpdate: () -> Unit) {
             listeners[key] = onUpdate
+        }
+
+        fun setOnMediaUpdate(onUpdate: () -> Unit) {
+            this.onMediaUpdate = onUpdate
         }
     }
 }
