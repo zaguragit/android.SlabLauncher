@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.*
 import android.os.UserHandle
+import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.alpha
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.toXfermode
@@ -18,15 +19,18 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
+
 class AppCollection(
     appCount: Int,
-    val settings: Settings,
+    val settings: Settings
 ) : AppLoader.AppCollection<AppCollection.ExtraIconData> {
     val list = ArrayList<App>(appCount)
     val byName = HashMap<String, MutableList<App>>()
 
     inline operator fun get(i: Int) = list[i]
     inline val size get() = list.size
+
+    private val tmpHSL = FloatArray(3)
 
     override fun addApp(
         context: Context,
@@ -37,13 +41,28 @@ class AppCollection(
         icon: Drawable,
         extra: AppLoader.ExtraAppInfo<ExtraIconData>,
     ) {
+        val extraIconData = extra.extraIconData
+        if (!extra.isUserRunning) {
+            icon.convertToGrayscale()
+            extraIconData.color = run {
+                val a = extraIconData.color
+                ColorUtils.colorToHSL(a, tmpHSL)
+                tmpHSL[1] = 0f
+                ColorUtils.HSLToColor(tmpHSL)
+            }
+            val b = extraIconData.background
+            if (b is FastColorDrawable) {
+                extraIconData.background = FastColorDrawable(extraIconData.color)
+            } else b?.convertToGrayscale()
+        }
+
         val app = createApp(
             packageName,
             name,
             profile,
             label,
             icon,
-            extra,
+            extraIconData,
             settings
         )
 
@@ -84,6 +103,12 @@ class AppCollection(
     }
 
     companion object {
+
+        fun Drawable.convertToGrayscale() {
+            colorFilter = ColorMatrixColorFilter(ColorMatrix().apply {
+                setSaturation(0f)
+            })
+        }
 
         fun modifyIcon(icon: Drawable, expandableBackground: Drawable?, settings: Settings): Pair<Drawable, ExtraIconData> {
             var color = 0
@@ -135,7 +160,7 @@ class AppCollection(
             profile: UserHandle,
             label: String,
             icon: Drawable,
-            extra: AppLoader.ExtraAppInfo<ExtraIconData>,
+            extra: ExtraIconData,
             settings: Settings,
         ): App {
 
@@ -145,8 +170,8 @@ class AppCollection(
                 profile,
                 label,
                 icon,
-                extra.extraIconData.background,
-                extra.extraIconData.color
+                extra.background,
+                extra.color
             )
         }
 
@@ -183,7 +208,7 @@ class AppCollection(
             val (foreground, background) = when (b) {
                 is ColorDrawable -> {
                     color = b.color
-                    (if (isForegroundDangerous) icon else scale(icon.foreground)) to b
+                    (if (isForegroundDangerous) icon else scale(icon.foreground)) to FastColorDrawable(color)
                 }
                 is ShapeDrawable -> {
                     color = b.paint.color
@@ -223,7 +248,7 @@ class AppCollection(
     }
 
     class ExtraIconData(
-        val background: Drawable?,
-        val color: Int,
+        var background: Drawable?,
+        var color: Int,
     )
 }

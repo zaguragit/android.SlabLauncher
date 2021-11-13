@@ -3,13 +3,17 @@ package io.posidon.android.slablauncher.ui.home
 import android.annotation.SuppressLint
 import android.app.WallpaperColors
 import android.app.WallpaperManager
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.LauncherApps
 import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.os.Bundle
+import android.os.UserHandle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -50,6 +54,12 @@ class MainActivity : FragmentActivity() {
 
     private lateinit var blurBG: SeeThroughView
 
+    val appReloader = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            loadApps()
+        }
+    }
+
     @SuppressLint("ClickableViewAccessibility", "WrongConstant")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,7 +99,16 @@ class MainActivity : FragmentActivity() {
         }
 
         val launcherApps = getSystemService(LauncherApps::class.java)
-        launcherApps.registerCallback(AppCallback(::loadApps))
+        launcherApps.registerCallback(AppCallback(::loadApps, ::onPackageLoadingProgressChanged))
+
+        registerReceiver(
+            appReloader,
+            IntentFilter().apply {
+                addAction(Intent.ACTION_MANAGED_PROFILE_AVAILABLE)
+                addAction(Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE)
+                addAction(Intent.ACTION_MANAGED_PROFILE_UNLOCKED)
+            }
+        )
 
         loadApps()
 
@@ -214,6 +233,15 @@ class MainActivity : FragmentActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun onPackageLoadingProgressChanged(
+        packageName: String,
+        user: UserHandle,
+        progress: Float
+    ) {
+
+    }
+
     fun onTouch(v: View, event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_UP)
             LiveWallpaper.tap(v, event.rawX.toInt(), event.rawY.toInt())
@@ -272,5 +300,12 @@ class MainActivity : FragmentActivity() {
         l.getDrawable(2).alpha = if (x < 2f) 0 else (255 * (x - 2f)).toInt()
         l.getDrawable(3).alpha = 200 - (100 * f).toInt()
         viewPager.background?.alpha = 255 + (128 * f).toInt()
+    }
+
+    override fun onDestroy() {
+        runCatching {
+            unregisterReceiver(appReloader)
+        }
+        super.onDestroy()
     }
 }
