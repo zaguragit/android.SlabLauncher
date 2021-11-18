@@ -9,6 +9,7 @@
         android:id="@+id/date"
         style="@style/SlabLauncher.Date"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:format24Hour="d MMMM, cccc"
         android:format12Hour="d MMMM, cccc"/>
 </LinearLayout>

@@ -19,6 +19,7 @@ class TileArea(view: View, val fragment: LauncherFragment, val launcherContext: 
 
     companion object {
         const val COLUMNS = 3
+        const val DOCK_ROWS = 3
         const val WIDTH_TO_HEIGHT = 5f / 4f
     }
 

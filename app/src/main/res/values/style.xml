@@ -12,9 +12,9 @@
     </style>
 
     <style name="SlabLauncher.Date" parent="SlabLauncher">
-        <item name="android:layout_height">@dimen/today_title_container_height</item>
         <item name="android:textSize">28sp</item>
         <item name="android:gravity">center</item>
+        <item name="android:paddingVertical">24dp</item>
         <item name="android:fontFamily">@font/barlow_regular</item>
         <item name="android:includeFontPadding">false</item>
     </style>
