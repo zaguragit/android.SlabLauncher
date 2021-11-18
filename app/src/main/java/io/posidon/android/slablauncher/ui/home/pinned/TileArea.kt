@@ -1,5 +1,6 @@
 package io.posidon.android.slablauncher.ui.home.pinned
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.view.*
 import androidx.core.view.isVisible
@@ -15,6 +16,7 @@ import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import posidon.android.conveniencelib.getNavigationBarHeight
 import kotlin.math.abs
 
+
 class TileArea(view: View, val fragment: LauncherFragment, val launcherContext: LauncherContext) {
 
     companion object {
@@ -23,7 +25,10 @@ class TileArea(view: View, val fragment: LauncherFragment, val launcherContext: 
         const val WIDTH_TO_HEIGHT = 5f / 4f
     }
 
+    var scrollY: Int = 0
+        private set
     val pinnedAdapter = PinnedTilesAdapter(fragment.requireActivity() as MainActivity, launcherContext)
+    @SuppressLint("ClickableViewAccessibility")
     val pinnedRecycler = view.findViewById<RecyclerView>(R.id.pinned_recycler).apply {
         layoutManager = GridLayoutManager(fragment.requireContext(), COLUMNS, RecyclerView.VERTICAL, false).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -83,6 +88,11 @@ class TileArea(view: View, val fragment: LauncherFragment, val launcherContext: 
             }
             false
         }
+        addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                this@TileArea.scrollY += dy
+            }
+        })
     }
 
     fun showDropTarget(i: Int) {
@@ -91,7 +101,7 @@ class TileArea(view: View, val fragment: LauncherFragment, val launcherContext: 
     }
 
     fun getPinnedItemIndex(x: Float, y: Float): Int {
-        var y = y - pinnedAdapter.verticalOffset + pinnedRecycler.scrollY
+        var y = y - pinnedAdapter.verticalOffset + scrollY
         if (y < 0) return -1
         val x = x / pinnedRecycler.width * COLUMNS
         y = ((y - pinnedRecycler.paddingTop) / pinnedRecycler.width * COLUMNS) * WIDTH_TO_HEIGHT
