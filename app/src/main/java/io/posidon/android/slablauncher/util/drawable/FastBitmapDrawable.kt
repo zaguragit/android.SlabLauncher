@@ -11,7 +11,7 @@ internal class FastBitmapDrawable(
 ) : Drawable() {
 
     override fun draw(canvas: Canvas) {
-        canvas.drawBitmap(bitmap, 0.0f, 0.0f, null)
+        canvas.drawBitmap(bitmap, null, bounds, null)
     }
 
     override fun getOpacity() = PixelFormat.TRANSLUCENT

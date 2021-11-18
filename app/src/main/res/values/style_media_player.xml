@@ -9,7 +9,7 @@
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/feed_card_text_dark_title</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:paddingHorizontal">@dimen/feed_card_spacing</item>
+        <item name="android:padding">@dimen/feed_card_spacing</item>
     </style>
 
     <style name="SlabLauncher.MediaPlayer.Subtitle" parent="SlabLauncher">

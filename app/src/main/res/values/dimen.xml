@@ -11,6 +11,7 @@
 
     <dimen name="search_bar_height">52dp</dimen>
 
+    <dimen name="today_title_container_height">128dp</dimen>
     <dimen name="today_card_radius">20dp</dimen>
 
     <dimen name="suggestion_height">48dp</dimen>

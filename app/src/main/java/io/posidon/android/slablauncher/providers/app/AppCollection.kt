@@ -77,7 +77,47 @@ class AppCollection(
         profile: UserHandle,
         expandableBackground: Drawable?
     ): Pair<Drawable, ExtraIconData> {
-        return modifyIcon(icon, expandableBackground, settings)
+        var color = 0
+        var icon = icon
+        var background: Drawable? = null
+
+        if (expandableBackground != null) {
+            background = expandableBackground
+            val palette = Palette.from(background.toBitmap(8, 8)).generate()
+            val d = palette.dominantSwatch
+            color = d?.rgb ?: color
+        }
+        else if (
+            settings.doReshapeAdaptiveIcons &&
+            icon is AdaptiveIconDrawable &&
+            icon.background != null &&
+            icon.foreground != null
+        ) {
+            val (i, b, c) = reshapeAdaptiveIcon(icon)
+            icon = i
+            background = b ?: background
+            color = c
+        }
+
+        if (color == 0) {
+            val palette = Palette.from(icon.toBitmap(32, 32)).generate()
+            val d = palette.dominantSwatch
+            color = run {
+                val c = d?.rgb ?: return@run color
+                if (d.hsl[1] < .1f) {
+                    palette.getVibrantColor(c)
+                } else c
+            }
+        }
+
+        color = color and 0xffffff or 0xff000000.toInt()
+
+        return icon.let {
+            if (it is BitmapDrawable) FastBitmapDrawable(it.bitmap)
+            else it
+        } to ExtraIconData(
+            background, color
+        )
     }
 
     private fun putInMap(app: App) {
@@ -108,50 +148,6 @@ class AppCollection(
             colorFilter = ColorMatrixColorFilter(ColorMatrix().apply {
                 setSaturation(0f)
             })
-        }
-
-        fun modifyIcon(icon: Drawable, expandableBackground: Drawable?, settings: Settings): Pair<Drawable, ExtraIconData> {
-            var color = 0
-            var icon = icon
-            var background: Drawable? = null
-
-            if (expandableBackground != null) {
-                background = expandableBackground
-                val palette = Palette.from(background.toBitmap(8, 8)).generate()
-                val d = palette.dominantSwatch
-                color = d?.rgb ?: color
-            }
-            else if (
-                settings.doReshapeAdaptiveIcons &&
-                icon is AdaptiveIconDrawable &&
-                icon.background != null &&
-                icon.foreground != null
-            ) {
-                val (i, b, c) = reshapeAdaptiveIcon(icon)
-                icon = i
-                background = b ?: background
-                color = c
-            }
-
-            if (color == 0) {
-                val palette = Palette.from(icon.toBitmap(32, 32)).generate()
-                val d = palette.dominantSwatch
-                color = run {
-                    val c = d?.rgb ?: return@run color
-                    if (d.hsl[1] < .1f) {
-                        palette.getVibrantColor(c)
-                    } else c
-                }
-            }
-
-            color = color and 0xffffff or 0xff000000.toInt()
-
-            return icon.let {
-                if (it is BitmapDrawable) FastBitmapDrawable(it.bitmap)
-                else it
-            } to ExtraIconData(
-                background, color
-            )
         }
 
         fun createApp(

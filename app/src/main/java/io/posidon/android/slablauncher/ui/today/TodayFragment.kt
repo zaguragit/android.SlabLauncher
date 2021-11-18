@@ -185,7 +185,9 @@ class TodayFragment : Fragment() {
             }
         }
         NotificationService.setOnMediaUpdate {
-            adapter.updateTodayView(appList, force = true)
+            if (adapter.currentScreen == SCREEN_TODAY) {
+                adapter.updateTodayView(appList, force = true)
+            }
         }
     }
 
@@ -203,11 +205,12 @@ class TodayFragment : Fragment() {
             ) ?: 0
         } else a.getNavigationBarHeight()
         container.setPadding(0, 0, 0, bottomInset)
+        val tileMargin = resources.getDimension(R.dimen.item_card_margin).toInt()
         recyclerView.setPadding(
-            recyclerView.paddingLeft,
-            requireContext().getStatusBarHeight(),
-            recyclerView.paddingRight,
-            recyclerView.paddingBottom,
+            tileMargin,
+            tileMargin + requireContext().getStatusBarHeight(),
+            tileMargin,
+            tileMargin,
         )
     }
 

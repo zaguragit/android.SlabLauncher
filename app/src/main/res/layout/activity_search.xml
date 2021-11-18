@@ -9,8 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:clipToPadding="false"
-        android:paddingHorizontal="8dp"/>
+        android:clipToPadding="false"/>
     <FrameLayout
         android:id="@+id/search_bar_container"
         android:layout_width="match_parent"
