@@ -6,7 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.WindowManager
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
-import io.posidon.android.slablauncher.ui.home.acrylicBlur
+import io.posidon.android.slablauncher.ui.home.pinned.acrylicBlur
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import io.posidon.android.slablauncher.util.storage.Settings
 

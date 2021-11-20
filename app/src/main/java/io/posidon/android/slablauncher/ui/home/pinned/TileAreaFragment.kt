@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.home
+package io.posidon.android.slablauncher.ui.home.pinned
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -15,7 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
-import io.posidon.android.slablauncher.ui.home.pinned.TileArea
+import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.util.blur.AcrylicBlur
 import io.posidon.android.slablauncher.util.storage.*
 import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
@@ -25,7 +25,7 @@ import kotlin.concurrent.thread
 var acrylicBlur: AcrylicBlur? = null
     private set
 
-class LauncherFragment : Fragment() {
+class TileAreaFragment : Fragment() {
 
     private lateinit var tileArea: TileArea
 
@@ -43,15 +43,15 @@ class LauncherFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = inflater.inflate(R.layout.activity_launcher, container, false).apply {
-        tileArea = TileArea(this, this@LauncherFragment, launcherContext)
+        tileArea = TileArea(this, this@TileAreaFragment, launcherContext)
 
         val a = requireActivity() as MainActivity
-        a.setOnColorThemeUpdateListener(LauncherFragment::class.simpleName!!, ::updateColorTheme)
-        a.setOnBlurUpdateListener(LauncherFragment::class.simpleName!!, ::updateBlur)
-        a.setOnAppsLoadedListener(LauncherFragment::class.simpleName!!) {
+        a.setOnColorThemeUpdateListener(TileAreaFragment::class.simpleName!!, ::updateColorTheme)
+        a.setOnBlurUpdateListener(TileAreaFragment::class.simpleName!!, ::updateBlur)
+        a.setOnAppsLoadedListener(TileAreaFragment::class.simpleName!!) {
             a.runOnUiThread(::updatePinned)
         }
-        a.setOnPageScrollListener(LauncherFragment::class.simpleName!!, ::onOffsetUpdate)
+        a.setOnPageScrollListener(TileAreaFragment::class.simpleName!!, ::onOffsetUpdate)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

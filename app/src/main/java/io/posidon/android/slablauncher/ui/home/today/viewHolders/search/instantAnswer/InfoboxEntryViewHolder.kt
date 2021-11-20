@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.today.viewHolders.search.instantAnswer
+package io.posidon.android.slablauncher.ui.home.today.viewHolders.search.instantAnswer
 
 import android.view.View
 import android.widget.TextView

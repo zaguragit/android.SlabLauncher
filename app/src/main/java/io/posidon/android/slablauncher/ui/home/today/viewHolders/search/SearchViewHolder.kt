@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.today.viewHolders.search
+package io.posidon.android.slablauncher.ui.home.today.viewHolders.search
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView

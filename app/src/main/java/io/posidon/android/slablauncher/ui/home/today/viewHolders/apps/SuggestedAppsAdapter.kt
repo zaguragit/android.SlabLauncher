@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.today.viewHolders.suggestion
+package io.posidon.android.slablauncher.ui.home.today.viewHolders.apps
 
 import android.app.Activity
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import posidon.android.conveniencelib.getNavigationBarHeight
 
-class SuggestionsAdapter(
+class SuggestedAppsAdapter(
     val activity: Activity,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -24,7 +24,7 @@ class SuggestionsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            R.layout.today_suggested_apps_item -> SuggestionViewHolder(LayoutInflater.from(parent.context)
+            R.layout.today_suggested_apps_item -> SuggestedAppViewHolder(LayoutInflater.from(parent.context)
                 .inflate(viewType, parent, false) as CardView)
             R.layout.today_suggested_apps_show_all -> ShowAllAppsViewHolder(LayoutInflater.from(parent.context)
                 .inflate(viewType, parent, false))
@@ -39,7 +39,7 @@ class SuggestionsAdapter(
             return
         }
         val item = items[i]
-        holder as SuggestionViewHolder
+        holder as SuggestedAppViewHolder
         holder.onBind(
             item,
             activity.getNavigationBarHeight(),

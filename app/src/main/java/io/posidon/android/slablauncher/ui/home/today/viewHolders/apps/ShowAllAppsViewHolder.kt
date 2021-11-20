@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.today.viewHolders.suggestion
+package io.posidon.android.slablauncher.ui.home.today.viewHolders.apps
 
 import android.content.res.ColorStateList
 import android.view.View

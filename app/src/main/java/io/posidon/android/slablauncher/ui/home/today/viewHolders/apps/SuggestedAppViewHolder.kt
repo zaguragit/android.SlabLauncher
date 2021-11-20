@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.today.viewHolders.suggestion
+package io.posidon.android.slablauncher.ui.home.today.viewHolders.apps
 
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,7 +13,7 @@ import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import posidon.android.conveniencelib.Colors
 
-class SuggestionViewHolder(
+class SuggestedAppViewHolder(
     val card: CardView
 ) : RecyclerView.ViewHolder(card) {
 

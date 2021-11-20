@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.today.viewHolders.search.instantAnswer
+package io.posidon.android.slablauncher.ui.home.today.viewHolders.search.instantAnswer
 
 import android.view.View
 import android.widget.TextView
@@ -11,8 +11,8 @@ import io.posidon.android.slablauncher.data.search.InstantAnswerResult
 import io.posidon.android.slablauncher.data.search.SearchResult
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.MainActivity
-import io.posidon.android.slablauncher.ui.home.acrylicBlur
-import io.posidon.android.slablauncher.ui.today.viewHolders.search.SearchViewHolder
+import io.posidon.android.slablauncher.ui.home.pinned.acrylicBlur
+import io.posidon.android.slablauncher.ui.home.today.viewHolders.search.SearchViewHolder
 import io.posidon.android.slablauncher.util.view.SeeThroughView
 
 class AnswerSearchViewHolder(

@@ -9,15 +9,14 @@ import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.notification.NotificationService
-import io.posidon.android.slablauncher.ui.home.LauncherFragment
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
+import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.getNavigationBarHeight
 import kotlin.math.abs
 
-
-class TileArea(view: View, val fragment: LauncherFragment, val launcherContext: LauncherContext) {
+class TileArea(view: View, val fragment: TileAreaFragment, val launcherContext: LauncherContext) {
 
     companion object {
         const val COLUMNS = 3
@@ -43,6 +42,8 @@ class TileArea(view: View, val fragment: LauncherFragment, val launcherContext: 
         NotificationService.setOnUpdate(TileArea::class.simpleName!!) {
             activity.runOnUiThread(pinnedAdapter::notifyDataSetChanged)
         }
+
+        val a = fragment.requireActivity() as MainActivity
 
         var popupX = 0f
         var popupY = 0f
@@ -91,6 +92,14 @@ class TileArea(view: View, val fragment: LauncherFragment, val launcherContext: 
         addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 this@TileArea.scrollY += dy
+                a.overlayOpacity = run {
+                    val tileMargin = resources.getDimension(R.dimen.item_card_margin)
+                    val tileWidth = (Device.screenWidth(context) - tileMargin * 2) / COLUMNS - tileMargin * 2
+                    val tileHeight = tileWidth / WIDTH_TO_HEIGHT
+                    val dockRowHeight = (tileHeight + tileMargin * 2)
+                    (this@TileArea.scrollY / dockRowHeight).coerceAtMost(1f)
+                }
+                a.updateBlurLevel()
             }
         })
     }

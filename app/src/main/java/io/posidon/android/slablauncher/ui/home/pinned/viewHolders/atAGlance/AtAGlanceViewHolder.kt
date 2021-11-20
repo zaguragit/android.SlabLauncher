@@ -5,13 +5,17 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.updateLayoutParams
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
+import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
+import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.pinned.TileArea.Companion.COLUMNS
 import io.posidon.android.slablauncher.ui.home.pinned.TileArea.Companion.DOCK_ROWS
 import io.posidon.android.slablauncher.ui.home.pinned.TileArea.Companion.WIDTH_TO_HEIGHT
+import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.atAGlance.suggestion.SuggestionsAdapter
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.getNavigationBarHeight
@@ -24,6 +28,11 @@ class AtAGlanceViewHolder(
 ) : RecyclerView.ViewHolder(itemView) {
 
     val date = itemView.findViewById<TextView>(R.id.date)!!
+    val suggestionsAdapter = SuggestionsAdapter(mainActivity)
+    val suggestionsRecycler = itemView.findViewById<RecyclerView>(R.id.suggestions_recycler)!!.apply {
+        layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        adapter = suggestionsAdapter
+    }
 
     private var popupX = 0f
     private var popupY = 0f
@@ -60,7 +69,11 @@ class AtAGlanceViewHolder(
         }
     }
 
-    fun onBind() {
+    fun onBind(pinnedItems: List<LauncherItem>) {
         date.setTextColor(ColorTheme.uiTitle)
+        suggestionsAdapter.updateItems(SuggestionsManager.getNonPinnedSuggestions(pinnedItems).let {
+            if (it.size > 3) it.subList(0, 3)
+            else it
+        })
     }
 }

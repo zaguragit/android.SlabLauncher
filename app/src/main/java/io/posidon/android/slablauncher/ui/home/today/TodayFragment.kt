@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.today
+package io.posidon.android.slablauncher.ui.home.today
 
 import android.app.SearchManager
 import android.content.Intent
@@ -26,10 +26,10 @@ import io.posidon.android.slablauncher.providers.notification.NotificationServic
 import io.posidon.android.slablauncher.providers.search.*
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.MainActivity
+import io.posidon.android.slablauncher.ui.home.today.TodayAdapter.Companion.SCREEN_ALL_APPS
+import io.posidon.android.slablauncher.ui.home.today.TodayAdapter.Companion.SCREEN_SEARCH
+import io.posidon.android.slablauncher.ui.home.today.TodayAdapter.Companion.SCREEN_TODAY
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
-import io.posidon.android.slablauncher.ui.today.TodayAdapter.Companion.SCREEN_ALL_APPS
-import io.posidon.android.slablauncher.ui.today.TodayAdapter.Companion.SCREEN_SEARCH
-import io.posidon.android.slablauncher.ui.today.TodayAdapter.Companion.SCREEN_TODAY
 import posidon.android.conveniencelib.getNavigationBarHeight
 import posidon.android.conveniencelib.getStatusBarHeight
 import kotlin.concurrent.thread

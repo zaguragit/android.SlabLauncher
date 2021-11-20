@@ -32,9 +32,12 @@ import io.posidon.android.slablauncher.providers.color.ColorThemeOptions
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
+import io.posidon.android.slablauncher.ui.home.pinned.TileAreaFragment
+import io.posidon.android.slablauncher.ui.home.pinned.acrylicBlur
+import io.posidon.android.slablauncher.ui.home.pinned.loadBlur
+import io.posidon.android.slablauncher.ui.home.today.TodayFragment
 import io.posidon.android.slablauncher.ui.popup.PopupUtils
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
-import io.posidon.android.slablauncher.ui.today.TodayFragment
 import io.posidon.android.slablauncher.util.StackTraceActivity
 import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorTheme
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
@@ -80,7 +83,7 @@ class MainActivity : FragmentActivity() {
             override fun getItemCount() = 2
 
             override fun createFragment(i: Int): Fragment = when (i) {
-                0 -> LauncherFragment()
+                0 -> TileAreaFragment()
                 1 -> TodayFragment()
                 else -> throw IndexOutOfBoundsException("Fragment [$i] doesn't exist")
             }
@@ -292,14 +295,23 @@ class MainActivity : FragmentActivity() {
         viewPager.currentItem = 0
     }
 
+    var overlayOpacity = 1f
+    var blurLevel = 0f
+        private set
+    fun updateBlurLevel() {
+        setBlurLevel(blurLevel)
+        blurBG.invalidate()
+    }
     private fun setBlurLevel(f: Float) {
+        blurLevel = f
         val l = blurBG.drawable as? LayerDrawable ?: return
         val x = f * 3f
+        val invF = 1 - f
         l.getDrawable(0).alpha = if (x > 2f) 0 else (255 * x.coerceAtMost(1f)).toInt()
         l.getDrawable(1).alpha = if (x < 1f) 0 else (255 * (x - 1f).coerceAtMost(1f)).toInt()
         l.getDrawable(2).alpha = if (x < 2f) 0 else (255 * (x - 2f)).toInt()
-        l.getDrawable(3).alpha = 200 - (100 * f).toInt()
-        viewPager.background?.alpha = 255 + (128 * f).toInt()
+        l.getDrawable(3).alpha = (200 * overlayOpacity * invF + 100 * f).toInt().also(::println)
+        viewPager.background?.alpha = (255 * overlayOpacity * invF + (255 + 128) * f).toInt()
     }
 
     override fun onDestroy() {

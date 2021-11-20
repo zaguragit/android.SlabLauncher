@@ -1,8 +1,8 @@
-package io.posidon.android.slablauncher.ui.today.viewHolders.suggestion
+package io.posidon.android.slablauncher.ui.home.today.viewHolders.apps
 
 import io.posidon.android.slablauncher.data.items.LauncherItem
 
-class SuggestionsTodayItem(
+class SuggestedAppsTodayItem(
     val suggestions: List<LauncherItem>,
     val openAllApps: () -> Unit,
 )

@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.today
+package io.posidon.android.slablauncher.ui.home.today
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -16,13 +16,13 @@ import io.posidon.android.slablauncher.providers.notification.NotificationServic
 import io.posidon.android.slablauncher.providers.search.SearchQuery
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.MainActivity
-import io.posidon.android.slablauncher.ui.today.viewHolders.TitleViewHolder
-import io.posidon.android.slablauncher.ui.today.viewHolders.media.MediaPlayerViewHolder
-import io.posidon.android.slablauncher.ui.today.viewHolders.search.CompactSearchViewHolder
-import io.posidon.android.slablauncher.ui.today.viewHolders.search.SearchViewHolder
-import io.posidon.android.slablauncher.ui.today.viewHolders.search.instantAnswer.AnswerSearchViewHolder
-import io.posidon.android.slablauncher.ui.today.viewHolders.suggestion.SuggestedAppsViewHolder
-import io.posidon.android.slablauncher.ui.today.viewHolders.suggestion.SuggestionsTodayItem
+import io.posidon.android.slablauncher.ui.home.today.viewHolders.TitleViewHolder
+import io.posidon.android.slablauncher.ui.home.today.viewHolders.apps.SuggestedAppsTodayItem
+import io.posidon.android.slablauncher.ui.home.today.viewHolders.apps.SuggestedAppsViewHolder
+import io.posidon.android.slablauncher.ui.home.today.viewHolders.media.MediaPlayerViewHolder
+import io.posidon.android.slablauncher.ui.home.today.viewHolders.search.CompactSearchViewHolder
+import io.posidon.android.slablauncher.ui.home.today.viewHolders.search.SearchViewHolder
+import io.posidon.android.slablauncher.ui.home.today.viewHolders.search.instantAnswer.AnswerSearchViewHolder
 
 class TodayAdapter(
     val activity: MainActivity,
@@ -51,7 +51,7 @@ class TodayAdapter(
         return when (items[realI]) {
             is CompactResult -> RESULT_COMPACT
             is InstantAnswerResult -> RESULT_ANSWER
-            is SuggestionsTodayItem -> SUGGESTED_APPS
+            is SuggestedAppsTodayItem -> SUGGESTED_APPS
             is MediaPlayerData -> MEDIA_PLAYER
             else -> throw Exception("Invalid search result")
         }
@@ -79,7 +79,7 @@ class TodayAdapter(
             }
             is SuggestedAppsViewHolder -> {
                 val realI = if (title != null) i - 1 else i
-                holder.onBind(items[realI] as SuggestionsTodayItem, activity)
+                holder.onBind(items[realI] as SuggestedAppsTodayItem, activity)
             }
             is MediaPlayerViewHolder -> {
                 val realI = if (title != null) i - 1 else i
@@ -127,7 +127,7 @@ class TodayAdapter(
         suggested = list
         this.items = listOfNotNull(
             NotificationService.mediaItem,
-            SuggestionsTodayItem(
+            SuggestedAppsTodayItem(
                 suggested,
                 fragment::setAppsList,
             ),

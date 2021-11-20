@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.today.viewHolders.media
+package io.posidon.android.slablauncher.ui.home.today.viewHolders.media
 
 import android.annotation.SuppressLint
 import android.content.res.ColorStateList
@@ -18,7 +18,7 @@ import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.notification.MediaPlayerData
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.MainActivity
-import io.posidon.android.slablauncher.ui.home.acrylicBlur
+import io.posidon.android.slablauncher.ui.home.pinned.acrylicBlur
 import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.hideIfNullOr
 import io.posidon.android.slablauncher.util.view.SeeThroughView
 import posidon.android.conveniencelib.Colors

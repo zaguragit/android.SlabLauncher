@@ -73,7 +73,7 @@ class PinnedTilesAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, ii: Int) {
         if (ii == 0) {
             holder as AtAGlanceViewHolder
-            holder.onBind()
+            holder.onBind(items)
             return
         }
         if (ii == dropTargetIndex + 1) {
