@@ -212,25 +212,54 @@ class AppCollection(
                 }
                 is GradientDrawable -> {
                     color = b.color?.defaultColor ?: Palette.from(b.toBitmap(8, 8)).generate().getDominantColor(0)
-                    (if (isForegroundDangerous) icon else scale(icon.foreground)) to FastColorDrawable(color)
+                    (if (isForegroundDangerous) icon else scale(icon.foreground)) to b
                 }
                 else -> if (b != null) {
-                    val bitmap = b.toBitmap(32, 32)
+                    val bitmap = b.toBitmap(24, 24)
                     val px = b.toBitmap(1, 1).getPixel(0, 0)
                     val width = bitmap.width
                     val height = bitmap.height
                     val pixels = IntArray(width * height)
                     bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
+
                     var isOneColor = true
+                    val lab = DoubleArray(3)
+                    ColorUtils.colorToLAB(px, lab)
+                    var minL = lab[0]
+                    var maxL = lab[0]
+                    var minA = lab[1]
+                    var maxA = lab[1]
+                    var minB = lab[2]
+                    var maxB = lab[2]
                     for (pixel in pixels) {
                         if (pixel != px) {
+                            ColorUtils.colorToLAB(pixel, lab)
+                            val (l, a, b) = lab
+                            when {
+                                l < minL -> minL = l
+                                l > maxL -> maxL = l
+                            }
+                            when {
+                                a < minA -> minA = a
+                                a > maxA -> maxA = a
+                            }
+                            when {
+                                b < minB -> minB = b
+                                b > maxB -> maxB = b
+                            }
                             isOneColor = false
-                            break
+                            //break
                         }
                     }
+                    val lt = 7f
+                    val at = 5f
+                    val bt = 5f
                     if (isOneColor) {
                         color = px
                         (if (isForegroundDangerous) icon else scale(icon.foreground)) to FastColorDrawable(color)
+                    } else if (maxL - minL <= lt && maxA - minA <= at && maxB - minB <= bt) {
+                        color = px
+                        (if (isForegroundDangerous) icon else scale(icon.foreground)) to b
                     } else {
                         val palette = Palette.from(bitmap).generate()
                         color = palette.vibrantSwatch?.rgb ?: palette.dominantSwatch?.rgb ?: 0
