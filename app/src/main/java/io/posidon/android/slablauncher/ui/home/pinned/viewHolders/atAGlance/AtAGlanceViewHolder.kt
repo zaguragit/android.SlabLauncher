@@ -30,7 +30,7 @@ class AtAGlanceViewHolder(
     val date = itemView.findViewById<TextView>(R.id.date)!!
     val suggestionsAdapter = SuggestionsAdapter(mainActivity)
     val suggestionsRecycler = itemView.findViewById<RecyclerView>(R.id.suggestions_recycler)!!.apply {
-        layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         adapter = suggestionsAdapter
     }
 

@@ -45,7 +45,7 @@
     </style>
 
     <style name="SlabLauncher.TileArea.Suggestions.Item.Card" parent="SlabLauncher">
-        <item name="cardCornerRadius">@dimen/suggestion_height</item>
+        <item name="cardCornerRadius">@dimen/item_card_radius</item>
         <item name="android:layout_margin">@dimen/suggestion_margin</item>
         <item name="cardElevation">@dimen/item_card_elevation</item>
     </style>
