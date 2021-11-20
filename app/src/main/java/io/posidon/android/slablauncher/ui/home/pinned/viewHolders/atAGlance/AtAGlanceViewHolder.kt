@@ -71,7 +71,11 @@ class AtAGlanceViewHolder(
 
     fun onBind(pinnedItems: List<LauncherItem>) {
         date.setTextColor(ColorTheme.uiTitle)
-        suggestionsAdapter.updateItems(SuggestionsManager.getNonPinnedSuggestions(pinnedItems).let {
+        suggestionsAdapter.updateItems(SuggestionsManager.getNonPinnedSuggestions(pinnedItems.let {
+            val s = DOCK_ROWS * COLUMNS
+            if (it.size > s) it.subList(0, s)
+            else it
+        }).let {
             if (it.size > 3) it.subList(0, 3)
             else it
         })
