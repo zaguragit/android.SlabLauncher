@@ -36,12 +36,13 @@ object SuggestionsManager {
     private const val MAX_CONTEXT_COUNT = 6
 
     private var contextMap = ContextMap<LauncherItem>(CONTEXT_DATA_SIZE, ::differentiator)
-    private var suggestions = emptyList<LauncherItem>()
+    private var timeBased = emptyList<LauncherItem>()
+    private var patternBased = emptyList<LauncherItem>()
     private val contextLock = ReentrantLock()
 
-    fun getSuggestions(): List<LauncherItem> = suggestions
+    fun getPatternBasedSuggestions(): List<LauncherItem> = patternBased
 
-    fun getNonPinnedSuggestions(pinnedItems: List<LauncherItem>): List<LauncherItem> = suggestions - pinnedItems
+    fun getTimeBasedSuggestions(): List<LauncherItem> = timeBased
 
     fun onItemOpened(context: Context, item: LauncherItem) {
         thread(isDaemon = false, name = "SuggestionManager: saving opening context") {
@@ -107,9 +108,9 @@ object SuggestionsManager {
         getCurrentContext(context, currentData)
 
         contextLock.withLock {
-            this.suggestions = run {
+            this.timeBased = run {
                 val sortedEntries = contextMap.entries.sortedBy { (item, data) ->
-                    val timeF = if (stats != null) {
+                    if (stats != null) {
                         val lastUse = stats[(item as App).packageName]?.lastTimeUsed
                         if (lastUse == null) 1f else run {
                             val c = Calendar.getInstance()
@@ -117,8 +118,12 @@ object SuggestionsManager {
                             (c[Calendar.MINUTE] / 20f).coerceAtMost(1f).pow(2)
                         }
                     } else 0f
-
-                    contextMap.calculateDistance(currentData, data) + timeF
+                }
+                sortedEntries.map { it.key }
+            }
+            this.patternBased = run {
+                val sortedEntries = contextMap.entries.sortedBy { (item, data) ->
+                    contextMap.calculateDistance(currentData, data)
                 }
                 sortedEntries.map { it.key }
             }
@@ -144,10 +149,10 @@ object SuggestionsManager {
 
         out[CONTEXT_DATA_HOUR_OF_DAY] = currentHourIn24Format / 12f
         out[CONTEXT_DATA_BATTERY] = batteryLevel / 100f
-        out[CONTEXT_DATA_HAS_HEADSET] = if (isHeadSetConnected) 1f else 0f
-        out[CONTEXT_DATA_HAS_WIFI] = if (isWifiOn) 1f else 0f
+        out[CONTEXT_DATA_HAS_HEADSET] = if (isHeadSetConnected) 1.2f else 0f
+        out[CONTEXT_DATA_HAS_WIFI] = if (isWifiOn) 1.5f else 0f
         out[CONTEXT_DATA_IS_PLUGGED_IN] = if (isPluggedIn) 1f else 0f
-        out[CONTEXT_DATA_IS_WEEKEND] = if (isWeekend) 1f else 0f
+        out[CONTEXT_DATA_IS_WEEKEND] = if (isWeekend) 2f else 0f
     }
 
     private fun loadFromStorage(

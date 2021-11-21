@@ -16,6 +16,7 @@ import io.posidon.android.slablauncher.providers.notification.NotificationServic
 import io.posidon.android.slablauncher.providers.search.SearchQuery
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.MainActivity
+import io.posidon.android.slablauncher.ui.home.pinned.TileArea
 import io.posidon.android.slablauncher.ui.home.today.viewHolders.TitleViewHolder
 import io.posidon.android.slablauncher.ui.home.today.viewHolders.apps.SuggestedAppsTodayItem
 import io.posidon.android.slablauncher.ui.home.today.viewHolders.apps.SuggestedAppsViewHolder
@@ -104,10 +105,18 @@ class TodayAdapter(
 
     fun updateTodayView(appList: List<App>, force: Boolean = false) {
         val list = run {
-            val s = SuggestionsManager.getSuggestions()
+            val s = SuggestionsManager.getPatternBasedSuggestions()
             val targetSize = SuggestedAppsViewHolder.COLUMNS * 3 - 1
             if (s.size > targetSize) {
-                s.subList(0, targetSize)
+                val ms = ArrayList(s)
+                val pinned = activity.launcherContext.appManager.pinnedItems
+                val pinnedSize = TileArea.DOCK_ROWS * TileArea.COLUMNS
+                var i = 0
+                while (ms.size > targetSize && i < pinnedSize)
+                    ms -= pinned[i++]
+                if (ms.size > targetSize)
+                    ms.subList(0, targetSize)
+                else ms
             } else if (s.size == targetSize) s else {
                 val sa = ArrayList(s)
                 while (sa.size < targetSize) {

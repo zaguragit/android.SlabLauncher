@@ -70,7 +70,7 @@ class AppProvider(
 
     override fun getResults(query: SearchQuery): List<SearchResult> {
         val results = LinkedList<SearchResult>()
-        val suggestions = SuggestionsManager.getSuggestions().let { it.subList(0, it.size.coerceAtMost(6)) }
+        val suggestions = SuggestionsManager.getPatternBasedSuggestions().let { it.subList(0, it.size.coerceAtMost(6)) }
         val queryString = query.toString()
         appList.forEach {
             val i = suggestions.indexOf(it)
