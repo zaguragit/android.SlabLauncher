@@ -17,6 +17,7 @@ import io.posidon.android.slablauncher.ui.home.pinned.TileArea.Companion.DOCK_RO
 import io.posidon.android.slablauncher.ui.home.pinned.TileArea.Companion.WIDTH_TO_HEIGHT
 import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.atAGlance.suggestion.SuggestionsAdapter
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
+import io.posidon.android.slablauncher.util.view.recycler.RecyclerViewLongPressHelper
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.getNavigationBarHeight
 import posidon.android.conveniencelib.getStatusBarHeight
@@ -59,6 +60,17 @@ class AtAGlanceViewHolder(
                 mainActivity::reloadBlur,
             )
             true
+        }
+        RecyclerViewLongPressHelper.setOnLongPressListener(suggestionsRecycler) { v, x, y ->
+            HomeLongPressPopup.show(
+                v, x, y,
+                mainActivity.getNavigationBarHeight(),
+                mainActivity.settings,
+                mainActivity::reloadColorPaletteSync,
+                mainActivity::updateColorTheme,
+                mainActivity::loadApps,
+                mainActivity::reloadBlur,
+            )
         }
         itemView.updateLayoutParams {
             val tileMargin = itemView.context.resources.getDimension(R.dimen.item_card_margin)

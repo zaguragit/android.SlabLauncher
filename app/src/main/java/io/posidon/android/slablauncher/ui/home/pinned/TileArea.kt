@@ -12,6 +12,7 @@ import io.posidon.android.slablauncher.providers.notification.NotificationServic
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
+import io.posidon.android.slablauncher.util.view.recycler.RecyclerViewLongPressHelper
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.getNavigationBarHeight
 import kotlin.math.abs
@@ -43,16 +44,9 @@ class TileArea(view: View, val fragment: TileAreaFragment, val launcherContext: 
             activity.runOnUiThread(pinnedAdapter::notifyDataSetChanged)
         }
 
-        val a = fragment.requireActivity() as MainActivity
-
-        var popupX = 0f
-        var popupY = 0f
-        val onLongPress = Runnable {
-            performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+        RecyclerViewLongPressHelper.setOnLongPressListener(this) { v, x, y ->
             HomeLongPressPopup.show(
-                this,
-                popupX,
-                popupY,
+                v, x, y,
                 activity.getNavigationBarHeight(),
                 launcherContext.settings,
                 activity::reloadColorPaletteSync,
@@ -61,45 +55,18 @@ class TileArea(view: View, val fragment: TileAreaFragment, val launcherContext: 
                 activity::reloadBlur,
             )
         }
-        var lastRecyclerViewDownTouchEvent: MotionEvent? = null
-        setOnTouchListener { v, event ->
-            when (event.action and MotionEvent.ACTION_MASK) {
-                MotionEvent.ACTION_DOWN -> {
-                    popupX = event.rawX
-                    popupY = event.rawY
-                    if (findChildViewUnder(event.x, event.y) == null) {
-                        v.handler.removeCallbacks(onLongPress)
-                        lastRecyclerViewDownTouchEvent = event
-                        v.handler.postDelayed(onLongPress, ViewConfiguration.getLongPressTimeout().toLong())
-                    }
-                }
-                MotionEvent.ACTION_MOVE -> if (lastRecyclerViewDownTouchEvent != null) {
-                    val xDelta = abs(popupX - event.x)
-                    val yDelta = abs(popupY - event.y)
-                    if (xDelta >= 10 || yDelta >= 10) {
-                        v.handler.removeCallbacks(onLongPress)
-                        lastRecyclerViewDownTouchEvent = null
-                    }
-                }
-                MotionEvent.ACTION_CANCEL,
-                MotionEvent.ACTION_UP -> {
-                    v.handler.removeCallbacks(onLongPress)
-                    lastRecyclerViewDownTouchEvent = null
-                }
-            }
-            false
-        }
+
         addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 this@TileArea.scrollY += dy
-                a.overlayOpacity = run {
+                activity.overlayOpacity = run {
                     val tileMargin = resources.getDimension(R.dimen.item_card_margin)
                     val tileWidth = (Device.screenWidth(context) - tileMargin * 2) / COLUMNS - tileMargin * 2
                     val tileHeight = tileWidth / WIDTH_TO_HEIGHT
                     val dockRowHeight = (tileHeight + tileMargin * 2)
                     (this@TileArea.scrollY / dockRowHeight).coerceAtMost(1f)
                 }
-                a.updateBlurLevel()
+                activity.updateBlurLevel()
             }
         })
     }
