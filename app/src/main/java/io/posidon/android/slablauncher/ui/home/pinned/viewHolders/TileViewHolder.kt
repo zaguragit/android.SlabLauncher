@@ -54,11 +54,13 @@ class TileViewHolder(
         val backgroundColor = ColorTheme.tintAppDrawerItem(item.getColor())
         val title = ColorTheme.titleColorForBG(itemView.context, backgroundColor)
         val text = ColorTheme.textColorForBG(itemView.context, backgroundColor)
+        val label = ColorTheme.adjustColorForContrast(backgroundColor, backgroundColor)
 
+        contentView.labelColor = label
         contentView.titleColor = title
         contentView.textColor = text
 
-        blurBG.drawable = acrylicBlur?.insaneBlurDrawable
+        blurBG.drawable = acrylicBlur?.smoothBlurDrawable
 
         card.setCardBackgroundColor(backgroundColor)
 
@@ -75,8 +77,10 @@ class TileViewHolder(
             val actuallyBackgroundColor = Colors.blend(imageColor, newBackgroundColor, imageView.alpha)
             val titleColor = ColorTheme.titleColorForBG(itemView.context, actuallyBackgroundColor)
             val textColor = ColorTheme.textColorForBG(itemView.context, actuallyBackgroundColor)
+            val labelColor = ColorTheme.adjustColorForContrast(actuallyBackgroundColor, actuallyBackgroundColor)
 
-            card.setCardBackgroundColor(backgroundColor)
+            card.setCardBackgroundColor(newBackgroundColor)
+            contentView.labelColor = labelColor
             contentView.titleColor = titleColor
             contentView.textColor = textColor
         }

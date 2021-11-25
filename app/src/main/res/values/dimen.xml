@@ -6,7 +6,7 @@
     <dimen name="dock_corner_radius">26dp</dimen>
 
     <dimen name="item_card_radius">12dp</dimen>
-    <dimen name="item_card_elevation">0dp</dimen>
+    <dimen name="item_card_elevation">1dp</dimen>
     <dimen name="item_card_margin">7dp</dimen>
 
     <dimen name="search_bar_height">52dp</dimen>

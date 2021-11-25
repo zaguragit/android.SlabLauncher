@@ -71,10 +71,16 @@ class TileContentView : View {
         updateNotificationStateWithAnimation()
     }
 
+    var labelColor: Int
+        get() = labelPaint.color
+        set(value) {
+            labelPaint.color = value
+            invalidate()
+        }
+
     var titleColor: Int
         get() = titlePaint.color
         set(value) {
-            labelPaint.color = value
             titlePaint.color = value
             invalidate()
         }

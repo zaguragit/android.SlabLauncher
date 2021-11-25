@@ -37,10 +37,12 @@ class DarkColorTheme(
             lab[0] = lab[0].coerceAtMost(20.0)
             ColorUtils.LABToColor(lab[0], lab[1], lab[2])
         } else {
-            val hsl = floatArrayOf(0f, 0f, 0f)
-            ColorUtils.colorToHSL(tint, hsl)
-            hsl[2] = hsl[2].coerceAtLeast(.92f - hsl[1] * .2f)
-            ColorUtils.HSLToColor(hsl)
+            val lab = DoubleArray(3)
+            ColorUtils.colorToLAB(tint, lab)
+            lab[0] = 100.0
+            lab[1] *= .75
+            lab[2] *= .75
+            ColorUtils.LABToColor(lab[0], lab[1], lab[2])
         }
     }
 

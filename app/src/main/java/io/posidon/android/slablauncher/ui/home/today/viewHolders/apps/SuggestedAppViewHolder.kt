@@ -30,7 +30,7 @@ class SuggestedAppViewHolder(
 
         card.setCardBackgroundColor(backgroundColor)
         label.text = item.label
-        label.setTextColor(ColorTheme.titleColorForBG(itemView.context, backgroundColor))
+        label.setTextColor(ColorTheme.adjustColorForContrast(backgroundColor, backgroundColor))
 
         val ic = item.icon
 

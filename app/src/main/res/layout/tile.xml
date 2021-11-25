@@ -14,7 +14,7 @@
         android:id="@+id/blur_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.4"/>
+        android:alpha="0.2"/>
     <io.posidon.android.slablauncher.util.view.tile.TileContentView
         android:id="@+id/tile_content"
         android:layout_width="match_parent"
