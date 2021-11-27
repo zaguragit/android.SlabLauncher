@@ -15,6 +15,7 @@ object ColorExtractorSetting {
     const val COLOR_THEME_PLAIN = 0
     const val COLOR_THEME_WALLPAPER_TINT = 1
     const val COLOR_THEME_WALLPAPER_TINT_SYSTEM_ASSISTED = 2
+    const val COLOR_THEME_MONET = 3
 
     const val COLOR_THEME_DEFAULT = COLOR_THEME_WALLPAPER_TINT
 }

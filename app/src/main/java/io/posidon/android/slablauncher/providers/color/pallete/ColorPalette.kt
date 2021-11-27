@@ -64,6 +64,15 @@ interface ColorPalette {
             onFinished(context, colorPaletteInstance)
         }
 
+        @RequiresApi(Build.VERSION_CODES.S)
+        fun <A : Context> loadMonetColorTheme(
+            context: A,
+            onFinished: (A, ColorPalette) -> Unit,
+        ) {
+            colorPaletteInstance = MonetPalette(context.resources)
+            onFinished(context, colorPaletteInstance)
+        }
+
         private fun <A : Context> loadDefaultColorTheme(context: A, onFinished: (A, ColorPalette) -> Unit) {
             wallColor = 0
             if (colorPaletteInstance !== DefaultPalette) {
@@ -84,6 +93,9 @@ interface ColorPalette {
                 ColorExtractorSetting.COLOR_THEME_WALLPAPER_TINT_SYSTEM_ASSISTED -> colors()?.let {
                     loadSystemWallColorTheme(context, onFinished, it)
                 } ?: loadDefaultColorTheme(context, onFinished)
+                ColorExtractorSetting.COLOR_THEME_MONET -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    loadMonetColorTheme(context, onFinished)
+                } else loadDefaultColorTheme(context, onFinished)
                 else -> loadDefaultColorTheme(context, onFinished)
             }
         }
@@ -94,6 +106,7 @@ interface ColorPalette {
             onFinished: (A, ColorPalette) -> Unit,
         ) {
             when (colorTheme) {
+                ColorExtractorSetting.COLOR_THEME_MONET,
                 ColorExtractorSetting.COLOR_THEME_WALLPAPER_TINT_SYSTEM_ASSISTED,
                 ColorExtractorSetting.COLOR_THEME_WALLPAPER_TINT -> loadWallColorTheme(context, onFinished)
                 else -> loadDefaultColorTheme(context, onFinished)

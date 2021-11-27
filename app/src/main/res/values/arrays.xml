@@ -4,13 +4,17 @@
         <item>No extraction</item>
         <item>Default</item>
         <item>System-assisted (android 8.1)</item>
+        <item>Monet</item>
     </string-array>
 
     <string-array name="color_theme_gens_data">
         <item>0</item>
         <item>1</item>
         <item>2</item>
+        <item>3</item>
     </string-array>
+
+    <integer name="color_theme_gens_available">2</integer>
 
     <string-array name="color_theme_day_night">
         <item>Auto</item>

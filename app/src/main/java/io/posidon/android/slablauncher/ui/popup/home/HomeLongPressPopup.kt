@@ -129,7 +129,7 @@ class HomeLongPressPopup(
                 ) {
                     AlertDialog.Builder(context)
                         .setSingleChoiceItems(
-                            R.array.color_theme_gens,
+                            context.resources.getStringArray(R.array.color_theme_gens).copyOf(context.resources.getInteger(R.integer.color_theme_gens_available)),
                             settings.colorTheme
                         ) { d, i ->
                             settings.edit(context) {
