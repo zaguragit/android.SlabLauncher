@@ -20,22 +20,13 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.HashMap
 import kotlin.concurrent.thread
 import kotlin.concurrent.withLock
-import kotlin.math.abs
-import kotlin.math.min
 import kotlin.math.pow
 
 object SuggestionsManager {
 
-    private const val CONTEXT_DATA_HOUR_OF_DAY = 0
-    private const val CONTEXT_DATA_BATTERY = 1
-    private const val CONTEXT_DATA_HAS_HEADSET = 2
-    private const val CONTEXT_DATA_HAS_WIFI = 3
-    private const val CONTEXT_DATA_IS_PLUGGED_IN = 4
-    private const val CONTEXT_DATA_IS_WEEKEND = 5
-    private const val CONTEXT_DATA_SIZE = 6
     private const val MAX_CONTEXT_COUNT = 6
 
-    private var contextMap = ContextMap<LauncherItem>(CONTEXT_DATA_SIZE, ::differentiator)
+    private var contextMap = ContextMap<LauncherItem>(ContextArray.CONTEXT_DATA_SIZE, ContextArray::differentiator)
     private var timeBased = emptyList<LauncherItem>()
     private var patternBased = emptyList<LauncherItem>()
     private val contextLock = ReentrantLock()
@@ -73,15 +64,8 @@ object SuggestionsManager {
         saveToStorage(settings, context)
     }
 
-    private fun differentiator(i: Int, a: Float, b: Float): Float {
-        val base = abs(a - b)
-        return if (i == CONTEXT_DATA_HOUR_OF_DAY)
-            min(base, 24 - base)
-        else base
-    }
-
     private fun saveItemOpenContext(context: Context, item: LauncherItem) {
-        val data = FloatArray(CONTEXT_DATA_SIZE)
+        val data = ContextArray()
         getCurrentContext(context, data)
         contextMap.push(item, data, MAX_CONTEXT_COUNT)
     }
@@ -104,7 +88,7 @@ object SuggestionsManager {
             }
         } else null
 
-        val currentData = FloatArray(CONTEXT_DATA_SIZE)
+        val currentData = ContextArray()
         getCurrentContext(context, currentData)
 
         contextLock.withLock {
@@ -130,7 +114,7 @@ object SuggestionsManager {
         }
     }
 
-    private fun getCurrentContext(context: Context, out: FloatArray) {
+    private fun getCurrentContext(context: Context, out: ContextArray) {
         val batteryManager = context.getSystemService(BatteryManager::class.java)
         val audioManager = context.getSystemService(AudioManager::class.java)
         val rightNow = Calendar.getInstance()
@@ -147,12 +131,12 @@ object SuggestionsManager {
         val connManager = context.getSystemService(WifiManager::class.java)
         val isWifiOn = connManager!!.isWifiEnabled
 
-        out[CONTEXT_DATA_HOUR_OF_DAY] = currentHourIn24Format / 12f
-        out[CONTEXT_DATA_BATTERY] = batteryLevel / 100f
-        out[CONTEXT_DATA_HAS_HEADSET] = if (isHeadSetConnected) 1.2f else 0f
-        out[CONTEXT_DATA_HAS_WIFI] = if (isWifiOn) 1.5f else 0f
-        out[CONTEXT_DATA_IS_PLUGGED_IN] = if (isPluggedIn) 1f else 0f
-        out[CONTEXT_DATA_IS_WEEKEND] = if (isWeekend) 2f else 0f
+        out.hour = currentHourIn24Format
+        out.battery = batteryLevel.toFloat()
+        out.hasHeadset = isHeadSetConnected
+        out.hasWifi = isWifiOn
+        out.isPluggedIn = isPluggedIn
+        out.isWeekend = isWeekend
     }
 
     private fun loadFromStorage(
@@ -161,12 +145,12 @@ object SuggestionsManager {
         appManager: LauncherContext.AppManager
     ) {
         settings.getStrings("stats:app_opening_contexts")?.let {
-            val contextMap = ContextMap<LauncherItem>(CONTEXT_DATA_SIZE, ::differentiator)
+            val contextMap = ContextMap<LauncherItem>(ContextArray.CONTEXT_DATA_SIZE, ContextArray::differentiator)
             it.forEach { app ->
                 appManager.tryParseApp(app)?.let { item ->
                     settings.getStrings("stats:app_opening_context:$app")
                         ?.map(String::toFloat)?.let { floats ->
-                            contextMap[item] = floats.chunked(CONTEXT_DATA_SIZE).map(List<Float>::toFloatArray)
+                            contextMap[item] = floats.chunked(ContextArray.CONTEXT_DATA_SIZE).map(::ContextArray)
                         }
                 } ?: settings.edit(context) {
                     setStrings("stats:app_opening_context:$app", null)
@@ -183,7 +167,7 @@ object SuggestionsManager {
                 .toTypedArray()
             contextMap.forEach { (packageName, data) ->
                 "stats:app_opening_context:$packageName" set data
-                    .flatMap(FloatArray::toList)
+                    .flatMap(ContextArray::toList)
                     .map(Float::toString)
                     .toTypedArray()
             }

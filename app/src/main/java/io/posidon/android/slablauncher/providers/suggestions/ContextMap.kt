@@ -3,43 +3,42 @@ package io.posidon.android.slablauncher.providers.suggestions
 class ContextMap<T>(
     contextDataSize: Int,
     val differentiator: (Int, Float, Float) -> Float
-) : Map<T, List<FloatArray>> {
+) : Map<T, List<ContextArray>> {
 
-    private var contexts = HashMap<T, List<FloatArray>>()
+    private var contexts = HashMap<T, List<ContextArray>>()
 
-    operator fun set(item: T, value: List<FloatArray>) {
+    operator fun set(item: T, value: List<ContextArray>) {
         contexts[item] = value
     }
 
-    override val entries: Set<Map.Entry<T, List<FloatArray>>>
+    override val entries: Set<Map.Entry<T, List<ContextArray>>>
         get() = contexts.entries
     override val keys: Set<T>
         get() = contexts.keys
     override val size: Int
         get() = contexts.size
-    override val values: Collection<List<FloatArray>>
+    override val values: Collection<List<ContextArray>>
         get() = contexts.values
 
     override fun containsKey(key: T) = contexts.containsKey(key)
-    override fun containsValue(value: List<FloatArray>) = contexts.containsValue(value)
+    override fun containsValue(value: List<ContextArray>) = contexts.containsValue(value)
     override fun get(key: T) = contexts[key]
     override fun isEmpty() = contexts.isEmpty()
 
-    private val lengthBuffer = FloatArray(contextDataSize)
-    fun calculateDistance(currentContext: FloatArray, multipleContexts: List<FloatArray>): Float {
+    fun calculateDistance(currentContext: ContextArray, multipleContexts: List<ContextArray>): Float {
         return multipleContexts.map { d ->
             calculateDistance(currentContext, d)
         }.reduce(Float::times)
     }
-    fun calculateDistance(a: FloatArray, b: FloatArray): Float {
-        a.forEachIndexed { i, fl ->
-            lengthBuffer[i] = differentiator(i, fl, b[i])
-            lengthBuffer[i] *= lengthBuffer[i]
+    private val lengthBuffer = FloatArray(contextDataSize)
+    fun calculateDistance(a: ContextArray, b: ContextArray): Float {
+        a.data.forEachIndexed { i, fl ->
+            lengthBuffer[i] = differentiator(i, fl, b.data[i])
         }
         return lengthBuffer.sum()
     }
 
-    fun trimContextListIfTooBig(list: List<FloatArray>, maxContexts: Int): List<FloatArray> {
+    fun trimContextListIfTooBig(list: List<ContextArray>, maxContexts: Int): List<ContextArray> {
         val s = list.size
         return if (list.size > maxContexts) {
             val matches = list.mapIndexedTo(ArrayList()) { ai, a ->
@@ -66,8 +65,8 @@ class ContextMap<T>(
                 }
                 val trueI = matchLoc.first - iOffset
                 val (arr, loc) = matches[trueI]
-                arr.forEachIndexed { i, f ->
-                    arr[i] = (f + matchData[i]) / 2
+                arr.data.forEachIndexed { i, f ->
+                    arr.data[i] = (f + matchData.data[i]) / 2
                 }
                 matches[trueI] = arr to loc.copy(first = -1)
             }
@@ -76,7 +75,7 @@ class ContextMap<T>(
         } else list
     }
 
-    fun push(item: T, data: FloatArray, maxContexts: Int) {
+    fun push(item: T, data: ContextArray, maxContexts: Int) {
         contexts[item] = contexts[item]?.plus(data)?.let { trimContextListIfTooBig(it, maxContexts) } ?: listOf(data)
     }
 }
