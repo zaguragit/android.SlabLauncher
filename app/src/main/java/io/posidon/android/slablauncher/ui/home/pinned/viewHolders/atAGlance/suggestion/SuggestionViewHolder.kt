@@ -1,7 +1,6 @@
 package io.posidon.android.slablauncher.ui.home.pinned.viewHolders.atAGlance.suggestion
 
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
@@ -9,16 +8,15 @@ import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.LauncherItem
+import io.posidon.android.slablauncher.data.items.LauncherItem.Banner.Companion.ALPHA_MULTIPLIER
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
-import posidon.android.conveniencelib.Colors
 
 class SuggestionViewHolder(
     val card: CardView
 ) : RecyclerView.ViewHolder(card) {
 
     val icon = itemView.findViewById<ImageView>(R.id.image)!!
-    val label = itemView.findViewById<TextView>(R.id.text)!!
 
     val imageView = itemView.findViewById<ImageView>(R.id.background_image)!!
 
@@ -26,15 +24,11 @@ class SuggestionViewHolder(
         item: LauncherItem,
         navbarHeight: Int,
     ) {
-        val backgroundColor = ColorTheme.tintAppDrawerItem(item.getColor())
+        val backgroundColor = ColorTheme.tileColor(item.getColor())
 
         card.setCardBackgroundColor(backgroundColor)
-        label.text = item.label
-        label.setTextColor(ColorTheme.adjustColorForContrast(backgroundColor, backgroundColor))
 
-        val ic = item.icon
-
-        icon.setImageDrawable(ic)
+        icon.setImageDrawable(item.icon)
 
         itemView.setOnClickListener {
             item.open(it.context.applicationContext, it)
@@ -56,16 +50,12 @@ class SuggestionViewHolder(
         } else {
             imageView.isVisible = true
             imageView.setImageDrawable(banner.background)
-            imageView.alpha = banner.bgOpacity * .6f
-            val palette = Palette.from(banner.background.toBitmap(32, 32)).generate()
+            imageView.alpha = banner.bgOpacity * ALPHA_MULTIPLIER
+            val palette = Palette.from(banner.background.toBitmap(24, 24)).generate()
             val color = item.getColor()
             val imageColor = palette.getDominantColor(color)
-            val newBackgroundColor = ColorTheme.tintAppDrawerItem(imageColor)
-            val actuallyBackgroundColor = Colors.blend(imageColor, newBackgroundColor, imageView.alpha)
-            val titleColor = ColorTheme.titleColorForBG(itemView.context, actuallyBackgroundColor)
-
-            card.setCardBackgroundColor(backgroundColor)
-            label.setTextColor(titleColor)
+            val newBackgroundColor = ColorTheme.tileColor(imageColor)
+            card.setCardBackgroundColor(newBackgroundColor)
         }
         icon.isVisible = banner?.hideIcon != true
     }

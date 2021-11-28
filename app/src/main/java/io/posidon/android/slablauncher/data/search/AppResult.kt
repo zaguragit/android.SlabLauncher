@@ -37,7 +37,7 @@ class AppResult(
 
     override var relevance = Relevance(0f)
     override val onLongPress = { v: View, activity: Activity ->
-        val backgroundColor = ColorTheme.tintAppDrawerItem(getColor())
+        val backgroundColor = ColorTheme.tileColor(getColor())
         ItemLongPress.onItemLongPress(
             v,
             backgroundColor,

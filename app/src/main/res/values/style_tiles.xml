@@ -51,14 +51,8 @@
     </style>
 
     <style name="SlabLauncher.TileArea.Suggestions.Item.Icon" parent="SlabLauncher">
-        <item name="android:padding">10dp</item>
+        <item name="android:padding">8dp</item>
         <item name="android:layout_width">@dimen/suggestion_height</item>
         <item name="android:layout_height">@dimen/suggestion_height</item>
-    </style>
-
-    <style name="SlabLauncher.TileArea.Suggestions.Item.Label" parent="SlabLauncher">
-        <item name="android:textSize">12sp</item>
-        <item name="android:layout_marginEnd">12dp</item>
-        <item name="android:layout_marginStart">-2dp</item>
     </style>
 </resources>

@@ -81,32 +81,25 @@ class AppCollection(
         var icon = icon
         var background: Drawable? = null
 
-        if (expandableBackground != null) {
-            background = expandableBackground
-            val palette = Palette.from(background.toBitmap(8, 8)).generate()
-            val d = palette.dominantSwatch
-            color = d?.rgb ?: color
-        }
-        else if (
-            settings.doReshapeAdaptiveIcons &&
+        when {
+            expandableBackground != null -> {
+                background = expandableBackground
+                val palette = Palette.from(background.toBitmap(8, 8)).generate()
+                val d = palette.dominantSwatch
+                color = d?.rgb ?: color
+            }
             icon is AdaptiveIconDrawable &&
+            settings.doReshapeAdaptiveIcons &&
             icon.background != null &&
-            icon.foreground != null
-        ) {
-            val (i, b, c) = reshapeAdaptiveIcon(icon)
-            icon = i
-            background = b ?: background
-            color = c
-        }
-
-        if (color == 0) {
-            val palette = Palette.from(icon.toBitmap(32, 32)).generate()
-            val d = palette.dominantSwatch
-            color = run {
-                val c = d?.rgb ?: return@run color
-                if (d.hsl[1] < .1f) {
-                    palette.getVibrantColor(c)
-                } else c
+            icon.foreground != null -> {
+                val (i, b, c) = reshapeAdaptiveIcon(icon)
+                icon = i
+                background = b ?: background
+                color = c
+            }
+            else -> {
+                val palette = Palette.from(icon.toBitmap(24, 24)).generate()
+                color = palette.getDominantColor(0)
             }
         }
 
@@ -185,11 +178,11 @@ class AppCollection(
             var color = 0
             val b = icon.background
             val isForegroundDangerous = run {
-                val fg = icon.foreground.toBitmap(32, 32)
+                val fg = icon.foreground.toBitmap(24, 24)
                 val width = fg.width
                 val height = fg.height
                 val canvas = Canvas(fg)
-                canvas.drawRect(6f, 6f, width - 6f, height - 6f, Paint().apply {
+                canvas.drawRect(4f, 4f, width - 4f, height - 4f, Paint().apply {
                     xfermode = PorterDuff.Mode.CLEAR.toXfermode()
                 })
                 val pixels = IntArray(width * height)
@@ -248,7 +241,6 @@ class AppCollection(
                                 b > maxB -> maxB = b
                             }
                             isOneColor = false
-                            //break
                         }
                     }
                     val lt = 7f
@@ -261,8 +253,7 @@ class AppCollection(
                         color = px
                         (if (isForegroundDangerous) icon else scale(icon.foreground)) to b
                     } else {
-                        val palette = Palette.from(bitmap).generate()
-                        color = palette.vibrantSwatch?.rgb ?: palette.dominantSwatch?.rgb ?: 0
+                        color = Palette.from(bitmap).generate().getDominantColor(0)
                         icon to null
                     }
                 } else icon to null

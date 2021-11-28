@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.core.graphics.ColorUtils
 import io.posidon.android.slablauncher.providers.color.pallete.DefaultPalette
 import kotlin.math.abs
+import kotlin.math.min
+import kotlin.math.sign
 
 private var colorThemeInstance: ColorTheme = DarkColorTheme(DefaultPalette)
 
@@ -30,7 +32,7 @@ interface ColorTheme {
 
     fun adjustColorForContrast(base: Int, tint: Int): Int
 
-    fun tintAppDrawerItem(color: Int): Int
+    fun tileColor(iconBackgroundColor: Int): Int
 
     fun textColorForBG(context: Context, background: Int): Int
 
@@ -74,8 +76,8 @@ interface ColorTheme {
         override fun adjustColorForContrast(base: Int, tint: Int): Int =
             colorThemeInstance.adjustColorForContrast(base, tint)
 
-        override fun tintAppDrawerItem(color: Int): Int =
-            colorThemeInstance.tintAppDrawerItem(color)
+        override fun tileColor(iconBackgroundColor: Int): Int =
+            colorThemeInstance.tileColor(iconBackgroundColor)
 
         override fun textColorForBG(context: Context, background: Int): Int =
             colorThemeInstance.textColorForBG(context, background)
@@ -96,38 +98,55 @@ interface ColorTheme {
             return ColorUtils.HSLToColor(tintHSL) and 0xffffff or (base and 0xff000000.toInt())
         }
 
-        fun splitTint(base: Int, color: Int, accent: Int): Int {
-            val baseLab = DoubleArray(3)
-            ColorUtils.colorToLAB(base, baseLab)
-            val colorLab = DoubleArray(3)
-            ColorUtils.colorToLAB(color, colorLab)
-            val accentLab = DoubleArray(3)
-            ColorUtils.colorToLAB(accent, accentLab)
-            val r = splitTint(baseLab, colorLab, accentLab)
-            return ColorUtils.LABToColor(r[0], r[1], r[2])
-        }
+        fun hueTintClosest(baseColor: Int, palette: Array<Int>): Int {
+            val tmp = FloatArray(3)
+            ColorUtils.colorToHSL(baseColor, tmp)
+            val h = tmp[0]
+            val s = tmp[1]
+            val l = tmp[2]
+            val (targetHue, targetSaturation, targetLightness) = run {
+                palette.map { color ->
+                    FloatArray(3).also { ColorUtils.colorToHSL(color, it) }
+                }.minByOrNull { (targetHue, targetSaturation, targetLightness) ->
+                    val isDesaturated = s < 1f || l == 1f || l < .001f
+                    val hd = if (isDesaturated) 0f else {
+                        val rd = abs(h - targetHue)
+                        min(360f - rd, rd)
+                    }
+                    val sd = abs(s - targetSaturation)
+                    val ld = abs(l - targetLightness)
+                    hd * hd * 4 + sd * sd * 1 + ld * ld * 2
+                }!!
+            }
+            val (hue, saturation) = run {
+                val targetness = (.9f - s * s * .38f).coerceAtLeast(0f)
+                val diff = run {
+                    val a = targetHue - h
+                    val b = 360f - abs(a)
+                    if (abs(a) < b) a else b * a.sign
+                }
+                val rotation = targetness * diff
+                val x = (h + rotation) % 360
+                val hue = if (x < 0) 360 + x else x
+                val sameness = (1 - abs(diff) / (360f / 2f))
+                val saturation = s * sameness
+                hue to saturation
+            }
 
-        fun splitTint(base: DoubleArray, color: DoubleArray, accent: DoubleArray): DoubleArray {
-            val az = (accent[1] + 128) / 256
-            val bz = (accent[2] + 128) / 256
+            tmp[0] = hue
+            val ss = targetSaturation + .5f
+            tmp[1] = saturation * (ss * ss).coerceAtMost(1.25f)
 
-            val ab = (base[1] + 128) / 256
-            val bb = (base[2] + 128) / 256
+            val iconBackground = DoubleArray(3)
+            ColorUtils.colorToLAB(baseColor, iconBackground)
 
-            val ac = (color[1] + 128) / 256
-            val bc = (color[2] + 128) / 256
+            val lab = DoubleArray(3)
+            ColorUtils.colorToLAB(ColorUtils.HSLToColor(tmp), lab)
+            lab[0] = (iconBackground[0] + 10).coerceAtLeast(20.0)
 
-            val azz = ((1 - abs(az - ac)) * abs(ab - ac)) * 2
-            val bzz = ((1 - abs(bz - bc)) * abs(bb - bc)) * 2
+            val tile = ColorUtils.LABToColor(lab[0], lab[1], lab[2])
 
-            base[1] = accent[1] * azz + base[1] * (1 - azz)
-            base[2] = accent[2] * bzz + base[2] * (1 - bzz)
-
-            val oldL = base[0]
-            ColorUtils.blendLAB(base, color, 0.4, base)
-            base[0] = oldL
-
-            return base
+            return tile
         }
     }
 }

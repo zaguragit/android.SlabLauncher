@@ -21,7 +21,7 @@ class ShortcutResult(
     override val onLongPress = null
 
     private val _color = run {
-        val palette = Palette.from(icon.toBitmap(32, 32)).generate()
+        val palette = Palette.from(icon.toBitmap(24, 24)).generate()
         val def = -0xdad9d9
         var color = palette.getDominantColor(def)
         val hsv = FloatArray(3)

@@ -9,7 +9,7 @@ internal class FastColorDrawable(
     val color: Int
 ) : Drawable() {
 
-    override fun draw(canvas: Canvas) = canvas.drawColor(color)
+    override fun draw(canvas: Canvas) = canvas.drawColor(realColor)
 
     override fun getOpacity() = PixelFormat.TRANSLUCENT
 

@@ -4,10 +4,11 @@ import android.content.Context
 import androidx.core.graphics.ColorUtils
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
+import io.posidon.android.slablauncher.providers.color.theme.ColorTheme.Companion.hueTintClosest
 import posidon.android.conveniencelib.Colors
 
 class LightColorTheme(
-    palette: ColorPalette,
+    val palette: ColorPalette,
 ) : ColorTheme {
 
     override val accentColor = palette.primary
@@ -45,15 +46,17 @@ class LightColorTheme(
         }
     }
 
-    override fun tintAppDrawerItem(color: Int): Int {
-        val baseLab = DoubleArray(3)
-        ColorUtils.colorToLAB(appCardBase, baseLab)
-        val colorLab = DoubleArray(3)
-        ColorUtils.colorToLAB(color, colorLab)
-        val accentLab = DoubleArray(3)
-        ColorUtils.colorToLAB(accentColor, accentLab)
-        val r = ColorTheme.splitTint(baseLab, colorLab, accentLab)
-        return ColorUtils.LABToColor(r[0], r[1], r[2])
+    override fun tileColor(iconBackgroundColor: Int): Int {
+        return hueTintClosest(iconBackgroundColor, arrayOf(
+            palette.neutralVeryDark,
+            palette.neutralDark,
+            palette.neutralMedium,
+            palette.neutralLight,
+            palette.neutralVeryLight,
+            palette.primary,
+            palette.secondary,
+            ColorPalette.wallColor
+        ))
     }
 
     override fun textColorForBG(context: Context, background: Int): Int {

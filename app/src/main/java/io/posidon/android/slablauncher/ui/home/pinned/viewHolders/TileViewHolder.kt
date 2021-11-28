@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.LauncherItem
+import io.posidon.android.slablauncher.data.items.LauncherItem.Banner.Companion.ALPHA_MULTIPLIER
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.pinned.TileArea
 import io.posidon.android.slablauncher.ui.home.pinned.acrylicBlur
@@ -51,7 +52,7 @@ class TileViewHolder(
         contentView.extraTitle = banner?.title
         contentView.extraText = banner?.text
 
-        val backgroundColor = ColorTheme.tintAppDrawerItem(item.getColor())
+        val backgroundColor = ColorTheme.tileColor(item.getColor())
         val title = ColorTheme.titleColorForBG(itemView.context, backgroundColor)
         val text = ColorTheme.textColorForBG(itemView.context, backgroundColor)
         val label = ColorTheme.adjustColorForContrast(backgroundColor, backgroundColor)
@@ -69,11 +70,10 @@ class TileViewHolder(
         } else {
             imageView.isVisible = true
             imageView.setImageDrawable(banner.background)
-            imageView.alpha = banner.bgOpacity
-            val palette = Palette.from(banner.background.toBitmap(32, 32)).generate()
-            val color = item.getColor()
-            val imageColor = palette.getDominantColor(color)
-            val newBackgroundColor = ColorTheme.tintAppDrawerItem(imageColor)
+            imageView.alpha = banner.bgOpacity * ALPHA_MULTIPLIER
+            val palette = Palette.from(banner.background.toBitmap(24, 24)).generate()
+            val imageColor = palette.getDominantColor(item.getColor())
+            val newBackgroundColor = ColorTheme.tileColor(imageColor)
             val actuallyBackgroundColor = Colors.blend(imageColor, newBackgroundColor, imageView.alpha)
             val titleColor = ColorTheme.titleColorForBG(itemView.context, actuallyBackgroundColor)
             val textColor = ColorTheme.textColorForBG(itemView.context, actuallyBackgroundColor)

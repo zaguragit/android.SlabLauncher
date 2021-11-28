@@ -41,7 +41,11 @@ interface LauncherItem {
         val background: Drawable?,
         val bgOpacity: Float,
         val hideIcon: Boolean = false,
-    )
+    ) {
+        companion object {
+            const val ALPHA_MULTIPLIER = .6f
+        }
+    }
 }
 
 fun LauncherItem.showProperties(view: View, backgroundColor: Int, textColor: Int) {

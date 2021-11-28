@@ -5,10 +5,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
 import androidx.core.view.updateLayoutParams
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.LauncherItem
+import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.MainActivity
@@ -28,10 +29,14 @@ class AtAGlanceViewHolder(
     mainActivity: MainActivity,
 ) : RecyclerView.ViewHolder(itemView) {
 
+    companion object {
+        const val SUGGESTION_COUNT = 4
+    }
+
     val date = itemView.findViewById<TextView>(R.id.date)!!
     val suggestionsAdapter = SuggestionsAdapter(mainActivity)
     val suggestionsRecycler = itemView.findViewById<RecyclerView>(R.id.suggestions_recycler)!!.apply {
-        layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        layoutManager = GridLayoutManager(context, SUGGESTION_COUNT, RecyclerView.VERTICAL, false)
         adapter = suggestionsAdapter
     }
 
@@ -82,13 +87,13 @@ class AtAGlanceViewHolder(
     }
 
     fun onBind(pinnedItems: List<LauncherItem>) {
-        date.setTextColor(ColorTheme.uiTitle)
+        date.setTextColor(ColorTheme.titleColorForBG(itemView.context, ColorPalette.wallColor))
         suggestionsAdapter.updateItems((SuggestionsManager.getTimeBasedSuggestions() - pinnedItems.let {
             val s = DOCK_ROWS * COLUMNS
             if (it.size > s) it.subList(0, s)
             else it
         }.toSet()).let {
-            if (it.size > 3) it.subList(0, 3)
+            if (it.size > SUGGESTION_COUNT) it.subList(0, SUGGESTION_COUNT)
             else it
         })
     }

@@ -29,12 +29,8 @@ class AndroidOMR1Palette(
             lab[1] * lab[1] + lab[2] * lab[2]
         }
         val neutralColor = colorList.first()
-        colorList.sortBy {
-            ColorUtils.colorToLAB(it, lab)
-            -(lab[1] * lab[1] + lab[2] * lab[2] + lab[0])
-        }
 
-        primary = colorList.first()
+        primary = colorList.last()
         secondary = if (colorList.size <= 2) primary else colorList[1]
 
         lab.run {
