@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.home.today.viewHolders.search
+package io.posidon.android.slablauncher.ui.home.sideList.viewHolders.search
 
 import android.view.View
 import android.widget.ImageView

@@ -35,7 +35,7 @@ import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.pinned.TileAreaFragment
 import io.posidon.android.slablauncher.ui.home.pinned.acrylicBlur
 import io.posidon.android.slablauncher.ui.home.pinned.loadBlur
-import io.posidon.android.slablauncher.ui.home.today.TodayFragment
+import io.posidon.android.slablauncher.ui.home.sideList.SideListFragment
 import io.posidon.android.slablauncher.ui.popup.PopupUtils
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.util.StackTraceActivity
@@ -84,7 +84,7 @@ class MainActivity : FragmentActivity() {
 
             override fun createFragment(i: Int): Fragment = when (i) {
                 0 -> TileAreaFragment()
-                1 -> TodayFragment()
+                1 -> SideListFragment()
                 else -> throw IndexOutOfBoundsException("Fragment [$i] doesn't exist")
             }
         }

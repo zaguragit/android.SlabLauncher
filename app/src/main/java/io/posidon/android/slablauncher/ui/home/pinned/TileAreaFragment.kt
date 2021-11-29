@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
+import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.util.blur.AcrylicBlur
 import io.posidon.android.slablauncher.util.storage.*
@@ -59,6 +60,15 @@ class TileAreaFragment : Fragment() {
         updateBlur()
         updateColorTheme()
         configureWindow()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        SuggestionsManager.onResume(requireContext()) {
+            requireActivity().runOnUiThread {
+                tileArea.pinnedAdapter.notifyItemChanged(0)
+            }
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

@@ -17,7 +17,6 @@
         <item quantity="two">%1$d notifications</item>
     </plurals>
 
-    <string name="today">Today</string>
     <string name="results_for_x">Results for \"%s\"</string>
     <string name="all_apps">All apps</string>
 

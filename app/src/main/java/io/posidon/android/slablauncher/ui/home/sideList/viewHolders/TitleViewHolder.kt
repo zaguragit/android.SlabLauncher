@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.home.today.viewHolders
+package io.posidon.android.slablauncher.ui.home.sideList.viewHolders
 
 import android.view.View
 import android.widget.TextView

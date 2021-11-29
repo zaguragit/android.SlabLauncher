@@ -1,6 +1,7 @@
-package io.posidon.android.slablauncher.ui.home.today
+package io.posidon.android.slablauncher.ui.home.sideList
 
 import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.content.res.Configuration
@@ -19,25 +20,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
-import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.search.SearchResult
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
-import io.posidon.android.slablauncher.providers.notification.NotificationService
 import io.posidon.android.slablauncher.providers.search.*
-import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.MainActivity
-import io.posidon.android.slablauncher.ui.home.today.TodayAdapter.Companion.SCREEN_ALL_APPS
-import io.posidon.android.slablauncher.ui.home.today.TodayAdapter.Companion.SCREEN_SEARCH
-import io.posidon.android.slablauncher.ui.home.today.TodayAdapter.Companion.SCREEN_TODAY
+import io.posidon.android.slablauncher.ui.home.sideList.SideListAdapter.Companion.SCREEN_ALL_APPS
+import io.posidon.android.slablauncher.ui.home.sideList.SideListAdapter.Companion.SCREEN_SEARCH
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import posidon.android.conveniencelib.getNavigationBarHeight
 import posidon.android.conveniencelib.getStatusBarHeight
+import java.util.*
 import kotlin.concurrent.thread
 import kotlin.math.abs
 
-class TodayFragment : Fragment() {
+class SideListFragment : Fragment() {
 
-    private lateinit var adapter: TodayAdapter
+    private lateinit var adapter: SideListAdapter
 
     private lateinit var searcher: Searcher
 
@@ -47,25 +45,6 @@ class TodayFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
 
     private lateinit var launcherContext: LauncherContext
-
-    /*
-
-    companion object {
-        const val MAX_NOTIFICATIONS = 3
-    }
-
-    val notificationAdapter = NotificationAdapter()
-    val recycler = itemView.findViewById<RecyclerView>(R.id.recycler)!!.apply {
-        layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-        /*adapter = notificationAdapter
-        NotificationService.setOnUpdate(AtAGlanceViewHolder::class.simpleName!!) {
-            mainActivity.runOnUiThread(::updateNotifications)
-        }*/
-    }
-
-    fun updateNotifications() = notificationAdapter.updateNotifications(NotificationSorter.rearranged(NotificationService.notifications).filter { it.isConversation }.let { it.subList(0, it.size.coerceAtMost(MAX_NOTIFICATIONS)) })
-
-     */
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,7 +59,8 @@ class TodayFragment : Fragment() {
         )
     }
 
-    private var appList = emptyList<App>()
+    private val appList
+        get() = launcherContext.appManager.apps
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,24 +73,23 @@ class TodayFragment : Fragment() {
         searchBarIcon = container.findViewById(R.id.search_bar_icon)!!
         recyclerView = findViewById(R.id.recycler)!!
         val a = requireActivity() as MainActivity
-        a.setOnColorThemeUpdateListener(TodayFragment::class.simpleName!!, ::updateColorTheme)
-        a.setOnPageScrollListener(TodayFragment::class.simpleName!!, ::onOffsetUpdate)
-        a.setOnBlurUpdateListener(TodayFragment::class.simpleName!!, ::updateBlur)
-        a.setOnAppsLoadedListener(TodayFragment::class.simpleName!!) {
-            appList = it.list
+        a.setOnColorThemeUpdateListener(SideListFragment::class.simpleName!!, ::updateColorTheme)
+        a.setOnPageScrollListener(SideListFragment::class.simpleName!!, ::onOffsetUpdate)
+        a.setOnBlurUpdateListener(SideListFragment::class.simpleName!!, ::updateBlur)
+        a.setOnAppsLoadedListener(SideListFragment::class.simpleName!!) {
             searcher.onAppsLoaded(a, it)
             reloadResults()
         }
-        adapter = TodayAdapter(a, this@TodayFragment)
+        adapter = SideListAdapter(a, this@SideListFragment)
         recyclerView.run {
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
-            this.adapter = this@TodayFragment.adapter
+            this.adapter = this@SideListFragment.adapter
         }
-        setTodayView()
+        setAppsList()
         findViewById<EditText>(R.id.search_bar_text).run {
             doOnTextChanged { text, _, _, _ ->
-                if (text.isNullOrEmpty())
-                    setTodayView()
+                if (text.isNullOrBlank())
+                    setAppsList()
                 else thread(isDaemon = true) {
                     searcher.query(text)
                 }
@@ -155,17 +134,6 @@ class TodayFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        SuggestionsManager.onResume(requireContext()) {
-            if (adapter.currentScreen == SCREEN_TODAY) {
-                requireActivity().runOnUiThread {
-                    adapter.updateTodayView(appList)
-                }
-            }
-        }
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         updateColorTheme()
@@ -175,18 +143,13 @@ class TodayFragment : Fragment() {
             insets
         }
         requireActivity().onBackPressedDispatcher.addCallback(owner = viewLifecycleOwner) {
-            if (adapter.currentScreen == SCREEN_ALL_APPS)
-                adapter.updateTodayView(appList, force = true)
+            if (adapter.currentScreen == SCREEN_SEARCH)
+                setAppsList()
             else {
                 val a = requireActivity() as MainActivity
                 if (a.viewPager.currentItem != 0) {
                     a.viewPager.currentItem--
                 }
-            }
-        }
-        NotificationService.setOnMediaUpdate {
-            if (adapter.currentScreen == SCREEN_TODAY) {
-                adapter.updateTodayView(appList, force = true)
             }
         }
     }
@@ -215,27 +178,33 @@ class TodayFragment : Fragment() {
     }
 
     private var lastQuery = SearchQuery.EMPTY
-    private fun updateResults(query: SearchQuery, list: List<SearchResult>) = activity?.runOnUiThread {
+    private fun updateResults(query: SearchQuery, list: List<SearchResult>) = runOnUiThread {
         lastQuery = query
         adapter.updateSearchResults(query, list)
-    }
-
-    private fun setTodayView() {
-        adapter.updateTodayView(appList)
     }
 
     fun setAppsList() {
         adapter.updateApps(appList)
     }
 
+    private var mainThreadQueue = LinkedList<() -> Unit>()
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        runQueuedActions()
+    }
+
+    private fun runQueuedActions() {
+        while (mainThreadQueue.isNotEmpty()) {
+            requireActivity().runOnUiThread(mainThreadQueue.remove())
+        }
+    }
+
+    private fun runOnUiThread(action: () -> Unit) = activity?.runOnUiThread(action) ?: mainThreadQueue.add(action)
+
     private fun reloadResults() {
         when (adapter.currentScreen) {
-            SCREEN_TODAY -> activity?.runOnUiThread {
-                adapter.updateTodayView(appList, force = true)
-            }
-            SCREEN_ALL_APPS -> activity?.runOnUiThread {
-                adapter.updateApps(appList)
-            }
+            SCREEN_ALL_APPS -> runOnUiThread(::setAppsList)
             SCREEN_SEARCH -> thread(isDaemon = true) {
                 searcher.query(lastQuery)
             }
@@ -262,7 +231,7 @@ class TodayFragment : Fragment() {
     }
 
     fun updateColorTheme() {
-        activity?.runOnUiThread {
+        runOnUiThread {
             adapter.notifyItemRangeChanged(0, adapter.itemCount)
             container.setBackgroundColor(ColorTheme.searchBarBG)
             searchBarText.run {
