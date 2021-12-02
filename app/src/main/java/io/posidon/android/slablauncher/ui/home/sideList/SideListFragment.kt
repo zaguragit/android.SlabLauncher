@@ -1,33 +1,24 @@
 package io.posidon.android.slablauncher.ui.home.sideList
 
-import android.app.SearchManager
 import android.content.Context
-import android.content.Intent
-import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.RenderEffect
 import android.graphics.Shader
 import android.os.Build
 import android.os.Bundle
 import android.view.*
-import android.view.inputmethod.EditorInfo
-import android.widget.EditText
-import android.widget.ImageView
 import androidx.activity.addCallback
-import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.search.SearchResult
-import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.search.*
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.sideList.SideListAdapter.Companion.SCREEN_ALL_APPS
 import io.posidon.android.slablauncher.ui.home.sideList.SideListAdapter.Companion.SCREEN_SEARCH
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
-import posidon.android.conveniencelib.getNavigationBarHeight
 import posidon.android.conveniencelib.getStatusBarHeight
 import java.util.*
 import kotlin.concurrent.thread
@@ -39,9 +30,6 @@ class SideListFragment : Fragment() {
 
     private lateinit var searcher: Searcher
 
-    private lateinit var container: View
-    private lateinit var searchBarText: EditText
-    private lateinit var searchBarIcon: ImageView
     private lateinit var recyclerView: RecyclerView
 
     private lateinit var launcherContext: LauncherContext
@@ -68,9 +56,6 @@ class SideListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View = inflater.inflate(R.layout.activity_search, c, false).apply {
         searcher.onCreate(requireActivity())
-        container = findViewById(R.id.search_bar_container)!!
-        searchBarText = container.findViewById(R.id.search_bar_text)!!
-        searchBarIcon = container.findViewById(R.id.search_bar_icon)!!
         recyclerView = findViewById(R.id.recycler)!!
         val a = requireActivity() as MainActivity
         a.setOnColorThemeUpdateListener(SideListFragment::class.simpleName!!, ::updateColorTheme)
@@ -80,29 +65,19 @@ class SideListFragment : Fragment() {
             searcher.onAppsLoaded(a, it)
             reloadResults()
         }
+        a.setOnSearchQueryListener(SideListFragment::class.simpleName!!) {
+            if (it.isNullOrBlank())
+                setAppsList()
+            else thread(isDaemon = true) {
+                searcher.query(it)
+            }
+        }
         adapter = SideListAdapter(a, this@SideListFragment)
         recyclerView.run {
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)
             this.adapter = this@SideListFragment.adapter
         }
         setAppsList()
-        findViewById<EditText>(R.id.search_bar_text).run {
-            doOnTextChanged { text, _, _, _ ->
-                if (text.isNullOrBlank())
-                    setAppsList()
-                else thread(isDaemon = true) {
-                    searcher.query(text)
-                }
-            }
-            setOnEditorActionListener { v, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    val viewSearch = Intent(Intent.ACTION_WEB_SEARCH)
-                    viewSearch.putExtra(SearchManager.QUERY, v.text)
-                    v.context.startActivity(viewSearch)
-                    true
-                } else false
-            }
-        }
 
         setOnDragListener { _, event ->
             when (event.action) {
@@ -132,16 +107,21 @@ class SideListFragment : Fragment() {
             }
             false
         }
+
+        recyclerView.onFlingListener = object : RecyclerView.OnFlingListener() {
+            override fun onFling(velocityX: Int, velocityY: Int): Boolean {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    recyclerView.windowInsetsController?.hide(WindowInsets.Type.ime())
+                }
+                return false
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         updateColorTheme()
         configureWindow()
-        view.setOnApplyWindowInsetsListener { _, insets ->
-            configureWindow()
-            insets
-        }
         requireActivity().onBackPressedDispatcher.addCallback(owner = viewLifecycleOwner) {
             if (adapter.currentScreen == SCREEN_SEARCH)
                 setAppsList()
@@ -160,14 +140,6 @@ class SideListFragment : Fragment() {
     }
 
     private fun configureWindow() {
-        val a = requireActivity()
-        val bottomInset = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val i = a.window?.decorView?.rootWindowInsets
-            i?.getInsets(WindowInsets.Type.ime())?.bottom?.coerceAtLeast(
-                i.getInsets(WindowInsets.Type.systemBars()).bottom
-            ) ?: 0
-        } else a.getNavigationBarHeight()
-        container.setPadding(0, 0, 0, bottomInset)
         val tileMargin = resources.getDimension(R.dimen.item_card_margin).toInt()
         recyclerView.setPadding(
             tileMargin,
@@ -222,24 +194,11 @@ class SideListFragment : Fragment() {
         }
         val i = offset * offset * 4
         view?.alpha = .5f + i * .5f
-        if (offset < .5f) {
-            searchBarText.clearFocus()
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                container.windowInsetsController?.hide(WindowInsets.Type.ime())
-            }
-        }
     }
 
     fun updateColorTheme() {
         runOnUiThread {
             adapter.notifyItemRangeChanged(0, adapter.itemCount)
-            container.setBackgroundColor(ColorTheme.searchBarBG)
-            searchBarText.run {
-                setTextColor(ColorTheme.searchBarFG)
-                highlightColor = ColorTheme.searchBarFG and 0x00ffffff or 0x66000000
-            }
-            searchBarIcon.imageTintList =
-                ColorStateList.valueOf(ColorTheme.searchBarFG)
         }
     }
 

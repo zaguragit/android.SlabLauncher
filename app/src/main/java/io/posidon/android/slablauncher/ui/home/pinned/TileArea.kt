@@ -27,7 +27,7 @@ class TileArea(view: View, val fragment: TileAreaFragment, val launcherContext: 
 
     var scrollY: Int = 0
         private set
-    val pinnedAdapter = PinnedTilesAdapter(fragment.requireActivity() as MainActivity, launcherContext)
+    val pinnedAdapter = PinnedTilesAdapter(fragment.requireActivity() as MainActivity, launcherContext, fragment)
     @SuppressLint("ClickableViewAccessibility")
     val pinnedRecycler = view.findViewById<RecyclerView>(R.id.pinned_recycler).apply {
         layoutManager = GridLayoutManager(fragment.requireContext(), COLUMNS, RecyclerView.VERTICAL, false).apply {

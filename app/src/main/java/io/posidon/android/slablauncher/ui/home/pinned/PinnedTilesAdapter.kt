@@ -21,6 +21,7 @@ import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.bindDropTarget
 class PinnedTilesAdapter(
     val activity: MainActivity,
     val launcherContext: LauncherContext,
+    val fragment: TileAreaFragment,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var dropTargetIndex = -1
@@ -62,7 +63,7 @@ class PinnedTilesAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             2 -> AtAGlanceViewHolder(LayoutInflater.from(parent.context)
-                .inflate(R.layout.at_a_glance, parent, false), activity).also { atAGlanceViewHolder = it }
+                .inflate(R.layout.at_a_glance, parent, false), activity, fragment).also { atAGlanceViewHolder = it }
             1 -> DropTargetViewHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.tile_drop_target, parent, false) as CardView)
             else -> TileViewHolder(LayoutInflater.from(parent.context)

@@ -16,6 +16,7 @@ import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.pinned.TileArea.Companion.COLUMNS
 import io.posidon.android.slablauncher.ui.home.pinned.TileArea.Companion.DOCK_ROWS
 import io.posidon.android.slablauncher.ui.home.pinned.TileArea.Companion.WIDTH_TO_HEIGHT
+import io.posidon.android.slablauncher.ui.home.pinned.TileAreaFragment
 import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.atAGlance.suggestion.SuggestionsAdapter
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.util.view.recycler.RecyclerViewLongPressHelper
@@ -27,6 +28,7 @@ import posidon.android.conveniencelib.getStatusBarHeight
 class AtAGlanceViewHolder(
     itemView: View,
     mainActivity: MainActivity,
+    fragment: TileAreaFragment,
 ) : RecyclerView.ViewHolder(itemView) {
 
     companion object {
@@ -82,7 +84,7 @@ class AtAGlanceViewHolder(
             val tileWidth = (Device.screenWidth(itemView.context) - tileMargin * 2) / COLUMNS - tileMargin * 2
             val tileHeight = tileWidth / WIDTH_TO_HEIGHT
             val dockHeight = DOCK_ROWS * (tileHeight + tileMargin * 2)
-            height = Device.screenHeight(itemView.context) - itemView.context.getStatusBarHeight() - (tileMargin * 2 + dockHeight.toInt()).toInt() + 1
+            height = fragment.requireView().height - itemView.context.getStatusBarHeight() - (tileMargin * 2 + dockHeight.toInt()).toInt() + 1
         }
     }
 

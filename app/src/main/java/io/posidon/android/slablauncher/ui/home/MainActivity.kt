@@ -1,6 +1,7 @@
 package io.posidon.android.slablauncher.ui.home
 
 import android.annotation.SuppressLint
+import android.app.SearchManager
 import android.app.WallpaperColors
 import android.app.WallpaperManager
 import android.content.BroadcastReceiver
@@ -8,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.LauncherApps
+import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.LayerDrawable
@@ -17,8 +19,13 @@ import android.os.UserHandle
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.WindowInsets
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.ImageView
 import androidx.annotation.RequiresApi
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -42,6 +49,7 @@ import io.posidon.android.slablauncher.util.StackTraceActivity
 import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorTheme
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
 import io.posidon.android.slablauncher.util.view.SeeThroughView
+import posidon.android.conveniencelib.getNavigationBarHeight
 import kotlin.concurrent.thread
 
 class MainActivity : FragmentActivity() {
@@ -56,6 +64,9 @@ class MainActivity : FragmentActivity() {
     var colorThemeOptions = ColorThemeOptions(settings.colorThemeDayNight)
 
     private lateinit var blurBG: SeeThroughView
+    private lateinit var searchBarContainer: View
+    private lateinit var searchBarText: EditText
+    private lateinit var searchBarIcon: ImageView
 
     val appReloader = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -76,6 +87,9 @@ class MainActivity : FragmentActivity() {
         setContentView(R.layout.activity_main)
 
         blurBG = findViewById(R.id.blur_bg)
+        searchBarContainer = findViewById(R.id.search_bar_container)!!
+        searchBarText = searchBarContainer.findViewById(R.id.search_bar_text)!!
+        searchBarIcon = searchBarContainer.findViewById(R.id.search_bar_icon)!!
 
         viewPager = findViewById(R.id.view_pager)
 
@@ -129,9 +143,49 @@ class MainActivity : FragmentActivity() {
                 }
                 onPageScrollListeners.forEach { (_, l) -> l(wallpaperOffset) }
             }
+
+            override fun onPageSelected(position: Int) {
+                when (position) {
+                    0 -> {
+                        searchBarText.text = null
+                        searchBarText.clearFocus()
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            searchBarContainer.windowInsetsController?.hide(WindowInsets.Type.ime())
+                        }
+                    }
+                }
+            }
         })
 
         viewPager.setOnTouchListener(::onTouch)
+
+        searchBarText.run {
+            setOnFocusChangeListener { v, hasFocus ->
+                if (hasFocus) {
+                    if (viewPager.currentItem == 0) {
+                        viewPager.currentItem = 1
+                    }
+                }
+            }
+            doOnTextChanged { text, _, _, _ ->
+                if (hasFocus())
+                    onSearchQueryListeners.forEach { (_, l) -> l(text) }
+            }
+            setOnEditorActionListener { v, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    val viewSearch = Intent(Intent.ACTION_WEB_SEARCH)
+                    viewSearch.putExtra(SearchManager.QUERY, v.text)
+                    v.context.startActivity(viewSearch)
+                    true
+                } else false
+            }
+        }
+
+        blurBG.setOnApplyWindowInsetsListener { _, insets ->
+            configureWindow()
+            insets
+        }
+
         configureWindow()
     }
 
@@ -150,6 +204,13 @@ class MainActivity : FragmentActivity() {
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         )
+        val bottomInset = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val i = window?.decorView?.rootWindowInsets
+            i?.getInsets(WindowInsets.Type.ime())?.bottom?.coerceAtLeast(
+                i.getInsets(WindowInsets.Type.systemBars()).bottom
+            ) ?: 0
+        } else getNavigationBarHeight()
+        searchBarContainer.setPadding(0, 0, 0, bottomInset)
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -224,6 +285,13 @@ class MainActivity : FragmentActivity() {
         ColorTheme.updateColorTheme(colorThemeOptions.createColorTheme(colorPalette))
         runOnUiThread {
             viewPager.setBackgroundColor(ColorTheme.uiBG and 0xffffff or 0x88000000.toInt())
+            searchBarContainer.setBackgroundColor(ColorTheme.searchBarBG)
+            searchBarText.run {
+                setTextColor(ColorTheme.searchBarFG)
+                highlightColor = ColorTheme.searchBarFG and 0x00ffffff or 0x66000000
+            }
+            searchBarIcon.imageTintList =
+                ColorStateList.valueOf(ColorTheme.searchBarFG)
             HomeLongPressPopup.updateCurrent()
         }
         onColorThemeUpdateListeners.forEach { (_, l) -> l() }
@@ -267,10 +335,15 @@ class MainActivity : FragmentActivity() {
         onAppsLoadedListeners[key] = listener
     }
 
+    fun setOnSearchQueryListener(key: String, listener: (CharSequence?) -> Unit) {
+        onSearchQueryListeners[key] = listener
+    }
+
     private val onColorThemeUpdateListeners = HashMap<String, () -> Unit>()
     private val onBlurUpdateListeners = HashMap<String, () -> Unit>()
     private val onPageScrollListeners = HashMap<String, (Float) -> Unit>()
     private val onAppsLoadedListeners = HashMap<String, (AppCollection) -> Unit>()
+    private val onSearchQueryListeners = HashMap<String, (CharSequence?) -> Unit>()
 
     private fun updateBlur() {
         onBlurUpdateListeners.forEach { (_, l) -> l() }
@@ -310,7 +383,7 @@ class MainActivity : FragmentActivity() {
         l.getDrawable(0).alpha = if (x > 2f) 0 else (255 * x.coerceAtMost(1f)).toInt()
         l.getDrawable(1).alpha = if (x < 1f) 0 else (255 * (x - 1f).coerceAtMost(1f)).toInt()
         l.getDrawable(2).alpha = if (x < 2f) 0 else (255 * (x - 2f)).toInt()
-        l.getDrawable(3).alpha = (200 * overlayOpacity * invF + 100 * f).toInt().also(::println)
+        l.getDrawable(3).alpha = (200 * overlayOpacity * invF + 100 * f).toInt()
         viewPager.background?.alpha = (255 * overlayOpacity * invF + (255 + 128) * f).toInt()
     }
 

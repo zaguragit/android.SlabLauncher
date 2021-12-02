@@ -35,6 +35,8 @@
     <style name="SlabLauncher.SearchResult.Simple.Subtitle" parent="SlabLauncher">
         <item name="android:paddingHorizontal">8dp</item>
         <item name="android:textSize">15sp</item>
+        <item name="android:lines">1</item>
+        <item name="android:ellipsize">end</item>
     </style>
 
 
