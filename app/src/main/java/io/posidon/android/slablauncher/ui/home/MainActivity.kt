@@ -141,8 +141,8 @@ class MainActivity : FragmentActivity() {
             ) {
                 val wallpaperOffset = position + positionOffset
                 wallpaperManager.setWallpaperOffsets(viewPager.windowToken, wallpaperOffset, 0f)
+                setBlurLevel(wallpaperOffset)
                 if (blurBG.drawable != null) {
-                    setBlurLevel(wallpaperOffset)
                     blurBG.offset = wallpaperOffset
                     searchBarBlurBG.offset = wallpaperOffset
                 }
@@ -289,7 +289,7 @@ class MainActivity : FragmentActivity() {
         colorThemeOptions = ColorThemeOptions(settings.colorThemeDayNight)
         ColorTheme.updateColorTheme(colorThemeOptions.createColorTheme(colorPalette))
         runOnUiThread {
-            viewPager.background = FastColorDrawable(ColorTheme.uiBG and 0xffffff or 0x88000000.toInt()).apply {
+            viewPager.background = FastColorDrawable(ColorTheme.uiBG).apply {
                 viewPager.background?.alpha?.let { alpha = it }
             }
             searchBarContainer.setBackgroundColorFast(ColorTheme.searchBarBG)
@@ -372,8 +372,7 @@ class MainActivity : FragmentActivity() {
             )
         }
         searchBarBlurBG.drawable = acrylicBlur?.smoothBlurDrawable
-        setBlurLevel(0f)
-        viewPager.currentItem = 0
+        updateBlurLevel()
     }
 
     var overlayOpacity = 1f
@@ -385,14 +384,17 @@ class MainActivity : FragmentActivity() {
     }
     private fun setBlurLevel(f: Float) {
         blurLevel = f
-        val l = blurBG.drawable as? LayerDrawable ?: return
-        val x = f * 3f
         val invF = 1 - f
+        val l = blurBG.drawable as? LayerDrawable ?: run {
+            viewPager.background?.alpha = (127 * overlayOpacity * invF + 255 * f).toInt()
+            return
+        }
+        val x = f * 3f
         l.getDrawable(0).alpha = if (x > 2f) 0 else (255 * x.coerceAtMost(1f)).toInt()
         l.getDrawable(1).alpha = if (x < 1f) 0 else (255 * (x - 1f).coerceAtMost(1f)).toInt()
         l.getDrawable(2).alpha = if (x < 2f) 0 else (255 * (x - 2f)).toInt()
         l.getDrawable(3).alpha = (200 * overlayOpacity * invF + 100 * f).toInt()
-        viewPager.background?.alpha = (255 * overlayOpacity * invF + (255 + 128) * f).toInt()
+        viewPager.background?.alpha = (127 * overlayOpacity * invF + (191) * f).toInt()
     }
 
     override fun onDestroy() {
