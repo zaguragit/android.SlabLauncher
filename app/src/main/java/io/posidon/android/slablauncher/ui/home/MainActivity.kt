@@ -46,6 +46,8 @@ import io.posidon.android.slablauncher.ui.home.sideList.SideListFragment
 import io.posidon.android.slablauncher.ui.popup.PopupUtils
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.util.StackTraceActivity
+import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
+import io.posidon.android.slablauncher.util.drawable.setBackgroundColorFast
 import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorTheme
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
 import io.posidon.android.slablauncher.util.view.SeeThroughView
@@ -67,6 +69,7 @@ class MainActivity : FragmentActivity() {
     private lateinit var searchBarContainer: View
     private lateinit var searchBarText: EditText
     private lateinit var searchBarIcon: ImageView
+    private lateinit var searchBarBlurBG: SeeThroughView
 
     val appReloader = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -90,6 +93,7 @@ class MainActivity : FragmentActivity() {
         searchBarContainer = findViewById(R.id.search_bar_container)!!
         searchBarText = searchBarContainer.findViewById(R.id.search_bar_text)!!
         searchBarIcon = searchBarContainer.findViewById(R.id.search_bar_icon)!!
+        searchBarBlurBG = searchBarContainer.findViewById(R.id.search_bar_blur_bg)!!
 
         viewPager = findViewById(R.id.view_pager)
 
@@ -140,6 +144,7 @@ class MainActivity : FragmentActivity() {
                 if (blurBG.drawable != null) {
                     setBlurLevel(wallpaperOffset)
                     blurBG.offset = wallpaperOffset
+                    searchBarBlurBG.offset = wallpaperOffset
                 }
                 onPageScrollListeners.forEach { (_, l) -> l(wallpaperOffset) }
             }
@@ -284,8 +289,10 @@ class MainActivity : FragmentActivity() {
         colorThemeOptions = ColorThemeOptions(settings.colorThemeDayNight)
         ColorTheme.updateColorTheme(colorThemeOptions.createColorTheme(colorPalette))
         runOnUiThread {
-            viewPager.setBackgroundColor(ColorTheme.uiBG and 0xffffff or 0x88000000.toInt())
-            searchBarContainer.setBackgroundColor(ColorTheme.searchBarBG)
+            viewPager.background = FastColorDrawable(ColorTheme.uiBG and 0xffffff or 0x88000000.toInt()).apply {
+                viewPager.background?.alpha?.let { alpha = it }
+            }
+            searchBarContainer.setBackgroundColorFast(ColorTheme.searchBarBG)
             searchBarText.run {
                 setTextColor(ColorTheme.searchBarFG)
                 highlightColor = ColorTheme.searchBarFG and 0x00ffffff or 0x66000000
@@ -364,6 +371,7 @@ class MainActivity : FragmentActivity() {
                 )
             )
         }
+        searchBarBlurBG.drawable = acrylicBlur?.smoothBlurDrawable
         setBlurLevel(0f)
         viewPager.currentItem = 0
     }
