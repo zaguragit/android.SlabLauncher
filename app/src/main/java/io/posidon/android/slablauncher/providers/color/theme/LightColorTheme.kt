@@ -47,6 +47,7 @@ class LightColorTheme(
     }
 
     override fun tileColor(iconBackgroundColor: Int): Int {
+        if (iconBackgroundColor == 0) return palette.neutralMedium
         return hueTintClosest(iconBackgroundColor, arrayOf(
             palette.neutralVeryDark,
             palette.neutralDark,

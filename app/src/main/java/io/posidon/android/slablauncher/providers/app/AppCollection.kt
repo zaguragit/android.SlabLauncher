@@ -4,10 +4,8 @@ import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.*
 import android.os.UserHandle
-import androidx.core.graphics.ColorUtils
-import androidx.core.graphics.alpha
+import androidx.core.graphics.*
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.graphics.toXfermode
 import androidx.palette.graphics.Palette
 import io.posidon.android.launcherutils.appLoading.AppLoader
 import io.posidon.android.slablauncher.data.items.App
@@ -98,12 +96,13 @@ class AppCollection(
                 color = c
             }
             else -> {
-                val palette = Palette.from(icon.toBitmap(24, 24)).generate()
+                val palette = Palette.from(icon.toBitmap(128, 128)).generate()
                 color = palette.getDominantColor(0)
+                if (color.red == color.blue && color.blue == color.green && color.green > 0xd0) {
+                    color = 0
+                }
             }
         }
-
-        color = color and 0xffffff or 0xff000000.toInt()
 
         return icon.let {
             if (it is BitmapDrawable) FastBitmapDrawable(it.bitmap)
@@ -197,10 +196,28 @@ class AppCollection(
             val (foreground, background) = when (b) {
                 is ColorDrawable -> {
                     color = b.color
+                    if (color == 0xffffffff.toInt()) {
+                        color = run {
+                            val c = Palette.from(icon.foreground.toBitmap(24, 24)).generate().getDominantColor(color)
+                            val lab = DoubleArray(3)
+                            ColorUtils.colorToLAB(c, lab)
+                            lab[0] = (lab[0] * 1.5).coerceAtLeast(70.0)
+                            ColorUtils.LABToColor(lab[0], lab[1], lab[2])
+                        }
+                    }
                     (if (isForegroundDangerous) icon else scale(icon.foreground)) to FastColorDrawable(color)
                 }
                 is ShapeDrawable -> {
                     color = b.paint.color
+                    if (color == 0xffffffff.toInt()) {
+                        color = run {
+                            val c = Palette.from(icon.foreground.toBitmap(24, 24)).generate().getDominantColor(color)
+                            val lab = DoubleArray(3)
+                            ColorUtils.colorToLAB(c, lab)
+                            lab[0] = (lab[0] * 1.5).coerceAtLeast(70.0)
+                            ColorUtils.LABToColor(lab[0], lab[1], lab[2])
+                        }
+                    }
                     (if (isForegroundDangerous) icon else scale(icon.foreground)) to FastColorDrawable(color)
                 }
                 is GradientDrawable -> {
@@ -248,6 +265,15 @@ class AppCollection(
                     val bt = 5f
                     if (isOneColor) {
                         color = px
+                        if (color == 0xffffffff.toInt()) {
+                            color = run {
+                                val c = Palette.from(icon.foreground.toBitmap(24, 24)).generate().getDominantColor(color)
+                                val lab = DoubleArray(3)
+                                ColorUtils.colorToLAB(c, lab)
+                                lab[0] = (lab[0] * 1.5).coerceAtLeast(70.0)
+                                ColorUtils.LABToColor(lab[0], lab[1], lab[2])
+                            }
+                        }
                         (if (isForegroundDangerous) icon else scale(icon.foreground)) to FastColorDrawable(color)
                     } else if (maxL - minL <= lt && maxA - minA <= at && maxB - minB <= bt) {
                         color = px
