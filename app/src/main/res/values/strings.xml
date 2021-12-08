@@ -31,6 +31,8 @@
         <string name="reshape_adaptive_icons">Reshape adaptive icons</string>
         <string name="reshape_adaptive_icons_explanation">Uses icon backgrounds to cover app cards</string>
 
+        <string name="monochrome_icons">Monochrome icons</string>
+
         <string name="icon_packs">Icon packs</string>
         <string name="chosen">Chosen</string>
         <string name="available">Available</string>

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.graphics.ColorUtils
 import io.posidon.android.slablauncher.providers.color.pallete.DefaultPalette
 import kotlin.math.abs
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sign
 
@@ -104,11 +105,11 @@ interface ColorTheme {
             val h = tmp[0]
             val s = tmp[1]
             val l = tmp[2]
+            val isDesaturated = s < 1f || l == 1f || l < .001f
             val (targetHue, targetSaturation, targetLightness) = run {
                 palette.map { color ->
                     FloatArray(3).also { ColorUtils.colorToHSL(color, it) }
                 }.minByOrNull { (targetHue, targetSaturation, targetLightness) ->
-                    val isDesaturated = s < 1f || l == 1f || l < .001f
                     val hd = if (isDesaturated) 0f else {
                         val rd = abs(h - targetHue)
                         min(360f - rd, rd)
@@ -147,6 +148,28 @@ interface ColorTheme {
             val tile = ColorUtils.LABToColor(lab[0], lab[1], lab[2])
 
             return tile
+        }
+
+        fun labClosestVibrant(baseColor: Int, palette: Array<Int>): Int {
+            val tmp = DoubleArray(3)
+            ColorUtils.colorToLAB(baseColor, tmp)
+            val l = tmp[0]
+            val a = tmp[1]
+            val b = tmp[2]
+            val (tl, ta, tb) = run {
+                palette.map { color ->
+                    DoubleArray(3).also { ColorUtils.colorToLAB(color, it) }
+                }.minByOrNull { (tl, ta, tb) ->
+                    val ld = abs(l - tl) / 100
+                    val ad = abs(a - ta) / 128.0 / 2.0
+                    val bd = abs(b - tb) / 128.0 / 2.0
+                    val s = max((abs(ta) / 128.0), (abs(tb) / 128.0))
+                    val si = (1 - s)
+                    ad * ad + bd * bd + ld * ld * 2 + si * si * 2
+                }!!
+            }
+
+            return ColorUtils.LABToColor(tl, ta, tb)
         }
     }
 }

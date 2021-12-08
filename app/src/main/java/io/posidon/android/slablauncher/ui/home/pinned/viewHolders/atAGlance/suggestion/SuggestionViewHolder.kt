@@ -1,5 +1,8 @@
 package io.posidon.android.slablauncher.ui.home.pinned.viewHolders.atAGlance.suggestion
 
+import android.content.res.ColorStateList
+import android.graphics.BlendMode
+import android.os.Build
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.core.graphics.drawable.toBitmap
@@ -11,6 +14,8 @@ import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.data.items.LauncherItem.Banner.Companion.ALPHA_MULTIPLIER
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
+import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeIcons
+import io.posidon.android.slablauncher.util.storage.Settings
 
 class SuggestionViewHolder(
     val card: CardView
@@ -23,6 +28,7 @@ class SuggestionViewHolder(
     fun onBind(
         item: LauncherItem,
         navbarHeight: Int,
+        settings: Settings,
     ) {
         val backgroundColor = ColorTheme.tileColor(item.getColor())
 
@@ -50,6 +56,12 @@ class SuggestionViewHolder(
         } else {
             imageView.isVisible = true
             imageView.setImageDrawable(banner.background)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (settings.doMonochromeIcons) {
+                    imageView.imageTintList = ColorStateList.valueOf(backgroundColor)
+                    imageView.imageTintBlendMode = BlendMode.COLOR
+                } else imageView.imageTintList = null
+            }
             imageView.alpha = banner.bgOpacity * ALPHA_MULTIPLIER
             val palette = Palette.from(banner.background.toBitmap(24, 24)).generate()
             val color = item.getColor()

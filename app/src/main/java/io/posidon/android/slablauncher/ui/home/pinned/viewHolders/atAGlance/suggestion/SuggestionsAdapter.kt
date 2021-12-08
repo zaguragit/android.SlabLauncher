@@ -7,10 +7,12 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.LauncherItem
+import io.posidon.android.slablauncher.util.storage.Settings
 import posidon.android.conveniencelib.getNavigationBarHeight
 
 class SuggestionsAdapter(
     val activity: Activity,
+    val settings: Settings,
 ) : RecyclerView.Adapter<SuggestionViewHolder>() {
 
     private var items: List<LauncherItem> = emptyList()
@@ -27,6 +29,7 @@ class SuggestionsAdapter(
         holder.onBind(
             item,
             activity.getNavigationBarHeight(),
+            settings,
         )
     }
 

@@ -1,6 +1,9 @@
 package io.posidon.android.slablauncher.ui.home.pinned.viewHolders
 
 import android.app.Activity
+import android.content.res.ColorStateList
+import android.graphics.BlendMode
+import android.os.Build
 import android.view.View
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
@@ -16,6 +19,8 @@ import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.pinned.TileArea
 import io.posidon.android.slablauncher.ui.home.pinned.acrylicBlur
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
+import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeIcons
+import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.android.slablauncher.util.view.SeeThroughView
 import io.posidon.android.slablauncher.util.view.tile.TileContentView
 import posidon.android.conveniencelib.Colors
@@ -44,6 +49,7 @@ class TileViewHolder(
     fun bind(
         item: LauncherItem,
         activity: Activity,
+        settings: Settings,
         onDragStart: (View) -> Unit,
     ) {
         val banner = item.getBanner()
@@ -70,6 +76,12 @@ class TileViewHolder(
         } else {
             imageView.isVisible = true
             imageView.setImageDrawable(banner.background)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (settings.doMonochromeIcons) {
+                    imageView.imageTintList = ColorStateList.valueOf(backgroundColor)
+                    imageView.imageTintBlendMode = BlendMode.COLOR
+                } else imageView.imageTintList = null
+            }
             imageView.alpha = banner.bgOpacity * ALPHA_MULTIPLIER
             val palette = Palette.from(banner.background.toBitmap(24, 24)).generate()
             val imageColor = palette.getDominantColor(item.getColor())

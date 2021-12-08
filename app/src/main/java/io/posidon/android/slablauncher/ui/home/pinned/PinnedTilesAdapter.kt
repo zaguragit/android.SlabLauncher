@@ -87,6 +87,7 @@ class PinnedTilesAdapter(
         holder.bind(
             item,
             activity,
+            activity.settings,
             onDragStart = {
                 val i = adapterPositionToI(holder.bindingAdapterPosition)
                 items.removeAt(i)

@@ -1,17 +1,22 @@
 package io.posidon.android.slablauncher.ui.home.sideList.viewHolders.search
 
+import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.search.CompactResult
+import io.posidon.android.slablauncher.data.search.ContactResult
 import io.posidon.android.slablauncher.data.search.SearchResult
+import io.posidon.android.slablauncher.providers.app.AppCollection.Companion.convertToGrayscale
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.hideIfNullOr
+import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeIcons
 
 class CompactSearchViewHolder(
-    itemView: View
+    itemView: View,
+    val iconCache: HashMap<SearchResult, Drawable>
 ) : SearchViewHolder(itemView) {
 
     val icon = itemView.findViewById<ImageView>(R.id.icon)!!
@@ -23,7 +28,11 @@ class CompactSearchViewHolder(
         activity: MainActivity,
     ) {
         result as CompactResult
-        icon.setImageDrawable(result.icon)
+        val resultIcon = iconCache.getOrPut(result) { result.icon }
+        if (activity.settings.doMonochromeIcons && result !is ContactResult) {
+            resultIcon.convertToGrayscale()
+        } else resultIcon.colorFilter = null
+        icon.setImageDrawable(resultIcon)
         text.text = result.title
         text.setTextColor(ColorTheme.uiTitle)
         subtitle.hideIfNullOr(result.subtitle) {

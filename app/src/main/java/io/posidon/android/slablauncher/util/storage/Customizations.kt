@@ -48,6 +48,19 @@ object DoReshapeAdaptiveIconsSetting {
     const val DEFAULT = false
 }
 
+object DoMonochromeIconsSetting {
+    val Settings.doMonochromeIcons: Boolean
+        get() = get(KEY, DEFAULT)
+
+    var Settings.SettingsEditor.doMonochromeIcons: Boolean
+        get() = settings[KEY, DEFAULT]
+        set(value) = KEY set value
+
+    private const val KEY = "icons:monochrome"
+
+    const val DEFAULT = false
+}
+
 object DoBlurSetting {
     val Settings.doBlur: Boolean
         get() = get(KEY, DEFAULT)

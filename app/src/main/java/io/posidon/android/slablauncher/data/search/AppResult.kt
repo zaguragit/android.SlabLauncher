@@ -24,7 +24,7 @@ class AppResult(
         }
         return MaskedDrawable(
             LayerDrawable(arrayOf(
-                app.background,
+                app.background.constantState?.newDrawable()?.mutate(),
                 app.icon,
             )).apply {
                  setBounds(0, 0, app.icon.intrinsicWidth, app.icon.intrinsicHeight)

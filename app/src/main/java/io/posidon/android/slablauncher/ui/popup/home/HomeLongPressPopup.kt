@@ -24,6 +24,7 @@ import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorT
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.setColorThemeDayNight
 import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
+import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeIcons
 import io.posidon.android.slablauncher.util.storage.DoReshapeAdaptiveIconsSetting.doReshapeAdaptiveIcons
 import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.android.slablauncher.util.view.SeeThroughView
@@ -185,6 +186,17 @@ class HomeLongPressPopup(
                     onToggle = { _, value ->
                         settings.edit(context) {
                             doReshapeAdaptiveIcons = value
+                            reloadApps()
+                        }
+                    }
+                ),
+                ListPopupItem(
+                    context.getString(R.string.monochrome_icons),
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_color_dropper),
+                    value = settings.doMonochromeIcons,
+                    onToggle = { _, value ->
+                        settings.edit(context) {
+                            doMonochromeIcons = value
                             reloadApps()
                         }
                     }

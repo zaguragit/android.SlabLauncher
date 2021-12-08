@@ -2,9 +2,11 @@ package io.posidon.android.slablauncher.providers.color.theme
 
 import android.content.Context
 import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.alpha
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme.Companion.hueTintClosest
+import io.posidon.android.slablauncher.providers.color.theme.ColorTheme.Companion.labClosestVibrant
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme.Companion.tintWithColor
 import posidon.android.conveniencelib.Colors
 
@@ -47,9 +49,9 @@ class DarkColorTheme(
         }
     }
 
-    override fun tileColor(iconBackgroundColor: Int): Int {
-        if (iconBackgroundColor == 0) return palette.neutralMedium
-        return hueTintClosest(iconBackgroundColor, arrayOf(
+    override fun tileColor(iconBackgroundColor: Int) = when {
+        iconBackgroundColor == 0 -> palette.neutralMedium
+        iconBackgroundColor.alpha == 0 -> labClosestVibrant(iconBackgroundColor, arrayOf(
             palette.neutralVeryDark,
             palette.neutralDark,
             palette.neutralMedium,
@@ -57,7 +59,17 @@ class DarkColorTheme(
             palette.neutralVeryLight,
             palette.primary,
             palette.secondary,
-            ColorPalette.wallColor
+            ColorPalette.wallColor,
+        ))
+        else -> hueTintClosest(iconBackgroundColor, arrayOf(
+            palette.neutralVeryDark,
+            palette.neutralDark,
+            palette.neutralMedium,
+            palette.neutralLight,
+            palette.neutralVeryLight,
+            palette.primary,
+            palette.secondary,
+            ColorPalette.wallColor,
         ))
     }
 
