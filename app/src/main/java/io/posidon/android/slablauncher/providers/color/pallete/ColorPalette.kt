@@ -44,7 +44,9 @@ interface ColorPalette {
                 min(d.intrinsicWidth, Device.screenWidth(context) / 4),
                 min(d.intrinsicHeight, Device.screenHeight(context) / 4)
             )
-            val palette = Palette.from(wall).generate()
+            val palette = Palette.from(wall)
+                .maximumColorCount(20)
+                .generate()
             wallColor = palette.getDominantColor(0)
             val newColorTheme = BitmapBasedPalette(palette)
             if (newColorTheme != colorPaletteInstance) {
