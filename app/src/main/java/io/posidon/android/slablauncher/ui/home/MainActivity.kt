@@ -22,6 +22,7 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
@@ -50,9 +51,11 @@ import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import io.posidon.android.slablauncher.util.drawable.setBackgroundColorFast
 import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorTheme
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
+import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScreenOpenedSetting.doAutoKeyboardInAllApps
 import io.posidon.android.slablauncher.util.view.SeeThroughView
 import posidon.android.conveniencelib.getNavigationBarHeight
 import kotlin.concurrent.thread
+
 
 class MainActivity : FragmentActivity() {
 
@@ -156,6 +159,18 @@ class MainActivity : FragmentActivity() {
                         searchBarText.clearFocus()
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                             searchBarContainer.windowInsetsController?.hide(WindowInsets.Type.ime())
+                        }
+                    }
+                    1 -> {
+                        if (settings.doAutoKeyboardInAllApps) {
+                            searchBarText.requestFocus()
+                            val imm = getSystemService(
+                                INPUT_METHOD_SERVICE
+                            ) as InputMethodManager
+                            imm.showSoftInput(searchBarText, InputMethodManager.SHOW_IMPLICIT)
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                                searchBarContainer.windowInsetsController?.show(WindowInsets.Type.ime())
+                            }
                         }
                     }
                 }

@@ -10,15 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.2"/>
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        style="@style/SlabLauncher.ListPopup.Recycler"
+        android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <androidx.recyclerview.widget.RecyclerView
-            style="@style/SlabLauncher.ListPopup.Recycler"
-            android:id="@+id/recycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"/>
-    </LinearLayout>
+        android:clipToPadding="false"/>
 </androidx.cardview.widget.CardView>

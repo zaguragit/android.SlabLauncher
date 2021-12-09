@@ -3,6 +3,7 @@ package io.posidon.android.slablauncher.ui.home.pinned.viewHolders.atAGlance
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.TextView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.GridLayoutManager
@@ -42,6 +43,9 @@ class AtAGlanceViewHolder(
         adapter = suggestionsAdapter
     }
 
+    private val popupHeight get() = itemView.height - suggestionsRecycler.height - itemView.resources.getDimension(R.dimen.item_card_margin).toInt() * 2
+    private val popupWidth get() = itemView.width - itemView.resources.getDimension(R.dimen.item_card_margin).toInt() * 2
+
     private var popupX = 0f
     private var popupY = 0f
     init {
@@ -55,28 +59,37 @@ class AtAGlanceViewHolder(
             false
         }
         itemView.setOnLongClickListener {
+            val loc = IntArray(2)
+            it.getLocationOnScreen(loc)
+            val m = it.resources.getDimension(R.dimen.item_card_margin).toInt()
             HomeLongPressPopup.show(
                 it,
-                popupX,
-                popupY,
+                if (fragment.tileArea.scrollY == 0) Device.screenWidth(it.context) / 2f else popupX,
+                if (fragment.tileArea.scrollY == 0) it.height / 2f + m * 3 else popupY,
                 mainActivity.getNavigationBarHeight(),
                 mainActivity.settings,
                 mainActivity::reloadColorPaletteSync,
                 mainActivity::updateColorTheme,
                 mainActivity::loadApps,
                 mainActivity::reloadBlur,
+                if (fragment.tileArea.scrollY == 0) popupWidth else WRAP_CONTENT,
+                if (fragment.tileArea.scrollY == 0) popupHeight else HomeLongPressPopup.calculateHeight(it.context),
             )
             true
         }
         RecyclerViewLongPressHelper.setOnLongPressListener(suggestionsRecycler) { v, x, y ->
             HomeLongPressPopup.show(
-                v, x, y,
+                v,
+                if (fragment.tileArea.scrollY == 0) Device.screenWidth(v.context) / 2f else x,
+                y,
                 mainActivity.getNavigationBarHeight(),
                 mainActivity.settings,
                 mainActivity::reloadColorPaletteSync,
                 mainActivity::updateColorTheme,
                 mainActivity::loadApps,
                 mainActivity::reloadBlur,
+                if (fragment.tileArea.scrollY == 0) popupWidth else WRAP_CONTENT,
+                if (fragment.tileArea.scrollY == 0) popupHeight else HomeLongPressPopup.calculateHeight(v.context),
             )
         }
         itemView.updateLayoutParams {

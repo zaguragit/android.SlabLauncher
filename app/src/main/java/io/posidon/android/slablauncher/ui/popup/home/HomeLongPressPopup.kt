@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.PopupWindow
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -26,12 +27,15 @@ import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.setColorTh
 import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeIcons
 import io.posidon.android.slablauncher.util.storage.DoReshapeAdaptiveIconsSetting.doReshapeAdaptiveIcons
+import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScreenOpenedSetting.doAutoKeyboardInAllApps
 import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.android.slablauncher.util.view.SeeThroughView
 import posidon.android.conveniencelib.Device
+import posidon.android.conveniencelib.dp
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.thread
 import kotlin.concurrent.withLock
+import kotlin.math.min
 
 class HomeLongPressPopup(
     private val update: HomeLongPressPopup.() -> Unit
@@ -40,6 +44,8 @@ class HomeLongPressPopup(
     private inline fun update() = update(this)
 
     companion object {
+
+        fun calculateHeight(context: Context) = min(Device.screenHeight(context) / 2, context.dp(360).toInt())
 
         fun show(
             parent: View,
@@ -51,12 +57,14 @@ class HomeLongPressPopup(
             updateColorTheme: (ColorPalette) -> Unit,
             reloadApps: () -> Unit,
             reloadBlur: (() -> Unit) -> Unit,
+            popupWidth: Int = ViewGroup.LayoutParams.WRAP_CONTENT,
+            popupHeight: Int = calculateHeight(parent.context),
         ) {
             val content = LayoutInflater.from(parent.context).inflate(R.layout.list_popup, null)
             val window = PopupWindow(
                 content,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
+                popupWidth,
+                popupHeight,
                 true
             )
             PopupUtils.setCurrent(window)
@@ -98,6 +106,8 @@ class HomeLongPressPopup(
             content.findViewById<RecyclerView>(R.id.recycler).apply {
                 layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                 adapter = popupAdapter
+                val l = layoutParams as FrameLayout.LayoutParams
+
             }
 
             popup.update()
@@ -197,6 +207,19 @@ class HomeLongPressPopup(
                     onToggle = { _, value ->
                         settings.edit(context) {
                             doMonochromeIcons = value
+                            reloadApps()
+                        }
+                    }
+                ),
+                ListPopupItem(context.getString(R.string.all_apps), isTitle = true),
+                ListPopupItem(
+                    context.getString(R.string.auto_show_keyboard),
+                    description = context.getString(R.string.auto_show_keyboard_explanation),
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_keyboard),
+                    value = settings.doAutoKeyboardInAllApps,
+                    onToggle = { _, value ->
+                        settings.edit(context) {
+                            doAutoKeyboardInAllApps = value
                             reloadApps()
                         }
                     }

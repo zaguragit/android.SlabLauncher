@@ -33,6 +33,9 @@
 
         <string name="monochrome_icons">Monochrome icons</string>
 
+        <string name="auto_show_keyboard">Auto keyboard</string>
+        <string name="auto_show_keyboard_explanation">Pulls up the keyboard, when you open the all apps list</string>
+
         <string name="icon_packs">Icon packs</string>
         <string name="chosen">Chosen</string>
         <string name="available">Available</string>

@@ -73,3 +73,16 @@ object DoBlurSetting {
 
     const val DEFAULT = true
 }
+
+object DoShowKeyboardOnAllAppsScreenOpenedSetting {
+    val Settings.doAutoKeyboardInAllApps: Boolean
+        get() = get(KEY, DEFAULT)
+
+    var Settings.SettingsEditor.doAutoKeyboardInAllApps: Boolean
+        get() = settings[KEY, DEFAULT]
+        set(value) = KEY set value
+
+    private const val KEY = "keyboard:auto_show_in_all_apps"
+
+    const val DEFAULT = false
+}

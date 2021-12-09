@@ -28,7 +28,8 @@ var acrylicBlur: AcrylicBlur? = null
 
 class TileAreaFragment : Fragment() {
 
-    private lateinit var tileArea: TileArea
+    lateinit var tileArea: TileArea
+        private set
 
     private lateinit var launcherContext: LauncherContext
 
