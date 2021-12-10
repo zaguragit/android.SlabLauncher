@@ -13,6 +13,7 @@ import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.App
+import io.posidon.android.slablauncher.data.items.ContactItem
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.data.items.LauncherItem.Banner.Companion.ALPHA_MULTIPLIER
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
@@ -77,7 +78,7 @@ class TileViewHolder(
             imageView.isVisible = true
             imageView.setImageDrawable(banner.background)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (settings.doMonochromeIcons) {
+                if (settings.doMonochromeIcons && item !is ContactItem) {
                     imageView.imageTintList = ColorStateList.valueOf(backgroundColor)
                     imageView.imageTintBlendMode = BlendMode.COLOR
                 } else imageView.imageTintList = null
