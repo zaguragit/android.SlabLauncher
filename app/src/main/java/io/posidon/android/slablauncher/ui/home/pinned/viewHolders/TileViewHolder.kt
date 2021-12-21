@@ -3,12 +3,14 @@ package io.posidon.android.slablauncher.ui.home.pinned.viewHolders
 import android.app.Activity
 import android.content.res.ColorStateList
 import android.graphics.BlendMode
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.luminance
 import androidx.core.view.isVisible
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
@@ -90,6 +92,14 @@ class TileViewHolder(
                 val palette = Palette.from(bitmap).generate()
                 palette.getDominantColor(itemColor)
                     .also { bitmap.recycle() }
+            }.let {
+                if (
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+                    settings.doMonochromeIcons &&
+                    item !is ContactItem
+                ) (it.luminance * 255).toInt()
+                    .let { a -> Color.rgb(a, a, a) }
+                else it
             }
             val newBackgroundColor = ColorTheme.tileColor(imageColor)
             val actuallyBackgroundColor =
