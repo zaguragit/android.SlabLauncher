@@ -1,6 +1,5 @@
 package io.posidon.android.slablauncher.ui.home.sideList
 
-import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.StringRes
@@ -49,12 +48,10 @@ class SideListAdapter(
         }
     }
 
-    private val iconCache = HashMap<SearchResult, Drawable>()
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TITLE -> TitleViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.title, parent, false))
-            RESULT_COMPACT -> CompactSearchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.search_result_compact, parent, false), iconCache)
+            RESULT_COMPACT -> CompactSearchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.search_result_compact, parent, false))
             RESULT_ANSWER -> AnswerSearchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.search_result_answer, parent, false))
             else -> throw Exception("Invalid view type")
         }
@@ -70,6 +67,13 @@ class SideListAdapter(
                 holder.onBind(title!!)
             }
         }
+    }
+
+    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
+        val i = holder.bindingAdapterPosition
+        val realI = if (title != null) i - 1 else i
+        if (i >= 0 && holder is SearchViewHolder)
+            holder.recycle(items[realI] as SearchResult)
     }
 
     override fun getItemCount(): Int = items.size + if (title != null) 1 else 0

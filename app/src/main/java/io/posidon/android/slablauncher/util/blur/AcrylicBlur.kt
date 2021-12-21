@@ -5,7 +5,9 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.os.Build
 import androidx.core.graphics.drawable.toBitmap
+import io.posidon.android.slablauncher.util.drawable.NonDrawable
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.Graphics
 import posidon.android.conveniencelib.dp
@@ -20,13 +22,30 @@ class AcrylicBlur private constructor(
     val insaneBlur: Bitmap,
 ) {
 
-    val fullBlurDrawable: Drawable = BitmapDrawable(resources, fullBlur)
-    val smoothBlurDrawable: Drawable = BitmapDrawable(resources, smoothBlur)
-    val partialBlurMediumDrawable: Drawable = BitmapDrawable(resources, partialBlurMedium)
-    val partialBlurSmallDrawable: Drawable = BitmapDrawable(resources, partialBlurSmall)
-    val insaneBlurDrawable: Drawable = BitmapDrawable(resources, insaneBlur)
+    var fullBlurDrawable: Drawable = BitmapDrawable(resources, fullBlur)
+        private set
+    var smoothBlurDrawable: Drawable = BitmapDrawable(resources, smoothBlur)
+        private set
+    var partialBlurMediumDrawable: Drawable = BitmapDrawable(resources, partialBlurMedium)
+        private set
+    var partialBlurSmallDrawable: Drawable = BitmapDrawable(resources, partialBlurSmall)
+        private set
+    var insaneBlurDrawable: Drawable = BitmapDrawable(resources, insaneBlur)
+        private set
 
     fun recycle() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            (fullBlurDrawable as BitmapDrawable).bitmap = null
+            (smoothBlurDrawable as BitmapDrawable).bitmap = null
+            (partialBlurMediumDrawable as BitmapDrawable).bitmap = null
+            (partialBlurSmallDrawable as BitmapDrawable).bitmap = null
+            (insaneBlurDrawable as BitmapDrawable).bitmap = null
+            fullBlurDrawable = NonDrawable()
+            smoothBlurDrawable = NonDrawable()
+            partialBlurMediumDrawable = NonDrawable()
+            partialBlurSmallDrawable = NonDrawable()
+            insaneBlurDrawable = NonDrawable()
+        }
         fullBlur.recycle()
         smoothBlur.recycle()
         partialBlurMedium.recycle()

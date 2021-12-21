@@ -10,9 +10,10 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.view.doOnPreDraw
-import posidon.android.conveniencelib.SpringInterpolator
 import posidon.android.conveniencelib.dp
+import posidon.android.conveniencelib.onEnd
 import posidon.android.conveniencelib.sp
 
 //
@@ -51,24 +52,45 @@ class TileContentView : View {
             invalidate()
         }
 
-    var extraTitle: String? = null
+    var extraTitle: String?
+        get() = _extraTitle
         set(value) {
-            field = value
+            _extraTitle = value
             updateNotificationState()
             invalidate()
         }
 
-    var extraText: String? = null
+    var extraText: String?
+        get() = _extraText
         set(value) {
-            field = value
+            _extraText = value
             updateNotificationState()
             invalidate()
         }
 
     fun setExtraWithAnimation(extraTitle: String?, extraText: String?) {
-        this.extraTitle = extraTitle
-        this.extraText = extraText
-        updateNotificationStateWithAnimation()
+        if (extraTitle == null && extraText == null) {
+            if (notificationness != 0f) {
+                notificationnessAnimator?.cancel()
+                notificationnessAnimator = createNotificationnessAnimator(0f).apply {
+                    onEnd {
+                        _extraTitle = null
+                        _extraText = null
+                        invalidate()
+                    }
+                    start()
+                }
+            }
+        } else {
+            _extraTitle = extraTitle
+            _extraText = extraText
+            if (notificationness != 1f) {
+                notificationnessAnimator?.cancel()
+                notificationnessAnimator = createNotificationnessAnimator(1f).apply {
+                    start()
+                }
+            }
+        }
     }
 
     var labelColor: Int
@@ -112,6 +134,9 @@ class TileContentView : View {
 
     private val mover = TileContentMover(this)
 
+    private var _extraTitle: String? = null
+    private var _extraText: String? = null
+
     private val labelPaint = Paint().apply {
         textSize = sp(12)
         isAntiAlias = true
@@ -142,12 +167,12 @@ class TileContentView : View {
                 mover.setDefaultToNotification(notificationness, width, height)
                 invalidate()
             }
-            duration = 640L
-            interpolator = SpringInterpolator()
+            duration = 240L
+            interpolator = AccelerateDecelerateInterpolator()
         }
 
     private fun updateNotificationState() {
-        if (extraText == null && extraTitle == null) {
+        if (_extraText == null && _extraTitle == null) {
             notificationnessAnimator?.cancel()
             notificationness = 0f
             mover.setDefaultToNotification(notificationness, width, height)
@@ -158,24 +183,7 @@ class TileContentView : View {
         }
     }
 
-    private fun updateNotificationStateWithAnimation() {
-        if (extraText == null && extraTitle == null) {
-            if (notificationness != 0f) {
-                notificationnessAnimator?.cancel()
-                notificationnessAnimator = createNotificationnessAnimator(0f).apply {
-                    start()
-                }
-            }
-        } else {
-            if (notificationness != 1f) {
-                notificationnessAnimator?.cancel()
-                notificationnessAnimator = createNotificationnessAnimator(1f).apply {
-                    start()
-                }
-            }
-        }
-    }
-
+    private val tmpPaint = Paint()
     @SuppressLint("MissingSuperCall")
     override fun draw(canvas: Canvas) {
         icon?.also {
@@ -185,10 +193,14 @@ class TileContentView : View {
             canvas.drawText(it, 0, it.length, mover.labelX, mover.labelY, labelPaint)
         }
         realExtraTitle?.also {
-            canvas.drawText(it, 0, it.length, mover.extraTitleX, mover.extraTitleY, titlePaint)
+            tmpPaint.set(titlePaint)
+            tmpPaint.alpha = (tmpPaint.alpha * notificationness).toInt()
+            canvas.drawText(it, 0, it.length, mover.extraTitleX, mover.extraTitleY, tmpPaint)
         }
         realExtraText?.also {
-            canvas.drawText(it, 0, it.length, mover.extraTextX, mover.extraTextY, textPaint)
+            tmpPaint.set(textPaint)
+            tmpPaint.alpha = (tmpPaint.alpha * notificationness).toInt()
+            canvas.drawText(it, 0, it.length, mover.extraTextX, mover.extraTextY, tmpPaint)
         }
     }
 
@@ -201,8 +213,8 @@ class TileContentView : View {
 
     internal fun getLabelBounds(bounds: Rect) = label?.let { labelPaint.getTextBounds(it, 0, it.length, bounds) } ?: bounds.setEmpty()
 
-    internal fun getExtraTitleHeight() = if (extraTitle == null) 0f else titlePaint.descent() - titlePaint.ascent()
-    internal fun getExtraTextHeight() = if (extraText == null) 0f else textPaint.descent() - textPaint.ascent()
+    internal fun getExtraTitleHeight() = if (_extraTitle == null) 0f else titlePaint.descent() - titlePaint.ascent()
+    internal fun getExtraTextHeight() = if (_extraText == null) 0f else textPaint.descent() - textPaint.ascent()
 
     internal val smallIconSize: Float
         get() = dp(24)
@@ -211,12 +223,12 @@ class TileContentView : View {
 
 
     private var realLabel: String? = label
-    private var realExtraTitle: String? = extraTitle
-    private var realExtraText: String? = extraText
+    private var realExtraTitle: String? = _extraTitle
+    private var realExtraText: String? = _extraText
     fun updateEllipsis(maxLabelWidth: Float, maxExtraWidth: Float) {
         realLabel = label?.let { ellipsize(it, labelPaint, maxLabelWidth) }
-        realExtraTitle = extraTitle?.let { ellipsize(it, titlePaint, maxExtraWidth) }
-        realExtraText = extraText?.let { ellipsize(it, textPaint, maxExtraWidth) }
+        realExtraTitle = _extraTitle?.let { ellipsize(it, titlePaint, maxExtraWidth) }
+        realExtraText = _extraText?.let { ellipsize(it, textPaint, maxExtraWidth) }
     }
 
     private fun ellipsize(text: String, paint: Paint, maxWidth: Float): String {

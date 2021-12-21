@@ -5,15 +5,19 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.View
+import io.posidon.android.computable.Computable
+import io.posidon.android.slablauncher.data.notification.NotificationData
+import io.posidon.android.slablauncher.providers.notification.NotificationService
 import java.util.*
 
 interface LauncherItem {
 
-    val icon: Drawable
     val label: String
 
-    fun getColor(): Int = 0
-    fun getBanner(): Banner?
+    val icon: Computable<Drawable>
+    val color: Computable<Int>
+
+    fun getBanner(notifications: List<NotificationData>): Banner
 
     /**
      * What to do when the item is clicked
@@ -35,10 +39,10 @@ interface LauncherItem {
             ?: ContactItem.tryParse(string, ContactItem.getList(context))
     }
 
-    class Banner(
+    data class Banner(
         val title: String?,
         val text: String?,
-        val background: Drawable?,
+        val background: Computable<Drawable?>,
         val bgOpacity: Float,
         val hideIcon: Boolean = false,
     ) {
@@ -47,6 +51,8 @@ interface LauncherItem {
         }
     }
 }
+
+fun LauncherItem.getBanner(): LauncherItem.Banner = getBanner(NotificationService.notifications)
 
 fun LauncherItem.showProperties(view: View, backgroundColor: Int, textColor: Int) {
     if (this is App) {

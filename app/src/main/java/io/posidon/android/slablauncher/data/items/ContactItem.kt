@@ -10,8 +10,11 @@ import android.net.Uri
 import android.provider.ContactsContract
 import android.view.View
 import androidx.core.graphics.ColorUtils
+import io.posidon.android.computable.Computable
+import io.posidon.android.computable.dependentUse
 import io.posidon.android.launcherutils.IconTheming
 import io.posidon.android.slablauncher.R
+import io.posidon.android.slablauncher.data.notification.NotificationData
 import io.posidon.android.slablauncher.util.drawable.ContactDrawable
 import io.posidon.android.slablauncher.util.drawable.NonDrawable
 import posidon.android.conveniencelib.drawable.MaskedDrawable
@@ -20,16 +23,22 @@ import kotlin.random.Random
 
 class ContactItem(
     override var label: String,
-    private val pic: Drawable,
+    pic: Computable<Drawable>,
     val lookupKey: String,
     val phone: String,
     val id: Int,
     val isStarred: Boolean,
 ) : LauncherItem {
 
-    override val icon: Drawable get() = MaskedDrawable(pic, IconTheming.getSystemAdaptiveIconPath(pic.intrinsicWidth, pic.intrinsicHeight))
+    private val pic = pic.dependentUse()
 
-    override fun getBanner() = LauncherItem.Banner(
+    override val icon = pic.dependentUse { pic ->
+        MaskedDrawable(pic, IconTheming.getSystemAdaptiveIconPath(pic.intrinsicWidth, pic.intrinsicHeight))
+    }
+
+    override val color get() = Computable(0)
+
+    override fun getBanner(notifications: List<NotificationData>) = LauncherItem.Banner(
         null,
         null,
         pic,
@@ -44,8 +53,6 @@ class ContactItem(
         viewContact.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK)
         context.startActivity(viewContact)
     }
-
-    override fun getColor(): Int = 0
 
     override fun toString() = "$id/$lookupKey"
 
@@ -123,11 +130,17 @@ class ContactItem(
                             ContentUris.withAppendedId(ContactsContract.Data.CONTENT_URI, photoId.toLong())
                         } else null
 
-                        val pic = if (iconUri == null) genProfilePic(name, tmpLAB, textP) ?: NonDrawable() else try {
-                            val inputStream = context.contentResolver.openInputStream(iconUri)
-                            Drawable.createFromStream(inputStream, iconUri.toString())
-                        } catch (e: FileNotFoundException) { genProfilePic(name, tmpLAB, textP) ?: NonDrawable() }
-                        pic.setBounds(0, 0, pic.intrinsicWidth, pic.intrinsicHeight)
+                        val pic = Computable {
+                            val pic = if (iconUri == null) genProfilePic(name, tmpLAB, textP)
+                                ?: NonDrawable() else try {
+                                val inputStream = context.contentResolver.openInputStream(iconUri)
+                                Drawable.createFromStream(inputStream, iconUri.toString())
+                            } catch (e: FileNotFoundException) {
+                                genProfilePic(name, tmpLAB, textP) ?: NonDrawable()
+                            }
+                            pic.setBounds(0, 0, pic.intrinsicWidth, pic.intrinsicHeight)
+                            pic
+                        }
 
                         val contact = ContactItem(name, pic, lookupKey, phone, contactId, starred)
 

@@ -26,6 +26,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
+import androidx.core.view.doOnPreDraw
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -51,6 +52,7 @@ import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import io.posidon.android.slablauncher.util.drawable.setBackgroundColorFast
 import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorTheme
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
+import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
 import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScreenOpenedSetting.doAutoKeyboardInAllApps
 import io.posidon.android.slablauncher.util.view.SeeThroughView
 import posidon.android.conveniencelib.getNavigationBarHeight
@@ -262,7 +264,7 @@ class MainActivity : FragmentActivity() {
                 loadBlur(::updateBlur)
             }
         } else {
-            if (acrylicBlur == null) {
+            if (settings.doBlur && acrylicBlur == null) {
                 loadBlur(::updateBlur)
             }
         }
@@ -278,7 +280,7 @@ class MainActivity : FragmentActivity() {
     override fun onPause() {
         super.onPause()
         PopupUtils.dismissCurrent()
-        SuggestionsManager.onPause(settings, this)
+        SuggestionsManager.onPause(launcherContext.suggestionData, this)
     }
 
     @RequiresApi(Build.VERSION_CODES.O_MR1)
@@ -369,7 +371,7 @@ class MainActivity : FragmentActivity() {
 
     private fun updateBlur() {
         onBlurUpdateListeners.forEach { (_, l) -> l() }
-        runOnUiThread {
+        blurBG.doOnPreDraw {
             updateCurrentBlurBackground()
             HomeLongPressPopup.updateCurrent()
         }

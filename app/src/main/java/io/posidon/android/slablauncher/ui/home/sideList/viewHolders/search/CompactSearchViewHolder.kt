@@ -1,9 +1,9 @@
 package io.posidon.android.slablauncher.ui.home.sideList.viewHolders.search
 
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import io.posidon.android.computable.compute
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.search.CompactResult
 import io.posidon.android.slablauncher.data.search.ContactResult
@@ -15,8 +15,7 @@ import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.hideIfNullOr
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeIcons
 
 class CompactSearchViewHolder(
-    itemView: View,
-    val iconCache: HashMap<SearchResult, Drawable>
+    itemView: View
 ) : SearchViewHolder(itemView) {
 
     val icon = itemView.findViewById<ImageView>(R.id.icon)!!
@@ -28,11 +27,15 @@ class CompactSearchViewHolder(
         activity: MainActivity,
     ) {
         result as CompactResult
-        val resultIcon = iconCache.getOrPut(result) { result.icon }
-        if (activity.settings.doMonochromeIcons && result !is ContactResult) {
-            resultIcon.convertToGrayscale()
-        } else resultIcon.colorFilter = null
-        icon.setImageDrawable(resultIcon)
+        icon.setImageDrawable(null)
+        result.icon.compute { resultIcon ->
+            if (activity.settings.doMonochromeIcons && result !is ContactResult) {
+                resultIcon.convertToGrayscale()
+            } else resultIcon.colorFilter = null
+            icon.post {
+                icon.setImageDrawable(resultIcon)
+            }
+        }
         text.text = result.title
         text.setTextColor(ColorTheme.uiTitle)
         subtitle.hideIfNullOr(result.subtitle) {
@@ -41,5 +44,11 @@ class CompactSearchViewHolder(
         }
         itemView.setOnClickListener(result::open)
         itemView.setOnLongClickListener(result.onLongPress?.let { { v -> it(v, activity) } })
+    }
+
+    override fun recycle(result: SearchResult) {
+        result as CompactResult
+        icon.setImageDrawable(null)
+        result.icon.offload()
     }
 }

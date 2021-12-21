@@ -33,6 +33,12 @@ class SuggestionsAdapter(
         )
     }
 
+    override fun onViewRecycled(holder: SuggestionViewHolder) {
+        val i = holder.bindingAdapterPosition
+        if (i != -1)
+            holder.recycle(items[i])
+    }
+
     fun updateItems(items: List<LauncherItem>) {
         this.items = items
         notifyDataSetChanged()

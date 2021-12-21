@@ -2,7 +2,6 @@ package io.posidon.android.slablauncher.data.search
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.view.View
 import io.posidon.android.slablauncher.data.items.ContactItem
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
@@ -13,8 +12,7 @@ class ContactResult private constructor(
 
     override val title get() = contact.label
 
-    override val icon: Drawable
-        get() = contact.icon
+    override val icon get() = contact.icon
     override val subtitle = null
 
     override var relevance = Relevance(0f)

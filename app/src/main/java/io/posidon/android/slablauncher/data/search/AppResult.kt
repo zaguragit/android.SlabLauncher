@@ -1,11 +1,14 @@
 package io.posidon.android.slablauncher.data.search
 
 import android.app.Activity
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.view.View
+import io.posidon.android.computable.Computable
+import io.posidon.android.computable.compute
+import io.posidon.android.computable.syncCompute
 import io.posidon.android.launcherutils.IconTheming
 import io.posidon.android.slablauncher.data.items.App
+import io.posidon.android.slablauncher.data.items.getBanner
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import posidon.android.conveniencelib.drawable.MaskedDrawable
@@ -18,37 +21,41 @@ class AppResult(
     inline val packageName: String get() = app.packageName
     inline val name: String get() = app.name
     override val title: String get() = app.label
-    override val icon: Drawable get() {
-        if (app.background == null || app.icon is MaskedDrawable) {
-            return app.icon
+    override val icon = Computable {
+        val background = app.background.syncCompute()
+        val icon = app.icon.syncCompute()
+        if (background == null || icon is MaskedDrawable) {
+            return@Computable icon
         }
-        return MaskedDrawable(
+        return@Computable MaskedDrawable(
             LayerDrawable(arrayOf(
-                app.background.constantState?.newDrawable()?.mutate(),
-                app.icon,
+                background.constantState?.newDrawable()?.mutate(),
+                icon,
             )).apply {
-                 setBounds(0, 0, app.icon.intrinsicWidth, app.icon.intrinsicHeight)
+                 setBounds(0, 0, icon.intrinsicWidth, icon.intrinsicHeight)
             },
-            IconTheming.getSystemAdaptiveIconPath(app.icon.intrinsicWidth, app.icon.intrinsicHeight),
+            IconTheming.getSystemAdaptiveIconPath(icon.intrinsicWidth, icon.intrinsicHeight),
         )
     }
 
-    override val subtitle get() = app.getBanner()?.let { it.title ?: it.text }
+    override val subtitle get() = app.getBanner().let { it.title ?: it.text }
 
     override var relevance = Relevance(0f)
     override val onLongPress = { v: View, activity: Activity ->
-        val backgroundColor = ColorTheme.tileColor(getColor())
-        ItemLongPress.onItemLongPress(
-            v,
-            backgroundColor,
-            ColorTheme.titleColorForBG(v.context, backgroundColor),
-            app,
-            activity.getNavigationBarHeight(),
-        )
+        app.color.compute {
+            val backgroundColor = ColorTheme.tileColor(it)
+            activity.runOnUiThread {
+                ItemLongPress.onItemLongPress(
+                    v,
+                    backgroundColor,
+                    ColorTheme.titleColorForBG(v.context, backgroundColor),
+                    app,
+                    activity.getNavigationBarHeight(),
+                )
+            }
+        }
         true
     }
-
-    inline fun getColor(): Int = app.getColor()
 
     override fun open(view: View) {
         app.open(view.context, view)

@@ -40,8 +40,10 @@ class TileArea(view: View, val fragment: TileAreaFragment, val launcherContext: 
         adapter = pinnedAdapter
         setOnDragListener(::onDrag)
         val activity = fragment.requireActivity() as MainActivity
-        NotificationService.setOnUpdate(TileArea::class.simpleName!!) {
-            activity.runOnUiThread(pinnedAdapter::notifyDataSetChanged)
+        NotificationService.setOnUpdate(TileArea::class.simpleName!!) { old, new ->
+            activity.runOnUiThread {
+                pinnedAdapter.updateItems(old, new)
+            }
         }
 
         RecyclerViewLongPressHelper.setOnLongPressListener(this) { v, x, y ->

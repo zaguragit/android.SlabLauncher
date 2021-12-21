@@ -1,6 +1,10 @@
 package io.posidon.android.slablauncher.util.view.tile
 
+import android.content.Context
 import android.graphics.Rect
+import io.posidon.android.slablauncher.R
+import io.posidon.android.slablauncher.ui.home.pinned.TileArea
+import posidon.android.conveniencelib.Device
 import kotlin.math.min
 
 class TileContentMover(
@@ -72,5 +76,14 @@ class TileContentMover(
         extraTextY = extraTitleY + originalTextHeight + sideMargin / 2f
 
         view.updateEllipsis(maxLabelWidth, innerWidth.toFloat())
+    }
+
+    companion object {
+        fun calculateBigIconSize(context: Context): Float {
+            val tileMargin = context.resources.getDimension(R.dimen.item_card_margin)
+            val tileWidth = (Device.screenWidth(context) - tileMargin * 2) / TileArea.COLUMNS - tileMargin * 2
+            val tileHeight = tileWidth / TileArea.WIDTH_TO_HEIGHT
+            return min(tileWidth, tileHeight) / 2f
+        }
     }
 }

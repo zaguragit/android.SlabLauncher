@@ -10,8 +10,9 @@ import android.graphics.drawable.Drawable
 import android.os.Process
 import android.os.UserHandle
 import android.view.View
+import io.posidon.android.computable.Computable
+import io.posidon.android.slablauncher.data.notification.NotificationData
 import io.posidon.android.slablauncher.providers.notification.NotificationService
-import io.posidon.android.slablauncher.providers.notification.NotificationSorter
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import posidon.android.conveniencelib.isInstalled
 import java.util.*
@@ -21,29 +22,29 @@ class App(
     val name: String,
     val userHandle: UserHandle = Process.myUserHandle(),
     override val label: String,
-    override val icon: Drawable,
-    val background: Drawable?,
-    private val _color: Int,
+    override val icon: Computable<Drawable>,
+    val background: Computable<Drawable?>,
+    override val color: Computable<Int>,
 ) : LauncherItem {
 
-    override fun getBanner(): LauncherItem.Banner? {
-        val notifications = NotificationService.notifications.filter { it.sourcePackageName == packageName }
+    override fun getBanner(notifications: List<NotificationData>): LauncherItem.Banner {
         val mediaItem = NotificationService.mediaItem
-        if (background == null && notifications.isEmpty() && mediaItem == null) return null
-        if (mediaItem != null && mediaItem.sourcePackageName == packageName) return LauncherItem.Banner(
-            mediaItem.title,
-            mediaItem.subtitle,
-            mediaItem.image,
-            .4f
-        )
-        val notification = NotificationSorter.getMostRelevant(notifications)
+        if (mediaItem != null && mediaItem.sourcePackageName == packageName)
+            return LauncherItem.Banner(
+                mediaItem.title,
+                mediaItem.subtitle,
+                Computable(mediaItem.image),
+                .4f
+            )
+        val notification = notifications.firstOrNull { it.sourcePackageName == packageName }
         val image = notification?.image
-        if (image != null) return LauncherItem.Banner(
-            notification.title.takeIf { label != it },
-            notification.description,
-            image,
-            .4f
-        )
+        if (image != null)
+            return LauncherItem.Banner(
+                notification.title.takeIf { label != it },
+                notification.description,
+                Computable(image),
+                .4f
+            )
 
         return LauncherItem.Banner(
             notification?.title.takeIf { label != it },
@@ -60,8 +61,6 @@ class App(
                 ActivityOptions.makeScaleUpAnimation(view, 0, 0, view?.measuredWidth ?: 0, view?.measuredHeight ?: 0).toBundle())
         } catch (e: Exception) { e.printStackTrace() }
     }
-
-    override fun getColor(): Int = _color
 
     override fun toString() = "$packageName/$name/${userHandle.hashCode()}"
 

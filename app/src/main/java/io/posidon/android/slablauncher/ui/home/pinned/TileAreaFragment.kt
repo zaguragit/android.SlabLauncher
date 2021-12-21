@@ -114,16 +114,16 @@ fun Activity.loadBlur(settings: Settings, wallpaperManager: WallpaperManager, up
         this,
         Manifest.permission.READ_EXTERNAL_STORAGE
     ) != PackageManager.PERMISSION_GRANTED) {
-        if (acrylicBlur == null) return@thread
+        acrylicBlur ?: return@thread
         acrylicBlur = null
-        runOnUiThread(updateBlur)
+        updateBlur()
         return@thread
     }
     val drawable = wallpaperManager.peekDrawable()
     if (drawable == null) {
-        if (acrylicBlur == null) return@thread
+        acrylicBlur ?: return@thread
         acrylicBlur = null
-        runOnUiThread(updateBlur)
+        updateBlur()
         return@thread
     }
     AcrylicBlur.blurWallpaper(this, drawable) {

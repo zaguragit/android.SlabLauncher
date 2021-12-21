@@ -18,10 +18,10 @@ import androidx.core.app.NotificationManagerCompat
 import io.posidon.android.slablauncher.BuildConfig
 import io.posidon.android.slablauncher.data.notification.MediaPlayerData
 import io.posidon.android.slablauncher.data.notification.NotificationData
+import io.posidon.android.slablauncher.data.notification.TempNotificationData
 import io.posidon.android.slablauncher.providers.media.MediaItemCreator
 import io.posidon.android.slablauncher.util.StackTraceActivity
 import java.util.*
-import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.HashMap
 import kotlin.concurrent.thread
 
@@ -61,7 +61,7 @@ class NotificationService : NotificationListenerService() {
 
     private fun loadNotifications(notifications: Array<StatusBarNotification>?) {
         thread(name = "NotificationService loading thread", isDaemon = true) {
-            var tmpNotifications: MutableList<NotificationData> = ArrayList()
+            val tmpNotifications = LinkedList<TempNotificationData>()
             var i = 0
             try {
                 if (notifications != null) {
@@ -85,19 +85,27 @@ class NotificationService : NotificationListenerService() {
                             tmpNotifications += NotificationCreator.create(
                                 applicationContext,
                                 notification,
-                                this
                             )
                         }
                         i++
                     }
                 }
-                tmpNotifications = tmpNotifications.distinctBy { it.uid }.toMutableList()
+                tmpNotifications.sortByDescending {
+                    var r = it.millis
+                    when (it.importance) {
+                        1 -> r += 3600L * 2
+                        2 -> r += 3600L * 7
+                    }
+                    if (it.isConversation) {
+                        r += 3600L * 4
+                    }
+                    r
+                }
             }
             catch (e: Exception) { e.printStackTrace() }
-            lock.lock()
-            Companion.notifications = tmpNotifications
-            listeners.forEach { (_, x) -> x() }
-            lock.unlock()
+            val old = Companion.notifications
+            Companion.notifications = tmpNotifications.map { it.notificationData }.distinctBy { it.sourcePackageName }.toMutableList()
+            listeners.forEach { (_, x) -> x(old, Companion.notifications) }
         }
     }
 
@@ -138,8 +146,6 @@ class NotificationService : NotificationListenerService() {
 
         private var onMediaUpdate: () -> Unit = {}
 
-        private val lock = ReentrantLock()
-
         private fun pickController(controllers: List<MediaController>): MediaController {
             for (i in controllers.indices) {
                 val mc = controllers[i]
@@ -150,9 +156,9 @@ class NotificationService : NotificationListenerService() {
             return controllers[0]
         }
 
-        private val listeners = HashMap<String, () -> Unit>()
+        private val listeners = HashMap<String, (old: List<NotificationData>, new: List<NotificationData>) -> Unit>()
 
-        fun setOnUpdate(key: String, onUpdate: () -> Unit) {
+        fun setOnUpdate(key: String, onUpdate: (old: List<NotificationData>, new: List<NotificationData>) -> Unit) {
             listeners[key] = onUpdate
         }
 

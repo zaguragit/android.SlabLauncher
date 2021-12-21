@@ -32,7 +32,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
     implementation("com.willowtreeapps:fuzzywuzzy-kotlin-jvm:0.9.0")
 
-    implementation("io.posidon:android.launcherUtils:master-SNAPSHOT")
+    implementation("io.posidon:android.launcherUtils:1.0.0")
     implementation("io.posidon:android.loader:master-SNAPSHOT")
     implementation("io.posidon:android.convenienceLib:master-SNAPSHOT")
 

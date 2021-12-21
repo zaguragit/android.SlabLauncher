@@ -7,4 +7,5 @@ import io.posidon.android.slablauncher.ui.home.MainActivity
 
 abstract class SearchViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     abstract fun onBind(result: SearchResult, activity: MainActivity)
+    open fun recycle(result: SearchResult) {}
 }

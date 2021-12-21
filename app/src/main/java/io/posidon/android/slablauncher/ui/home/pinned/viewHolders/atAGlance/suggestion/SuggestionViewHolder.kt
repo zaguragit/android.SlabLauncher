@@ -9,9 +9,12 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.isVisible
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
+import io.posidon.android.computable.compute
+import io.posidon.android.computable.syncCompute
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.data.items.LauncherItem.Banner.Companion.ALPHA_MULTIPLIER
+import io.posidon.android.slablauncher.data.items.getBanner
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeIcons
@@ -30,45 +33,67 @@ class SuggestionViewHolder(
         navbarHeight: Int,
         settings: Settings,
     ) {
-        val backgroundColor = ColorTheme.tileColor(item.getColor())
 
-        card.setCardBackgroundColor(backgroundColor)
-
-        icon.setImageDrawable(item.icon)
+        icon.setImageDrawable(null)
+        item.icon.compute {
+            icon.post {
+                icon.setImageDrawable(it)
+            }
+        }
 
         itemView.setOnClickListener {
             item.open(it.context.applicationContext, it)
         }
-        itemView.setOnLongClickListener {
-            ItemLongPress.onItemLongPress(
-                it,
-                backgroundColor,
-                ColorTheme.titleColorForBG(itemView.context, backgroundColor),
-                item,
-                navbarHeight,
-            )
+        itemView.setOnLongClickListener { v ->
+            item.color.compute {
+                val backgroundColor = ColorTheme.tileColor(it)
+                ItemLongPress.onItemLongPress(
+                    v,
+                    backgroundColor,
+                    ColorTheme.titleColorForBG(itemView.context, backgroundColor),
+                    item,
+                    navbarHeight,
+                )
+            }
             true
         }
 
         val banner = item.getBanner()
-        if (banner?.background == null) {
-            imageView.isVisible = false
-        } else {
-            imageView.isVisible = true
-            imageView.setImageDrawable(banner.background)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                if (settings.doMonochromeIcons) {
-                    imageView.imageTintList = ColorStateList.valueOf(backgroundColor)
-                    imageView.imageTintBlendMode = BlendMode.COLOR
-                } else imageView.imageTintList = null
+
+        item.color.compute {
+            val backgroundColor = ColorTheme.tileColor(it)
+            card.post {
+                card.setCardBackgroundColor(backgroundColor)
             }
-            imageView.alpha = banner.bgOpacity * ALPHA_MULTIPLIER
-            val palette = Palette.from(banner.background.toBitmap(24, 24)).generate()
-            val color = item.getColor()
-            val imageColor = palette.getDominantColor(color)
-            val newBackgroundColor = ColorTheme.tileColor(imageColor)
-            card.setCardBackgroundColor(newBackgroundColor)
+            val background = banner.background.syncCompute()
+            if (background == null) {
+                imageView.post {
+                    imageView.isVisible = false
+                }
+            } else {
+                val palette = Palette.from(background.toBitmap(24, 24)).generate()
+                val imageColor = palette.getDominantColor(it)
+                val newBackgroundColor = ColorTheme.tileColor(imageColor)
+                imageView.post {
+                    imageView.isVisible = true
+                    imageView.setImageDrawable(background)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        if (settings.doMonochromeIcons) {
+                            imageView.imageTintList = ColorStateList.valueOf(backgroundColor)
+                            imageView.imageTintBlendMode = BlendMode.COLOR
+                        } else imageView.imageTintList = null
+                    }
+                    imageView.alpha = banner.bgOpacity * ALPHA_MULTIPLIER
+                    card.setCardBackgroundColor(newBackgroundColor)
+                }
+            }
+            icon.post {
+                icon.isVisible = banner.hideIcon != true
+            }
         }
-        icon.isVisible = banner?.hideIcon != true
+    }
+
+    fun recycle(item: LauncherItem) {
+        item.icon.offload()
     }
 }

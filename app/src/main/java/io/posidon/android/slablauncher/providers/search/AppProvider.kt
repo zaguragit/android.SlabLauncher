@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.LauncherApps
 import android.content.res.Resources
 import com.willowtreeapps.fuzzywuzzy.diffutils.FuzzySearch
+import io.posidon.android.computable.Computable
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.search.AppResult
 import io.posidon.android.slablauncher.data.search.Relevance
@@ -40,10 +41,12 @@ class AppProvider(
                     ShortcutResult(
                         it,
                         (it.longLabel ?: it.shortLabel).toString(),
-                        launcherApps.getShortcutIconDrawable(
-                            it,
-                            resources.displayMetrics.densityDpi
-                        ) ?: NonDrawable(),
+                        Computable {
+                            launcherApps.getShortcutIconDrawable(
+                                it,
+                                resources.displayMetrics.densityDpi
+                            ) ?: NonDrawable()
+                        },
                         app
                     )
                 }
@@ -53,10 +56,12 @@ class AppProvider(
                     ShortcutResult(
                         it,
                         (it.longLabel ?: it.shortLabel).toString(),
-                        launcherApps.getShortcutIconDrawable(
-                            it,
-                            resources.displayMetrics.densityDpi
-                        ) ?: NonDrawable(),
+                        Computable {
+                            launcherApps.getShortcutIconDrawable(
+                                it,
+                                resources.displayMetrics.densityDpi
+                            ) ?: NonDrawable()
+                        },
                         app
                     )
                 }

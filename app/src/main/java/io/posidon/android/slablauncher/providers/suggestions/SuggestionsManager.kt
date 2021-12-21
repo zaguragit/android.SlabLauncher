@@ -47,9 +47,9 @@ object SuggestionsManager {
     fun onAppsLoaded(
         appManager: LauncherContext.AppManager,
         context: Context,
-        settings: Settings
+        suggestionData: Settings
     ) {
-        loadFromStorage(settings, context, appManager)
+        loadFromStorage(suggestionData, context, appManager)
         updateSuggestions(context)
     }
 
@@ -60,8 +60,8 @@ object SuggestionsManager {
         }
     }
 
-    fun onPause(settings: Settings, context: Context) {
-        saveToStorage(settings, context)
+    fun onPause(suggestionData: Settings, context: Context) {
+        saveToStorage(suggestionData, context)
     }
 
     private fun saveItemOpenContext(context: Context, item: LauncherItem) {
@@ -140,19 +140,19 @@ object SuggestionsManager {
     }
 
     private fun loadFromStorage(
-        settings: Settings,
+        suggestionData: Settings,
         context: Context,
         appManager: LauncherContext.AppManager
     ) {
-        settings.getStrings("stats:app_opening_contexts")?.let {
+        suggestionData.getStrings("stats:app_opening_contexts")?.let {
             val contextMap = ContextMap<LauncherItem>(ContextArray.CONTEXT_DATA_SIZE, ContextArray::differentiator)
             it.forEach { app ->
                 appManager.tryParseApp(app)?.let { item ->
-                    settings.getStrings("stats:app_opening_context:$app")
+                    suggestionData.getStrings("stats:app_opening_context:$app")
                         ?.map(String::toFloat)?.let { floats ->
                             contextMap[item] = floats.chunked(ContextArray.CONTEXT_DATA_SIZE).map(::ContextArray)
                         }
-                } ?: settings.edit(context) {
+                } ?: suggestionData.edit(context) {
                     setStrings("stats:app_opening_context:$app", null)
                 }
             }
@@ -160,8 +160,8 @@ object SuggestionsManager {
         }
     }
 
-    private fun saveToStorage(settings: Settings, context: Context) {
-        settings.edit(context) {
+    private fun saveToStorage(suggestionData: Settings, context: Context) {
+        suggestionData.edit(context) {
             "stats:app_opening_contexts" set contextMap
                 .map { it.key.toString() }
                 .toTypedArray()

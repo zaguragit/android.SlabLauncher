@@ -16,10 +16,9 @@ import kotlin.concurrent.withLock
 
 private val settingsFileLock = ReentrantLock()
 
-class Settings {
-    companion object {
-        const val SAVE_FILE = "settings"
-    }
+class Settings(
+    val saveFile: String = "settings"
+) {
 
     private abstract class Single <V> (
         val value: V
@@ -112,13 +111,13 @@ class Settings {
         thread(name = "Settings edit thread") {
             settingsFileLock.withLock {
                 block(editor)
-                PrivateStorage.write(context, SAVE_FILE, ::serializeData)
+                PrivateStorage.write(context, saveFile, ::serializeData)
             }
         }
     }
 
     fun saveNow(context: Context) = settingsFileLock.withLock {
-        PrivateStorage.write(context, SAVE_FILE, ::serializeData)
+        PrivateStorage.write(context, saveFile, ::serializeData)
     }
 
     inline operator fun get(key: String, default: Int): Int = getInt(key) ?: default
@@ -155,7 +154,7 @@ class Settings {
     fun init(context: Context) {
         settingsFileLock.withLock {
             if (!isInitialized) {
-                PrivateStorage.read(context, SAVE_FILE, ::initializeData)
+                PrivateStorage.read(context, saveFile, ::initializeData)
                 isInitialized = true
             }
         }
@@ -258,7 +257,7 @@ class Settings {
      */
     fun reload(context: Context): Boolean {
         return settingsFileLock.withLock {
-            PrivateStorage.read(context, SAVE_FILE, ::initializeData) != false
+            PrivateStorage.read(context, saveFile, ::initializeData) != false
         }
     }
 }

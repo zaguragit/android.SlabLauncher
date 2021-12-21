@@ -1,28 +1,32 @@
 package io.posidon.android.slablauncher.providers.app
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.*
+import android.os.Build
 import android.os.UserHandle
 import androidx.core.graphics.*
 import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
+import io.posidon.android.computable.Computable
+import io.posidon.android.computable.copy
+import io.posidon.android.computable.dependentUse
 import io.posidon.android.launcherutils.IconTheming
 import io.posidon.android.launcherutils.appLoading.AppLoader
-import io.posidon.android.launcherutils.appLoading.IconConfig
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeIcons
 import io.posidon.android.slablauncher.util.storage.DoReshapeAdaptiveIconsSetting.doReshapeAdaptiveIcons
 import io.posidon.android.slablauncher.util.storage.Settings
+import io.posidon.android.slablauncher.util.view.tile.TileContentMover
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-
 class AppCollection(
     appCount: Int,
-    val settings: Settings
+    val settings: Settings,
 ) : AppLoader.AppCollection<AppCollection.ExtraIconData> {
     val list = ArrayList<App>(appCount)
     val byName = HashMap<String, MutableList<App>>()
@@ -41,15 +45,10 @@ class AppCollection(
         name: String,
         profile: UserHandle,
         label: String,
-        icon: Drawable,
+        icon: Computable<Drawable>,
         extra: AppLoader.ExtraAppInfo<ExtraIconData>,
     ) {
-        val extraIconData = extra.extraIconData
-        if (!extra.isUserRunning) {
-            icon.convertToGrayscale()
-            if (doMonochromeIcons) {
-                icon.alpha = 128
-            }
+        val extraIconData = if (!extra.isUserRunning) extra.extraIconData.copy { extraIconData ->
             extraIconData.color = run {
                 val a = (extraIconData.color.luminance * 255).toInt()
                 Color.rgb(a, a, a)
@@ -58,15 +57,44 @@ class AppCollection(
             if (b is FastColorDrawable) {
                 extraIconData.background = makeDrawable(extraIconData.color)
             } else b?.convertToGrayscale()
-        } else if (doMonochromeIcons) {
-            icon.convertToGrayscale()
+            extraIconData
+        } else if (doMonochromeIcons) extra.extraIconData.copy { extraIconData ->
             extraIconData.color = extraIconData.color and 0xffffff
-            val b = extraIconData.background
-            /*if (b is FastColorDrawable) {
-                val a = (extraIconData.color.luminance * 255).toInt()
-                extraIconData.background = makeDrawable(Color.rgb(a, a, a))
-            } else b?.convertToGrayscale()*/
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                val b = extraIconData.background
+                if (b is FastColorDrawable) {
+                    val a = (extraIconData.color.luminance * 255).toInt()
+                    extraIconData.background = makeDrawable(Color.rgb(a, a, a))
+                } else b?.convertToGrayscale()
+            }
+            extraIconData
+        } else extra.extraIconData
+
+        val maxIconSize = TileContentMover.calculateBigIconSize(context)
+        val scaledIcon = icon.copy {
+            if (it is BitmapDrawable) {
+                val oldBitmap = it.bitmap
+                if (oldBitmap.width > maxIconSize || oldBitmap.height > maxIconSize) {
+                    return@copy BitmapDrawable(Bitmap.createScaledBitmap(
+                        oldBitmap,
+                        size,
+                        size,
+                        true
+                    ))
+                }
+            }
+            it
         }
+        val icon = if (!extra.isUserRunning) scaledIcon.copy {
+            it.apply {
+                convertToGrayscale()
+                if (doMonochromeIcons) {
+                    alpha = 128
+                }
+            }
+        } else if (doMonochromeIcons) scaledIcon.copy {
+            it.apply { convertToGrayscale() }
+        } else scaledIcon
 
         val app = App(
             packageName,
@@ -74,8 +102,8 @@ class AppCollection(
             profile,
             label,
             icon,
-            extraIconData.background,
-            extraIconData.color
+            extraIconData.dependentUse { it.background },
+            extraIconData.dependentUse { it.color },
         )
 
         list.add(app)
@@ -96,9 +124,11 @@ class AppCollection(
         when {
             expandableBackground != null -> {
                 background = expandableBackground
-                val palette = Palette.from(background.toBitmap(8, 8)).generate()
+                val bitmap = background.toBitmap(8, 8)
+                val palette = Palette.from(bitmap).generate()
                 val d = palette.dominantSwatch
                 color = d?.rgb ?: color
+                bitmap.recycle()
             }
             icon is AdaptiveIconDrawable &&
             doReshapeAdaptiveIcons &&
@@ -110,11 +140,13 @@ class AppCollection(
                 color = c
             }
             else -> {
-                val palette = Palette.from(icon.toBitmap(64, 64)).generate()
+                val bitmap = icon.toBitmap(64, 64)
+                val palette = Palette.from(bitmap).generate()
                 color = palette.getDominantColor(0)
                 if (color.red == color.blue && color.blue == color.green && color.green > 0xd0) {
                     color = 0
                 }
+                bitmap.recycle()
             }
         }
 
@@ -132,8 +164,10 @@ class AppCollection(
         icon: AdaptiveIconDrawable
     ): Int {
         if (color == 0xffffffff.toInt()) {
-            val c = Palette.from(icon.foreground.toBitmap(24, 24)).generate()
+            val bitmap = icon.foreground.toBitmap(24, 24)
+            val c = Palette.from(bitmap).generate()
                 .getDominantColor(color)
+            bitmap.recycle()
             ColorUtils.colorToLAB(c, tmpLab)
             tmpLab[0] = (tmpLab[0] * 1.5).coerceAtLeast(70.0)
             return ColorUtils.LABToColor(tmpLab[0], tmpLab[1], tmpLab[2])
@@ -162,6 +196,7 @@ class AppCollection(
                     return@run true
                 }
             }
+            fg.recycle()
             false
         }
         val (foreground, background) = when (b) {
@@ -174,12 +209,17 @@ class AppCollection(
                 (if (isForegroundDangerous) icon else scale(icon.foreground)) to makeDrawable(color)
             }
             is GradientDrawable -> {
-                color = b.color?.defaultColor ?: Palette.from(b.toBitmap(8, 8)).generate().getDominantColor(0)
+                val bitmap = b.toBitmap(8, 8)
+                color = b.color?.defaultColor ?: Palette.from(bitmap).generate().getDominantColor(0)
+                bitmap.recycle()
                 (if (isForegroundDangerous) icon else scale(icon.foreground)) to b
             }
             else -> if (b != null) {
                 val bitmap = b.toBitmap(24, 24)
-                val px = b.toBitmap(1, 1).getPixel(0, 0)
+                val px = run {
+                    val x = b.toBitmap(1, 1)
+                    x.getPixel(0, 0).also { x.recycle() }
+                }
                 val width = bitmap.width
                 val height = bitmap.height
                 val pixels = IntArray(width * height)
@@ -217,12 +257,15 @@ class AppCollection(
                 val bt = 5f
                 if (isOneColor) {
                     color = ensureNotPlainWhite(px, icon)
+                    bitmap.recycle()
                     (if (isForegroundDangerous) icon else scale(icon.foreground)) to makeDrawable(color)
                 } else if (maxL - minL <= lt && maxA - minA <= at && maxB - minB <= bt) {
                     color = px
+                    bitmap.recycle()
                     (if (isForegroundDangerous) icon else scale(icon.foreground)) to b
                 } else {
                     color = Palette.from(bitmap).generate().getDominantColor(0)
+                    bitmap.recycle()
                     icon to null
                 }
             } else icon to null
@@ -263,9 +306,8 @@ class AppCollection(
 
     override fun themeIcon(
         icon: Drawable,
-        iconConfig: IconConfig,
-        iconPackInfo: IconTheming.IconPackInfo,
-        context: Context
+        iconPackInfo: IconTheming.IconGenerationInfo,
+        resources: Resources
     ): Drawable {
         return try {
             var orig = Bitmap.createBitmap(
@@ -276,56 +318,65 @@ class AppCollection(
             icon.setBounds(0, 0, icon.intrinsicWidth, icon.intrinsicHeight)
             icon.draw(Canvas(orig))
             val scaledBitmap =
-                Bitmap.createBitmap(iconConfig.size, iconConfig.size, Bitmap.Config.ARGB_8888)
+                Bitmap.createBitmap(iconPackInfo.size, iconPackInfo.size, Bitmap.Config.ARGB_8888)
             Canvas(scaledBitmap).run {
-                if (iconPackInfo.back != null) {
-                    val b = iconPackInfo.back!!
+                val uniformOptions = BitmapFactory.Options().apply {
+                    inScaled = false
+                }
+                val back = iconPackInfo.getBackBitmap(uniformOptions)
+                if (back != null) {
                     drawBitmap(
-                        b,
-                        Rect(0, 0, b.width, b.height),
-                        Rect(0, 0, iconConfig.size, iconConfig.size),
+                        back,
+                        Rect(0, 0, back.width, back.height),
+                        Rect(0, 0, iconPackInfo.size, iconPackInfo.size),
                         p
                     )
+                    back.recycle()
                 }
                 val scaledOrig =
-                    Bitmap.createBitmap(iconConfig.size, iconConfig.size, Bitmap.Config.ARGB_8888)
+                    Bitmap.createBitmap(iconPackInfo.size, iconPackInfo.size, Bitmap.Config.ARGB_8888)
                 Canvas(scaledOrig).run {
-                    val s = (iconConfig.size * iconPackInfo.scaleFactor).toInt()
+                    val s = (iconPackInfo.size * iconPackInfo.scaleFactor).toInt()
+                    val oldOrig = orig
                     orig = Bitmap.createScaledBitmap(orig, s, s, true)
+                    oldOrig.recycle()
                     drawBitmap(
                         orig,
                         scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f,
                         scaledOrig.width - orig.width / 2f - scaledOrig.width / 2f,
                         p
                     )
-                    if (iconPackInfo.mask != null) {
-                        val b = iconPackInfo.mask!!
+                    val mask = iconPackInfo.getMaskBitmap(uniformOptions)
+                    if (mask != null) {
                         drawBitmap(
-                            b,
-                            Rect(0, 0, b.width, b.height),
-                            Rect(0, 0, iconConfig.size, iconConfig.size),
+                            mask,
+                            Rect(0, 0, mask.width, mask.height),
+                            Rect(0, 0, iconPackInfo.size, iconPackInfo.size),
                             maskp
                         )
+                        mask.recycle()
                     }
                 }
                 drawBitmap(
-                    Bitmap.createScaledBitmap(scaledOrig, iconConfig.size, iconConfig.size, true),
+                    Bitmap.createScaledBitmap(scaledOrig, iconPackInfo.size, iconPackInfo.size, true),
                     0f,
                     0f,
                     p
                 )
-                if (iconPackInfo.front != null) {
-                    val b = iconPackInfo.front!!
+                val front = iconPackInfo.getFrontBitmap(uniformOptions)
+                if (front != null) {
                     drawBitmap(
-                        b,
-                        Rect(0, 0, b.width, b.height),
-                        Rect(0, 0, iconConfig.size, iconConfig.size),
+                        front,
+                        Rect(0, 0, front.width, front.height),
+                        Rect(0, 0, iconPackInfo.size, iconPackInfo.size),
                         p
                     )
+                    front.recycle()
                 }
+                orig.recycle()
                 scaledOrig.recycle()
             }
-            BitmapDrawable(context.resources, scaledBitmap)
+            BitmapDrawable(resources, scaledBitmap)
         } catch (e: Exception) {
             e.printStackTrace()
             icon
