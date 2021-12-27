@@ -11,7 +11,7 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
-import androidx.core.view.doOnPreDraw
+import androidx.core.view.doOnLayout
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.onEnd
 import posidon.android.conveniencelib.sp
@@ -164,6 +164,7 @@ class TileContentView : View {
         ValueAnimator.ofFloat(notificationness, target).apply {
             addUpdateListener {
                 notificationness = it.animatedValue as Float
+                println("notificationness -> target ($notificationness)")
                 mover.setDefaultToNotification(notificationness, width, height)
                 invalidate()
             }
@@ -175,11 +176,17 @@ class TileContentView : View {
         if (_extraText == null && _extraTitle == null) {
             notificationnessAnimator?.cancel()
             notificationness = 0f
-            mover.setDefaultToNotification(notificationness, width, height)
+            println("notificationness = 0")
+            doOnLayout {
+                mover.setDefaultToNotification(notificationness, width, height)
+            }
         } else {
             notificationnessAnimator?.cancel()
             notificationness = 1f
-            mover.setDefaultToNotification(notificationness, width, height)
+            println("notificationness = 1")
+            doOnLayout {
+                mover.setDefaultToNotification(notificationness, width, height)
+            }
         }
     }
 
@@ -200,7 +207,10 @@ class TileContentView : View {
         realExtraText?.also {
             tmpPaint.set(textPaint)
             tmpPaint.alpha = (tmpPaint.alpha * notificationness).toInt()
-            canvas.drawText(it, 0, it.length, mover.extraTextX, mover.extraTextY, tmpPaint)
+            for (i in it.indices) {
+                val line = it[i]
+                canvas.drawText(line, 0, line.length, mover.extraTextX, mover.extraTextY + getExtraTextHeight() * i, tmpPaint)
+            }
         }
     }
 
@@ -224,11 +234,11 @@ class TileContentView : View {
 
     private var realLabel: String? = label
     private var realExtraTitle: String? = _extraTitle
-    private var realExtraText: String? = _extraText
+    private var realExtraText: List<String>? = _extraText?.let { listOf(it) }
     fun updateEllipsis(maxLabelWidth: Float, maxExtraWidth: Float) {
         realLabel = label?.let { ellipsize(it, labelPaint, maxLabelWidth) }
         realExtraTitle = _extraTitle?.let { ellipsize(it, titlePaint, maxExtraWidth) }
-        realExtraText = _extraText?.let { ellipsize(it, textPaint, maxExtraWidth) }
+        realExtraText = _extraText?.let { treatMultiline(it, textPaint, maxExtraWidth) }
     }
 
     private fun ellipsize(text: String, paint: Paint, maxWidth: Float): String {
@@ -242,6 +252,33 @@ class TileContentView : View {
             .apply { while (lastOrNull()?.isWhitespace() == true) deleteAt(lastIndex) }
             .append('…')
             .toString()
+    }
+
+    private fun treatMultiline(text: String, paint: Paint, maxWidth: Float): List<String> {
+        if (maxWidth < 0) return listOf(text)
+        val lines = text.lines().flatMapTo(ArrayList()) { widthSplit(it, paint, maxWidth) }
+        val lastLine = lines.lastOrNull() ?: return lines
+        val l = cutOff(lastLine, paint, maxWidth)
+        val ol = lastLine.length
+        if (l < ol) {
+            lines[lines.lastIndex] = StringBuilder(lastLine)
+                .delete((l - 1).coerceAtLeast(0), ol)
+                .apply { while (lastOrNull()?.isWhitespace() == true) deleteAt(lastIndex) }
+                .append('…')
+                .toString()
+        }
+        return lines
+    }
+
+    private tailrec fun widthSplit(text: String, paint: Paint, maxWidth: Float, list: MutableList<String> = ArrayList()): MutableList<String> {
+        val c = cutOff(text, paint, maxWidth)
+        if (c == text.length) {
+            list += text
+            return list
+        }
+        list += text.substring(0, c)
+        println("width split $maxWidth, $c, ${text.length}, $text")
+        return widthSplit(text.substring(c, text.length), paint, maxWidth, list)
     }
 
     private fun cutOff(text: String, paint: Paint, maxWidth: Float): Int {
@@ -258,9 +295,7 @@ class TileContentView : View {
         return text.length - i
     }
 
-    init {
-        doOnPreDraw {
-            mover.setDefaultToNotification(notificationness, it.width, it.height)
-        }
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        mover.setDefaultToNotification(notificationness, right - left, bottom - top)
     }
 }

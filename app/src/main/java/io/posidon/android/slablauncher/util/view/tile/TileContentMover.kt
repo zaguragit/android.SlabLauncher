@@ -60,11 +60,10 @@ class TileContentMover(
 
         val maxLabelWidth = innerWidth - (labelX - sideMargin)
 
-        val originalTitleHeight = view.getExtraTitleHeight()
-
         extraTitleX = sideMargin
         extraTextX = sideMargin
 
+        val originalTitleHeight = view.getExtraTitleHeight()
         extraTitleY = mix(
             height.toFloat(),
             iconBottom.toFloat() + originalTitleHeight,
@@ -72,9 +71,9 @@ class TileContentMover(
         )
 
         val originalTextHeight = view.getExtraTextHeight()
-
         extraTextY = extraTitleY + originalTextHeight + sideMargin / 2f
 
+        println("widthss $f, $maxLabelWidth, $innerWidth, $width, $sideMargin")
         view.updateEllipsis(maxLabelWidth, innerWidth.toFloat())
     }
 

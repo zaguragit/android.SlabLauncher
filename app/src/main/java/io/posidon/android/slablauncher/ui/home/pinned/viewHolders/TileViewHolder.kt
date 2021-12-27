@@ -92,18 +92,18 @@ class TileViewHolder(
                 val palette = Palette.from(bitmap).generate()
                 palette.getDominantColor(itemColor)
                     .also { bitmap.recycle() }
-            }.let {
-                if (
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-                    settings.doMonochromeIcons &&
-                    item !is ContactItem
-                ) (it.luminance * 255).toInt()
-                    .let { a -> Color.rgb(a, a, a) }
-                else it
             }
-            val newBackgroundColor = ColorTheme.tileColor(imageColor)
+            val newBackgroundColor = ColorTheme.tileColor(imageColor and 0xffffff)
             val actuallyBackgroundColor =
-                Colors.blend(imageColor, newBackgroundColor, imageView.alpha)
+                Colors.blend(imageColor.let {
+                    if (
+                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+                        settings.doMonochromeIcons &&
+                        item !is ContactItem
+                    ) (it.luminance * 255).toInt()
+                        .let { a -> Color.rgb(a, a, a) }
+                    else it
+                }, newBackgroundColor, imageView.alpha)
             val titleColor = ColorTheme.titleColorForBG(itemView.context, actuallyBackgroundColor)
             val textColor = ColorTheme.textColorForBG(itemView.context, actuallyBackgroundColor)
             val labelColor =
