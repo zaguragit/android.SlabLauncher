@@ -164,7 +164,6 @@ class TileContentView : View {
         ValueAnimator.ofFloat(notificationness, target).apply {
             addUpdateListener {
                 notificationness = it.animatedValue as Float
-                println("notificationness -> target ($notificationness)")
                 mover.setDefaultToNotification(notificationness, width, height)
                 invalidate()
             }
@@ -176,14 +175,12 @@ class TileContentView : View {
         if (_extraText == null && _extraTitle == null) {
             notificationnessAnimator?.cancel()
             notificationness = 0f
-            println("notificationness = 0")
             doOnLayout {
                 mover.setDefaultToNotification(notificationness, width, height)
             }
         } else {
             notificationnessAnimator?.cancel()
             notificationness = 1f
-            println("notificationness = 1")
             doOnLayout {
                 mover.setDefaultToNotification(notificationness, width, height)
             }
@@ -226,6 +223,8 @@ class TileContentView : View {
     internal fun getExtraTitleHeight() = if (_extraTitle == null) 0f else titlePaint.descent() - titlePaint.ascent()
     internal fun getExtraTextHeight() = if (_extraText == null) 0f else textPaint.descent() - textPaint.ascent()
 
+    internal fun getMaxExtraTextLines() = getExtraTextHeight().also { if (it == 0f) return 0 }.let { mover.extraTextBoxHeight / it }.toInt()
+
     internal val smallIconSize: Float
         get() = dp(24)
     internal val sideMargin: Float
@@ -256,11 +255,18 @@ class TileContentView : View {
 
     private fun treatMultiline(text: String, paint: Paint, maxWidth: Float): List<String> {
         if (maxWidth < 0) return listOf(text)
-        val lines = text.lines().flatMapTo(ArrayList()) { widthSplit(it, paint, maxWidth) }
+        val maxLines = getMaxExtraTextLines()
+        val lines = text.lines().let { if (it.size > maxLines) it.subList(it.size - maxLines, it.size) else it }.flatMapTo(ArrayList()) { widthSplit(it, paint, maxWidth) }
+        var removedLine = false
+        if (lines.size > maxLines) {
+            removedLine = true
+            while (lines.size > maxLines)
+                lines.removeLast()
+        }
         val lastLine = lines.lastOrNull() ?: return lines
         val l = cutOff(lastLine, paint, maxWidth)
         val ol = lastLine.length
-        if (l < ol) {
+        if (l < ol || removedLine) {
             lines[lines.lastIndex] = StringBuilder(lastLine)
                 .delete((l - 1).coerceAtLeast(0), ol)
                 .apply { while (lastOrNull()?.isWhitespace() == true) deleteAt(lastIndex) }
@@ -277,7 +283,6 @@ class TileContentView : View {
             return list
         }
         list += text.substring(0, c)
-        println("width split $maxWidth, $c, ${text.length}, $text")
         return widthSplit(text.substring(c, text.length), paint, maxWidth, list)
     }
 

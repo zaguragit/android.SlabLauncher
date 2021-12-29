@@ -24,6 +24,9 @@ class TileContentMover(
         private set
     val iconPosition = Rect()
 
+    var extraTextBoxHeight: Float = 0f
+        private set
+
     private inline fun mix(x: Float, y: Float, f: Float) = f * y + (1 - f) * x
 
     fun setDefaultToNotification(f: Float, width: Int, height: Int) {
@@ -73,7 +76,8 @@ class TileContentMover(
         val originalTextHeight = view.getExtraTextHeight()
         extraTextY = extraTitleY + originalTextHeight + sideMargin / 2f
 
-        println("widthss $f, $maxLabelWidth, $innerWidth, $width, $sideMargin")
+        extraTextBoxHeight = (height - extraTitleY - sideMargin).coerceAtLeast(0f)
+
         view.updateEllipsis(maxLabelWidth, innerWidth.toFloat())
     }
 
