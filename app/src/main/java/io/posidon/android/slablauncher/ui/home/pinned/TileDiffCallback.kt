@@ -36,10 +36,11 @@ class TileDiffCallback(
         return old.label == new.label
             && old.icon.isComputed()
             && new.icon.isComputed()
-            && old.icon.computed().constantState == new.icon.computed().constantState
+            && old.icon.computed() === new.icon.computed()
             && old.color.isComputed()
             && new.color.isComputed()
             && old.color.computed() == new.color.computed()
+            && oldBanner.background.computed() === newBanner.background.computed()
             && oldBanner == newBanner
     }
 
@@ -72,7 +73,8 @@ class TileDiffCallback(
             changes += CHANGE_LABEL
         if (
             old.color.computed() != new.color.computed() ||
-            old.icon.computed().constantState != new.icon.computed().constantState
+            old.icon.computed() !== new.icon.computed() ||
+            oldBanner.background.computed() !== newBanner.background.computed()
         ) changes += CHANGE_GRAPHICS
         return changes
     }

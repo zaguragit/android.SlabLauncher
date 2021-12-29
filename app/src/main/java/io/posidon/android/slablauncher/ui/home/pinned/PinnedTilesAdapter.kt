@@ -207,7 +207,7 @@ class PinnedTilesAdapter(
         val item = launcherContext.appManager.tryParseLauncherItem(clipData.getItemAt(0).text.toString(), v.context)
         item?.let { items.add(i, it) }
         dropTargetIndex = -1
-        notifyDataSetChanged()
+        updateItems(items)
         updatePins(v)
     }
 }
