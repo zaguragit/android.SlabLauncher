@@ -114,7 +114,7 @@ class HomeLongPressPopup(
 
             val gravity = Gravity.CENTER
             val x = touchX.toInt() - Device.screenWidth(parent.context) / 2
-            val y = touchY.toInt() - Device.screenHeight(parent.context) / 2 + navbarHeight
+            val y = touchY.toInt() - Device.screenHeight(parent.context) / 2
             window.showAtLocation(parent, gravity, x, y)
         }
 

@@ -93,18 +93,7 @@ class PinnedTilesAdapter(
         }
         val item = items[adapterPositionToI(ii)]
         holder as TileViewHolder
-        holder.bind(
-            item,
-            activity,
-            activity.settings,
-            onDragStart = {
-                val i = adapterPositionToI(holder.bindingAdapterPosition)
-                items.removeAt(i)
-                dropTargetIndex = i
-                notifyItemChanged(holder.bindingAdapterPosition)
-                updatePins(it)
-            },
-        )
+        bindViewHolderUpdateAll(holder, item)
     }
 
     override fun onBindViewHolder(
@@ -125,9 +114,35 @@ class PinnedTilesAdapter(
         val item = items[adapterPositionToI(ii)]
         holder as TileViewHolder
 
-        val payload = payloads.getOrNull(0) as List<*>?
+        if (payloads.isEmpty()) {
+            return bindViewHolderUpdateAll(holder, item)
+        }
+        payloads.forEach { payload ->
+            payload as List<*>
 
-        if (payload == null || payload.contains(CHANGE_ALL)) return holder.bind(
+            if (payload.contains(CHANGE_ALL))
+                return bindViewHolderUpdateAll(holder, item)
+
+            if (payload.contains(CHANGE_BANNER_TEXT))
+                holder.updateBannerText(item.getBanner())
+
+            if (payload.contains(CHANGE_LABEL))
+                holder.updateLabel(item)
+
+            if (payload.contains(CHANGE_GRAPHICS)) {
+                val b = item.getBanner()
+                holder.updateBackground(item, b.background.computedOrNull(), activity.settings, b)
+            }
+        }
+
+        println("payloads: " + payloads.joinToString("; ") { (it as List<*>?)?.joinToString().toString() })
+    }
+
+    private fun bindViewHolderUpdateAll(
+        holder: TileViewHolder,
+        item: LauncherItem
+    ) {
+        holder.bind(
             item,
             activity,
             activity.settings,
@@ -139,17 +154,6 @@ class PinnedTilesAdapter(
                 updatePins(it)
             },
         )
-
-        if (payload.contains(CHANGE_BANNER_TEXT))
-            holder.updateBannerText(item.getBanner())
-
-        if (payload.contains(CHANGE_LABEL))
-            holder.updateLabel(item)
-
-        if (payload.contains(CHANGE_GRAPHICS)) {
-            val b = item.getBanner()
-            holder.updateBackground(item, b.background.computedOrNull(), activity.settings, b)
-        }
     }
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
@@ -207,6 +211,7 @@ class PinnedTilesAdapter(
         val item = launcherContext.appManager.tryParseLauncherItem(clipData.getItemAt(0).text.toString(), v.context)
         item?.let { items.add(i, it) }
         dropTargetIndex = -1
+        notifyItemRemoved(i)
         updateItems(items)
         updatePins(v)
     }

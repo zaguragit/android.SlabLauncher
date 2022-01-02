@@ -40,6 +40,8 @@ class TileDiffCallback(
             && old.color.isComputed()
             && new.color.isComputed()
             && old.color.computed() == new.color.computed()
+            && oldBanner.background.isComputed()
+            && newBanner.background.isComputed()
             && oldBanner.background.computed() === newBanner.background.computed()
             && oldBanner == newBanner
     }

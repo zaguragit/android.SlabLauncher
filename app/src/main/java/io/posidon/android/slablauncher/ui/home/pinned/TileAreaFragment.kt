@@ -79,7 +79,7 @@ class TileAreaFragment : Fragment() {
 
     private fun configureWindow() {
         val tileMargin = resources.getDimension(R.dimen.item_card_margin).toInt()
-        tileArea.pinnedRecycler.setPadding(tileMargin, tileMargin + requireContext().getStatusBarHeight(), tileMargin, tileMargin + requireActivity().getNavigationBarHeight())
+        tileArea.pinnedRecycler.setPadding(tileMargin, tileMargin + requireContext().getStatusBarHeight(), tileMargin, tileMargin)
     }
 
     private fun updateBlur() {
