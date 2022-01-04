@@ -12,24 +12,19 @@ class TileDiffCallback(
     val newNotifications: List<NotificationData>,
 ) : DiffUtil.Callback() {
 
-    fun getOld(i: Int) = old[i - 1]
-    fun getNew(i: Int) = new[i - 1]
+    fun getOld(i: Int) = old[i]
+    fun getNew(i: Int) = new[i]
 
-    override fun getOldListSize() = old.size + 1
-    override fun getNewListSize() = new.size + 1
+    override fun getOldListSize() = old.size
+    override fun getNewListSize() = new.size
 
     override fun areItemsTheSame(oldI: Int, newI: Int): Boolean {
-        if (oldI == 0 && newI == 0) return false
-        if (oldI == 0) return false
-        if (newI == 0) return false
         val old = getOld(oldI)
         val new = getNew(newI)
         return old == new
     }
 
     override fun areContentsTheSame(oldI: Int, newI: Int): Boolean {
-        if (oldI == 0) return false
-        if (newI == 0) return false
         val old = getOld(oldI)
         val new = getNew(newI)
         val oldBanner = old.getBanner(oldNotifications)
@@ -48,8 +43,6 @@ class TileDiffCallback(
     }
 
     override fun getChangePayload(oldI: Int, newI: Int): Any {
-        if (oldI == 0) return false
-        if (newI == 0) return false
         val old = getOld(oldI)
         val new = getNew(newI)
         val oldBanner = old.getBanner(oldNotifications)
