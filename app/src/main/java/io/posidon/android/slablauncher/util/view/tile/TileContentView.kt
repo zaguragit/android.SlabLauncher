@@ -12,6 +12,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.core.view.doOnLayout
+import io.posidon.android.slablauncher.R
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.onEnd
 import posidon.android.conveniencelib.sp
@@ -49,6 +50,14 @@ class TileContentView : View {
     var label: String? = null
         set(value) {
             field = value
+            updateMover()
+            invalidate()
+        }
+
+    var mark: String? = null
+        set(value) {
+            field = value
+            updateMover()
             invalidate()
         }
 
@@ -100,6 +109,13 @@ class TileContentView : View {
             invalidate()
         }
 
+    var markColor: Int
+        get() = markPaint.color
+        set(value) {
+            markPaint.color = value
+            invalidate()
+        }
+
     var titleColor: Int
         get() = titlePaint.color
         set(value) {
@@ -145,7 +161,7 @@ class TileContentView : View {
     }
     private val titlePaint = Paint().apply {
         textSize = sp(12)
-        typeface = Typeface.create(typeface, Typeface.BOLD)
+        typeface = Typeface.create(context.resources.getFont(R.font.atkinson_hyperlegible_regular), Typeface.BOLD)
         isAntiAlias = true
         isLinearText = true
         isSubpixelText = true
@@ -155,6 +171,14 @@ class TileContentView : View {
         isAntiAlias = true
         isLinearText = true
         isSubpixelText = true
+    }
+
+    private val markPaint = Paint().apply {
+        textSize = sp(52)
+        isAntiAlias = true
+        isLinearText = true
+        isSubpixelText = true
+        typeface = Typeface.create(context.resources.getFont(R.font.atkinson_hyperlegible_regular), Typeface.BOLD)
     }
 
     private var notificationness = 0f
@@ -175,21 +199,26 @@ class TileContentView : View {
         if (_extraText == null && _extraTitle == null) {
             notificationnessAnimator?.cancel()
             notificationness = 0f
-            doOnLayout {
-                mover.setDefaultToNotification(notificationness, width, height)
-            }
+            updateMover()
         } else {
             notificationnessAnimator?.cancel()
             notificationness = 1f
-            doOnLayout {
-                mover.setDefaultToNotification(notificationness, width, height)
-            }
+            updateMover()
+        }
+    }
+
+    private fun updateMover() {
+        doOnLayout {
+            mover.setDefaultToNotification(notificationness, width, height)
         }
     }
 
     private val tmpPaint = Paint()
     @SuppressLint("MissingSuperCall")
     override fun draw(canvas: Canvas) {
+        mark?.also {
+            canvas.drawText(it, 0, it.length, mover.markTextX, mover.markTextY, markPaint)
+        }
         icon?.also {
             drawDrawable(canvas, it, mover.iconPosition)
         }
@@ -219,6 +248,7 @@ class TileContentView : View {
     }
 
     internal fun getLabelBounds(bounds: Rect) = label?.let { labelPaint.getTextBounds(it, 0, it.length, bounds) } ?: bounds.setEmpty()
+    internal fun getMarkBounds(bounds: Rect) = mark?.let { markPaint.getTextBounds(it, 0, it.length, bounds) } ?: bounds.setEmpty()
 
     internal fun getExtraTitleHeight() = if (_extraTitle == null) 0f else titlePaint.descent() - titlePaint.ascent()
     internal fun getExtraTextHeight() = if (_extraText == null) 0f else textPaint.descent() - textPaint.ascent()

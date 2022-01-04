@@ -17,7 +17,9 @@ import io.posidon.android.launcherutils.appLoading.AppLoader
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeIcons
+import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeTileBackground
 import io.posidon.android.slablauncher.util.storage.DoReshapeAdaptiveIconsSetting.doReshapeAdaptiveIcons
+import io.posidon.android.slablauncher.util.storage.DoReshapeAdaptiveIconsSetting.forceReshapeAdaptiveIcons
 import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.android.slablauncher.util.view.tile.TileContentMover
 import java.util.*
@@ -37,7 +39,9 @@ class AppCollection(
     private val tmpLab = DoubleArray(3)
 
     private val doReshapeAdaptiveIcons = settings.doReshapeAdaptiveIcons
+    private val forceReshapeAdaptiveIcons = settings.forceReshapeAdaptiveIcons
     private val doMonochromeIcons = settings.doMonochromeIcons
+    private val doMonochromeTileBackground = settings.doMonochromeTileBackground
 
     override fun addApp(
         context: Context,
@@ -58,7 +62,7 @@ class AppCollection(
                 extraIconData.background = makeDrawable(extraIconData.color)
             } else b?.convertToGrayscale()
             extraIconData
-        } else if (doMonochromeIcons) extra.extraIconData.copy { extraIconData ->
+        } else if (doMonochromeTileBackground) extra.extraIconData.copy { extraIconData ->
             extraIconData.color = extraIconData.color and 0xffffff
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 val b = extraIconData.background
@@ -156,7 +160,7 @@ class AppCollection(
     }
 
     private inline fun makeDrawable(color: Int) =
-        if (doMonochromeIcons) ColorDrawable(color)
+        if (doMonochromeTileBackground) ColorDrawable(color)
         else FastColorDrawable(color)
 
     private fun ensureNotPlainWhite(
@@ -214,8 +218,12 @@ class AppCollection(
                 bitmap.recycle()
                 (if (isForegroundDangerous) icon else scale(icon.foreground)) to b
             }
-            else -> if (b != null) {
+            else -> if (b != null) run {
                 val bitmap = b.toBitmap(24, 24)
+                if (forceReshapeAdaptiveIcons) {
+                    color = Palette.from(bitmap).generate().getDominantColor(0)
+                    return@run (if (isForegroundDangerous) icon else scale(icon.foreground)) to b
+                }
                 val px = run {
                     val x = b.toBitmap(1, 1)
                     x.getPixel(0, 0).also { x.recycle() }

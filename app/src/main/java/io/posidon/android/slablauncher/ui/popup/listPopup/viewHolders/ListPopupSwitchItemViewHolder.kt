@@ -55,7 +55,9 @@ class ListPopupSwitchItemViewHolder(itemView: View) : ListPopupViewHolder(itemVi
             imageTintList = ColorStateList.valueOf(ColorTheme.cardDescription)
         }
         switch.isChecked = (item.value as? Boolean) ?: false
-        switch.setOnCheckedChangeListener(item.onToggle!!)
+        switch.setOnCheckedChangeListener { v, value ->
+            item.onStateChange!!(v, if (value) 1 else 0)
+        }
     }
 
     private fun generateTrackDrawable(context: Context): Drawable {

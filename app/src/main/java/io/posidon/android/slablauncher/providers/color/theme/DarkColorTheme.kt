@@ -3,12 +3,12 @@ package io.posidon.android.slablauncher.providers.color.theme
 import android.content.Context
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.alpha
+import androidx.core.graphics.luminance
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme.Companion.hueTintClosest
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme.Companion.labClosestVibrant
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme.Companion.tintWithColor
-import posidon.android.conveniencelib.Colors
 
 class DarkColorTheme(
     val palette: ColorPalette,
@@ -34,7 +34,7 @@ class DarkColorTheme(
     override val searchBarFG = palette.neutralLight
 
     override fun adjustColorForContrast(base: Int, tint: Int): Int {
-        return if (Colors.getLuminance(base) > .7f) {
+        return if (base.luminance > .7f) {
             val lab = DoubleArray(3)
             ColorUtils.colorToLAB(tint, lab)
             lab[0] = lab[0].coerceAtMost(20.0)
@@ -74,19 +74,19 @@ class DarkColorTheme(
     }
 
     override fun textColorForBG(context: Context, background: Int): Int {
-        return tintWithColor(if (Colors.getLuminance(background) > .6f)
+        return tintWithColor(if (background.luminance > .6f)
             context.getColor(R.color.feed_card_text_dark_description)
         else context.getColor(R.color.feed_card_text_light_description), background)
     }
 
     override fun titleColorForBG(context: Context, background: Int): Int {
-        return tintWithColor(if (Colors.getLuminance(background) > .6f)
+        return tintWithColor(if (background.luminance > .6f)
             context.getColor(R.color.feed_card_text_dark_title)
         else context.getColor(R.color.feed_card_text_light_title), background)
     }
 
     override fun hintColorForBG(context: Context, background: Int): Int {
-        return tintWithColor(if (Colors.getLuminance(background) > .6f)
+        return tintWithColor(if (background.luminance > .6f)
             context.getColor(R.color.feed_card_text_dark_hint)
         else context.getColor(R.color.feed_card_text_light_hint), background)
     }

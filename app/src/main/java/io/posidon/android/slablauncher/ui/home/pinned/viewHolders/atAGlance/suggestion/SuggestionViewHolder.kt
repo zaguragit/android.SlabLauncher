@@ -17,7 +17,7 @@ import io.posidon.android.slablauncher.data.items.LauncherItem.Banner.Companion.
 import io.posidon.android.slablauncher.data.items.getBanner
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
-import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeIcons
+import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeTileBackground
 import io.posidon.android.slablauncher.util.storage.Settings
 
 class SuggestionViewHolder(
@@ -78,7 +78,7 @@ class SuggestionViewHolder(
                     imageView.isVisible = true
                     imageView.setImageDrawable(background)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                        if (settings.doMonochromeIcons) {
+                        if (settings.doMonochromeTileBackground) {
                             imageView.imageTintList = ColorStateList.valueOf(backgroundColor)
                             imageView.imageTintBlendMode = BlendMode.COLOR
                         } else imageView.imageTintList = null

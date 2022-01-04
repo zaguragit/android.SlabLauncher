@@ -2,6 +2,7 @@ package io.posidon.android.slablauncher.providers.color.theme
 
 import android.content.Context
 import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.luminance
 import io.posidon.android.slablauncher.providers.color.pallete.DefaultPalette
 import kotlin.math.abs
 import kotlin.math.max
@@ -170,6 +171,15 @@ interface ColorTheme {
             }
 
             return ColorUtils.LABToColor(tl, ta, tb)
+        }
+
+        fun darkestVisibleOn(backgroundColor: Int, color: Int): Int {
+            val l = backgroundColor.luminance
+            val lab = DoubleArray(3)
+            ColorUtils.colorToLAB(color, lab)
+            lab[0] = if (l < 0.03) 100.0
+            else 20.0
+            return ColorUtils.LABToColor(lab[0], lab[1], lab[2])
         }
     }
 }

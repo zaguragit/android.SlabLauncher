@@ -74,7 +74,7 @@ class PinnedTilesAdapter(
             2 -> AtAGlanceViewHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.at_a_glance, parent, false), activity, fragment).also { atAGlanceViewHolder = it }
             1 -> DropTargetViewHolder(LayoutInflater.from(parent.context)
-                .inflate(R.layout.tile_drop_target, parent, false) as CardView)
+                .inflate(R.layout.tile_drop_target, parent, false))
             else -> TileViewHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.tile, parent, false) as CardView)
         }
@@ -134,6 +134,8 @@ class PinnedTilesAdapter(
                 holder.updateBackground(item, b.background.computedOrNull(), activity.settings, b)
             }
         }
+
+        holder.updateTimeMark(item)
 
         println("payloads: " + payloads.joinToString("; ") { (it as List<*>?)?.joinToString().toString() })
     }
@@ -211,7 +213,7 @@ class PinnedTilesAdapter(
         val item = launcherContext.appManager.tryParseLauncherItem(clipData.getItemAt(0).text.toString(), v.context)
         item?.let { items.add(i, it) }
         dropTargetIndex = -1
-        notifyItemRemoved(i)
+        notifyItemChanged(i + 1)
         updateItems(items)
         updatePins(v)
     }

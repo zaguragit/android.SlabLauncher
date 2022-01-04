@@ -41,6 +41,7 @@
         <entry key="app/src/main/res/drawable/ripple.xml" value="0.2171875" />
         <entry key="app/src/main/res/drawable/round_bg.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/drawable/sign_continue.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/tile_drop_target.xml" value="0.36875" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.26145833333333335" />
         <entry key="app/src/main/res/layout/activity_intro.xml" value="0.35260416666666666" />
         <entry key="app/src/main/res/layout/activity_launcher.xml" value="0.11296859169199595" />
@@ -82,6 +83,7 @@
         <entry key="app/src/main/res/layout/intro_splash.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/list_popup.xml" value="0.19583333333333333" />
         <entry key="app/src/main/res/layout/list_popup_item.xml" value="0.35054347826086957" />
+        <entry key="app/src/main/res/layout/list_popup_multistate_item.xml" value="0.35260416666666666" />
         <entry key="app/src/main/res/layout/list_popup_switch_item.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/list_popup_title.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/long_press_home_popup.xml" value="0.3729166666666667" />

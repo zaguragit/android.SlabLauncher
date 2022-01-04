@@ -24,6 +24,16 @@ import kotlin.math.pow
 
 object SuggestionsManager {
 
+    fun getUsageTimeMark(context: Context, app: App): String? {
+        val usageStatsManager = context.getSystemService(UsageStatsManager::class.java)
+        val c = Calendar.getInstance()
+        c.add(Calendar.DAY_OF_YEAR, -1)
+        return usageStatsManager.queryAndAggregateUsageStats(c.timeInMillis, System.currentTimeMillis())[app.packageName]?.let {
+            c.timeInMillis = it.totalTimeInForeground
+            "${c[Calendar.HOUR]}:${c[Calendar.MINUTE].toString().padStart(2, '0')}"
+        }
+    }
+
     private const val MAX_CONTEXT_COUNT = 6
 
     private var contextMap = ContextMap<LauncherItem>(ContextArray.CONTEXT_DATA_SIZE, ContextArray::differentiator)

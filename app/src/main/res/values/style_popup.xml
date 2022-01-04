@@ -39,6 +39,10 @@
         <item name="android:layout_margin">8dp</item>
     </style>
 
+    <style name="SlabLauncher.ListPopup.Item.MultiSwitch" parent="SlabLauncher">
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
     <style name="SlabLauncher.ListPopup.Title.Separator" parent="SlabLauncher">
         <item name="android:layout_marginTop">8dp</item>
     </style>

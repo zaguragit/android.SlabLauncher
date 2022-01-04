@@ -25,8 +25,8 @@ import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorT
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.setColorThemeDayNight
 import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
-import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeIcons
-import io.posidon.android.slablauncher.util.storage.DoReshapeAdaptiveIconsSetting.doReshapeAdaptiveIcons
+import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.monochromatism
+import io.posidon.android.slablauncher.util.storage.DoReshapeAdaptiveIconsSetting.adaptiveIconsReshaping
 import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScreenOpenedSetting.doAutoKeyboardInAllApps
 import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.android.slablauncher.util.view.SeeThroughView
@@ -174,14 +174,15 @@ class HomeLongPressPopup(
                     context.getString(R.string.blur),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),
                     value = settings.doBlur,
-                    onToggle = { _, value ->
+                    states = 2,
+                    onStateChange = { _, value ->
                         settings.edit(context) {
-                            doBlur = value
+                            doBlur = value == 1
                             reloadBlur()
                         }
                     }
                 ),
-                ListPopupItem(context.getString(R.string.icons), isTitle = true),
+                ListPopupItem(context.getString(R.string.tiles), isTitle = true),
                 ListPopupItem(
                     context.getString(R.string.icon_packs),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),
@@ -192,10 +193,11 @@ class HomeLongPressPopup(
                     context.getString(R.string.reshape_adaptive_icons),
                     description = context.getString(R.string.reshape_adaptive_icons_explanation),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),
-                    value = settings.doReshapeAdaptiveIcons,
-                    onToggle = { _, value ->
+                    value = settings.adaptiveIconsReshaping,
+                    states = 3,
+                    onStateChange = { _, value ->
                         settings.edit(context) {
-                            doReshapeAdaptiveIcons = value
+                            adaptiveIconsReshaping = value
                             reloadApps()
                         }
                     }
@@ -203,10 +205,11 @@ class HomeLongPressPopup(
                 ListPopupItem(
                     context.getString(R.string.monochrome_icons),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_color_dropper),
-                    value = settings.doMonochromeIcons,
-                    onToggle = { _, value ->
+                    value = settings.monochromatism,
+                    states = 3,
+                    onStateChange = { _, value ->
                         settings.edit(context) {
-                            doMonochromeIcons = value
+                            monochromatism = value
                             reloadApps()
                         }
                     }
@@ -217,9 +220,10 @@ class HomeLongPressPopup(
                     description = context.getString(R.string.auto_show_keyboard_explanation),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_keyboard),
                     value = settings.doAutoKeyboardInAllApps,
-                    onToggle = { _, value ->
+                    states = 2,
+                    onStateChange = { _, value ->
                         settings.edit(context) {
-                            doAutoKeyboardInAllApps = value
+                            doAutoKeyboardInAllApps = value == 1
                             reloadApps()
                         }
                     }

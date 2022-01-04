@@ -26,12 +26,12 @@
 
         <string name="scrollbar_controller">App sorting</string>
 
-        <string name="icons">Icons</string>
+        <string name="tiles">Tiles</string>
 
-        <string name="reshape_adaptive_icons">Reshape adaptive icons</string>
+        <string name="reshape_adaptive_icons">Adaptive icon reshaping</string>
         <string name="reshape_adaptive_icons_explanation">Uses icon backgrounds to cover app cards</string>
 
-        <string name="monochrome_icons">Monochrome icons</string>
+        <string name="monochrome_icons">Monochromatism</string>
 
         <string name="auto_show_keyboard">Auto keyboard</string>
         <string name="auto_show_keyboard_explanation">Pulls up the keyboard, when you open the all apps list</string>

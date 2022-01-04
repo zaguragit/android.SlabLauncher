@@ -11,6 +11,7 @@ class TileDiffCallback(
     val oldNotifications: List<NotificationData>,
     val newNotifications: List<NotificationData>,
 ) : DiffUtil.Callback() {
+
     fun getOld(i: Int) = old[i - 1]
     fun getNew(i: Int) = new[i - 1]
 

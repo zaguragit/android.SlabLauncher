@@ -1,34 +1,31 @@
 package io.posidon.android.slablauncher.ui.home.pinned.viewHolders
 
-import androidx.cardview.widget.CardView
+import android.content.res.ColorStateList
+import android.graphics.PorterDuff
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
+import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.pinned.TileArea.Companion.WIDTH_TO_HEIGHT
-import io.posidon.android.slablauncher.ui.home.pinned.acrylicBlur
 import io.posidon.android.slablauncher.util.view.HorizontalAspectRatioLayout
-import io.posidon.android.slablauncher.util.view.SeeThroughView
 
 class DropTargetViewHolder(
-    val card: CardView
-) : RecyclerView.ViewHolder(card) {
-
-    val blurBG = itemView.findViewById<SeeThroughView>(R.id.blur_bg)!!.apply {
-        viewTreeObserver.addOnPreDrawListener {
-            invalidate()
-            true
-        }
-    }
+    itemView: View
+) : RecyclerView.ViewHolder(itemView) {
 
     val aspect = itemView.findViewById<HorizontalAspectRatioLayout>(R.id.aspect)!!.apply {
         widthToHeight = WIDTH_TO_HEIGHT
+    }
+
+    init {
+        itemView.background = itemView.context.getDrawable(R.drawable.tile_drop_target)
+        itemView.backgroundTintMode = PorterDuff.Mode.MULTIPLY
     }
 }
 
 fun bindDropTargetViewHolder(
     holder: DropTargetViewHolder,
 ) {
-    val backgroundColor = ColorTheme.appCardBase
-    holder.card.setCardBackgroundColor(backgroundColor)
-    holder.blurBG.drawable = acrylicBlur?.smoothBlurDrawable
+    holder.itemView.backgroundTintList = ColorStateList.valueOf(ColorTheme.adjustColorForContrast(ColorPalette.wallColor, ColorPalette.wallColor))
 }

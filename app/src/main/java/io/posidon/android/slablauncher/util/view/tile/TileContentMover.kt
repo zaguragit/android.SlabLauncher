@@ -14,6 +14,7 @@ class TileContentMover(
         private set
     var labelY: Float = 0f
         private set
+
     var extraTitleX: Float = 0f
         private set
     var extraTitleY: Float = 0f
@@ -22,6 +23,12 @@ class TileContentMover(
         private set
     var extraTextY: Float = 0f
         private set
+
+    var markTextX: Float = 0f
+        private set
+    var markTextY: Float = 0f
+        private set
+
     val iconPosition = Rect()
 
     var extraTextBoxHeight: Float = 0f
@@ -41,8 +48,8 @@ class TileContentMover(
 
         val iconSize = mix(min(width, height) / 2f, view.smallIconSize, f)
 
-        val x = mix((width - iconSize) / 2f, sideMargin, f).toInt()
-        val y = mix((height - iconSize - originalLabelHeight) / 2f, sideMargin, f).toInt()
+        val x = sideMargin.toInt()//mix((width - iconSize) / 2f, sideMargin, f).toInt()
+        val y = sideMargin.toInt()//mix((height - iconSize - originalLabelHeight) / 2f, sideMargin, f).toInt()
 
         val iconBottom = (y + iconSize).toInt()
 
@@ -51,7 +58,7 @@ class TileContentMover(
         )
 
         labelX = mix(
-            (width - originalLabelWidth) / 2f,
+            sideMargin * 1.5f,//(width - originalLabelWidth) / 2f,
             sideMargin * 1.5f + iconSize,
             f
         )
@@ -77,6 +84,10 @@ class TileContentMover(
         extraTextY = extraTitleY + originalTextHeight + sideMargin / 2f
 
         extraTextBoxHeight = (height - extraTitleY - sideMargin).coerceAtLeast(0f)
+
+        view.getMarkBounds(tmpTextBounds)
+        markTextX = width - tmpTextBounds.width().toFloat()
+        markTextY = tmpTextBounds.height().toFloat()
 
         view.updateEllipsis(maxLabelWidth, innerWidth.toFloat())
     }

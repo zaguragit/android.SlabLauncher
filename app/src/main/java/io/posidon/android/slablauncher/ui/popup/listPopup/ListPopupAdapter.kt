@@ -4,16 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
-import io.posidon.android.slablauncher.ui.popup.listPopup.viewHolders.ListPopupItemViewHolder
-import io.posidon.android.slablauncher.ui.popup.listPopup.viewHolders.ListPopupSwitchItemViewHolder
-import io.posidon.android.slablauncher.ui.popup.listPopup.viewHolders.ListPopupTitleViewHolder
-import io.posidon.android.slablauncher.ui.popup.listPopup.viewHolders.ListPopupViewHolder
+import io.posidon.android.slablauncher.ui.popup.listPopup.viewHolders.*
 
 class ListPopupAdapter : RecyclerView.Adapter<ListPopupViewHolder>() {
 
     override fun getItemViewType(i: Int): Int {
         return when {
-            items[i].onToggle != null -> 2
+            items[i].states == 2 -> 2
+            items[i].states > 2 -> 3
             items[i].isTitle -> 1
             else -> 0
         }
@@ -23,6 +21,7 @@ class ListPopupAdapter : RecyclerView.Adapter<ListPopupViewHolder>() {
         return when (viewType) {
             1 -> ListPopupTitleViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_popup_title, parent, false))
             2 -> ListPopupSwitchItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_popup_switch_item, parent, false))
+            3 -> ListPopupMultistateItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_popup_multistate_item, parent, false))
             else -> ListPopupItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_popup_item, parent, false))
         }
     }

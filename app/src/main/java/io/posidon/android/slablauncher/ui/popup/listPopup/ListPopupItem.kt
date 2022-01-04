@@ -9,6 +9,7 @@ class ListPopupItem(
     val icon: Drawable? = null,
     val isTitle: Boolean = false,
     val value: Any? = null,
-    val onToggle: ((View, Boolean) -> Unit)? = null,
+    val states: Int = 0,
+    val onStateChange: ((View, Int) -> Unit)? = null,
     val onClick: ((View) -> Unit)? = null,
 )

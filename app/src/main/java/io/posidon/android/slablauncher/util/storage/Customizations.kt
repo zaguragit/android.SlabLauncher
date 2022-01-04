@@ -4,10 +4,10 @@ import io.posidon.android.slablauncher.providers.color.ColorThemeOptions
 
 object ColorExtractorSetting {
     val Settings.colorTheme: Int
-        get() = get(KEY_COLOR_THEME, COLOR_THEME_DEFAULT)
+        get() = get(KEY_COLOR_THEME, DEFAULT)
 
     var Settings.SettingsEditor.colorTheme: Int
-        get() = settings[KEY_COLOR_THEME, COLOR_THEME_DEFAULT]
+        get() = settings[KEY_COLOR_THEME, DEFAULT]
         set(value) = KEY_COLOR_THEME set value
 
     private const val KEY_COLOR_THEME = "color_theme"
@@ -17,7 +17,7 @@ object ColorExtractorSetting {
     const val COLOR_THEME_WALLPAPER_TINT_SYSTEM_ASSISTED = 2
     const val COLOR_THEME_MONET = 3
 
-    const val COLOR_THEME_DEFAULT = COLOR_THEME_WALLPAPER_TINT
+    const val DEFAULT = COLOR_THEME_WALLPAPER_TINT
 }
 
 object ColorThemeSetting {
@@ -36,29 +36,51 @@ object ColorThemeSetting {
 }
 
 object DoReshapeAdaptiveIconsSetting {
-    val Settings.doReshapeAdaptiveIcons: Boolean
+
+    inline val Settings.forceReshapeAdaptiveIcons: Boolean
+        get() = adaptiveIconsReshaping == FORCE
+
+    inline val Settings.doReshapeAdaptiveIcons: Boolean
+        get() = adaptiveIconsReshaping != NONE
+
+    val Settings.adaptiveIconsReshaping: Int
         get() = get(KEY, DEFAULT)
 
-    var Settings.SettingsEditor.doReshapeAdaptiveIcons: Boolean
+    var Settings.SettingsEditor.adaptiveIconsReshaping: Int
         get() = settings[KEY, DEFAULT]
         set(value) = KEY set value
 
     private const val KEY = "icons:reshape_adaptive"
 
-    const val DEFAULT = false
+    const val NONE = 0
+    const val SAFE = 1
+    const val FORCE = 2
+
+    const val DEFAULT = NONE
 }
 
 object DoMonochromeIconsSetting {
-    val Settings.doMonochromeIcons: Boolean
+
+    val Settings.doMonochromeTileBackground: Boolean
+        get() = monochromatism != NONE
+
+    inline val Settings.doMonochromeIcons: Boolean
+        get() = monochromatism == FULL
+
+    val Settings.monochromatism: Int
         get() = get(KEY, DEFAULT)
 
-    var Settings.SettingsEditor.doMonochromeIcons: Boolean
+    var Settings.SettingsEditor.monochromatism: Int
         get() = settings[KEY, DEFAULT]
         set(value) = KEY set value
 
-    private const val KEY = "icons:monochrome"
+    private const val KEY = "monochromatism"
 
-    const val DEFAULT = false
+    const val NONE = 0
+    const val TILE_BACKGROUND = 1
+    const val FULL = 2
+
+    const val DEFAULT = NONE
 }
 
 object DoBlurSetting {

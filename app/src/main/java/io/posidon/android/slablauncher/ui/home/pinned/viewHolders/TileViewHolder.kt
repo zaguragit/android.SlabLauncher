@@ -23,10 +23,11 @@ import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.data.items.LauncherItem.Banner.Companion.ALPHA_MULTIPLIER
 import io.posidon.android.slablauncher.data.items.getBanner
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
+import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.pinned.TileArea
 import io.posidon.android.slablauncher.ui.home.pinned.acrylicBlur
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
-import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeIcons
+import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeTileBackground
 import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.android.slablauncher.util.view.SeeThroughView
 import io.posidon.android.slablauncher.util.view.tile.TileContentView
@@ -76,10 +77,12 @@ class TileViewHolder(
         val title = ColorTheme.titleColorForBG(itemView.context, backgroundColor)
         val text = ColorTheme.textColorForBG(itemView.context, backgroundColor)
         val label = ColorTheme.adjustColorForContrast(backgroundColor, backgroundColor)
+        val mark = ColorTheme.darkestVisibleOn(backgroundColor, backgroundColor) and 0x20ffffff
         contentView.post {
             contentView.labelColor = label
             contentView.titleColor = title
             contentView.textColor = text
+            contentView.markColor = mark
             card.setCardBackgroundColor(backgroundColor)
         }
         if (background == null) {
@@ -98,7 +101,7 @@ class TileViewHolder(
                 Colors.blend(imageColor.let {
                     if (
                         Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-                        settings.doMonochromeIcons &&
+                        settings.doMonochromeTileBackground &&
                         item !is ContactItem
                     ) (it.luminance * 255).toInt()
                         .let { a -> Color.rgb(a, a, a) }
@@ -108,12 +111,13 @@ class TileViewHolder(
             val textColor = ColorTheme.textColorForBG(itemView.context, actuallyBackgroundColor)
             val labelColor =
                 ColorTheme.adjustColorForContrast(actuallyBackgroundColor, actuallyBackgroundColor)
+            val markColor = ColorTheme.darkestVisibleOn(actuallyBackgroundColor, backgroundColor) and 0x20ffffff
 
             imageView.post {
                 imageView.isVisible = true
                 imageView.setImageDrawable(background)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    if (settings.doMonochromeIcons && item !is ContactItem) {
+                    if (settings.doMonochromeTileBackground && item !is ContactItem) {
                         imageView.imageTintList = ColorStateList.valueOf(backgroundColor)
                         imageView.imageTintBlendMode = BlendMode.COLOR
                     } else imageView.imageTintList = null
@@ -124,8 +128,13 @@ class TileViewHolder(
                 contentView.labelColor = labelColor
                 contentView.titleColor = titleColor
                 contentView.textColor = textColor
+                contentView.markColor = markColor
             }
         }
+    }
+
+    fun updateTimeMark(item: LauncherItem) {
+        contentView.mark = (item as? App)?.let { SuggestionsManager.getUsageTimeMark(itemView.context, item) }
     }
 
     fun bind(
@@ -134,7 +143,9 @@ class TileViewHolder(
         settings: Settings,
         onDragStart: (View) -> Unit,
     ) {
-        blurBG.drawable = acrylicBlur?.smoothBlurDrawable
+        blurBG.drawable = acrylicBlur?.insaneBlurDrawable
+
+        updateTimeMark(item)
 
         imageView.isVisible = false
         imageView.setImageDrawable(null)
@@ -142,6 +153,7 @@ class TileViewHolder(
         contentView.labelColor = ColorTheme.cardTitle
         contentView.titleColor = ColorTheme.cardTitle
         contentView.textColor = ColorTheme.cardDescription
+        contentView.markColor = ColorTheme.cardDescription and 0x20ffffff
         card.setCardBackgroundColor(ColorTheme.cardBG)
 
         val banner = item.getBanner()
