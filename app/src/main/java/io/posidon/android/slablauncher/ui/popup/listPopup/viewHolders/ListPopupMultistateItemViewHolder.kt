@@ -38,8 +38,14 @@ class ListPopupMultistateItemViewHolder(itemView: View) : ListPopupViewHolder(it
         text.setTextColor(ColorTheme.cardTitle)
         switch.setBackgroundColor(ColorTheme.cardHint and 0x00ffffff or 0x55000000)
         switch.onColor = ColorTheme.accentColor
-        switch.unsafeColor = ColorTheme.accentColor
+        switch.unsafeOnColor = ColorTheme.tintWithColor(ColorTheme.accentColor, 0xdd3333)
+        switch.offColor = ColorTheme.cardHint
+        switch.unsafeOffColor = ColorTheme.tintWithColor(ColorTheme.cardHint, 0xdd3333)
         switch.borderColor = 0x88000000.toInt()
+        switch.borderWidth = 1f
+        switch.radius = itemView.dp(32)
+        switch.smallRadius = itemView.dp(3)
+        switch.cellMargin = itemView.dp(4)
 
         ripple.setColor(ColorStateList.valueOf(ColorTheme.accentColor and 0xffffff or 0x33000000))
 
@@ -53,8 +59,8 @@ class ListPopupMultistateItemViewHolder(itemView: View) : ListPopupViewHolder(it
         }
         switch.state = item.value as Int
         switch.states = item.states
-        switch.radius = itemView.dp(32)
         switch.setOnStateChangeListener(item.onStateChange!!)
+        switch.unsafeLevel = item.unsafeLevel
 
         itemView.setOnClickListener {
             switch.state = (switch.state + 1) % switch.states

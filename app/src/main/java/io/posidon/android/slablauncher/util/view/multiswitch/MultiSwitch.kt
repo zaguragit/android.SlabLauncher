@@ -15,19 +15,34 @@ class MultiSwitch : View {
 
     var backgroundColor = 0
         private set
-    
+
     var borderColor = 0
         set(value) {
             field = value
             invalidate()
         }
-    
+    var borderWidth = 0f
+        set(value) {
+            field = value
+            invalidate()
+        }
+
     var onColor = 0
         set(value) {
             field = value
             invalidate()
         }
-    var unsafeColor = 0
+    var offColor = 0
+        set(value) {
+            field = value
+            invalidate()
+        }
+    var unsafeOnColor = 0
+        set(value) {
+            field = value
+            invalidate()
+        }
+    var unsafeOffColor = 0
         set(value) {
             field = value
             invalidate()
@@ -39,13 +54,32 @@ class MultiSwitch : View {
             stateChangeListener?.invoke(this, value)
             invalidate()
         }
+
     var states = 1
         set(value) {
             field = value
             invalidate()
         }
-    
+
+    var unsafeLevel = -1
+        set(value) {
+            field = value
+            invalidate()
+        }
+
     var radius = 0f
+        set(value) {
+            field = value
+            invalidate()
+        }
+
+    var smallRadius = 0f
+        set(value) {
+            field = value
+            invalidate()
+        }
+
+    var cellMargin = 0f
         set(value) {
             field = value
             invalidate()
@@ -70,15 +104,53 @@ class MultiSwitch : View {
     override fun draw(canvas: Canvas) {
         paint.color = backgroundColor
         canvas.drawRoundRect(0f, 0f, width.toFloat(), height.toFloat(), radius, radius, paint)
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = borderWidth
+        paint.color = borderColor
+        val b = borderWidth / 2f
+        canvas.drawRoundRect(b, b, width.toFloat() - b, height.toFloat() - b, radius, radius, paint)
+        paint.style = Paint.Style.FILL
 
-        val cellWidth = width / states.toFloat()
+        val cellWidth = (width - cellMargin) / states.toFloat()
         paint.color = onColor
-        for (i in 0..state) {
-            canvas.drawRoundRect(cellWidth * i, 0f, cellWidth * (i + 1), height.toFloat(), radius, radius, paint)
+        val radius = radius.coerceAtMost(height / 2f).coerceAtMost(width / 2f)
+        for (i in 0 until states) {
+            val lr = when (i) {
+                0 -> radius
+                else -> smallRadius
+            }
+            val rr = when (i) {
+                states - 1 -> radius
+                else -> smallRadius
+            }
+            if (i == state + 1) {
+                paint.color = if (i >= unsafeLevel && unsafeLevel != -1) unsafeOffColor else offColor
+            } else if (i == unsafeLevel) {
+                paint.color = if (i > state) unsafeOffColor else unsafeOnColor
+            }
+            canvas.drawRoundRect(
+                cellWidth * i + cellMargin,
+                cellMargin,
+                cellWidth * (i + 1) - rr,
+                height.toFloat() - cellMargin,
+                lr,
+                lr,
+                paint
+            )
+            canvas.drawRoundRect(
+                cellWidth * i + cellMargin + lr,
+                cellMargin,
+                cellWidth * (i + 1),
+                height.toFloat() - cellMargin,
+                rr,
+                rr,
+                paint
+            )
         }
     }
 
-    private inline val heightToWidth get() = 1f / states
+    private inline val cellHeightToWidth get() = 3f / 4f
+    private inline val heightToWidth get() = cellHeightToWidth / states
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(

@@ -191,6 +191,7 @@ class HomeLongPressPopup(
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),
                     value = settings.adaptiveIconsReshaping,
                     states = 3,
+                    unsafeLevel = 2,
                     onStateChange = { _, value ->
                         settings.edit(context) {
                             adaptiveIconsReshaping = value

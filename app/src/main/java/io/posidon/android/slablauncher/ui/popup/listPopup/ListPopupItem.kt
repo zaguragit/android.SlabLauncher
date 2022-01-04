@@ -10,6 +10,7 @@ class ListPopupItem(
     val isTitle: Boolean = false,
     val value: Any? = null,
     val states: Int = 0,
+    val unsafeLevel: Int = -1,
     val onStateChange: ((View, Int) -> Unit)? = null,
     val onClick: ((View) -> Unit)? = null,
 )
