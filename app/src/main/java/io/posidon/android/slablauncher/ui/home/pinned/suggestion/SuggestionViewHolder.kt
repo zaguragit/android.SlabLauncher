@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.home.pinned.viewHolders.atAGlance.suggestion
+package io.posidon.android.slablauncher.ui.home.pinned.suggestion
 
 import android.content.res.ColorStateList
 import android.graphics.BlendMode

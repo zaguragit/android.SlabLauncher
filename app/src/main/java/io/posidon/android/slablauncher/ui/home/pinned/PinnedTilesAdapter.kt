@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.cardview.widget.CardView
-import androidx.core.view.marginBottom
-import androidx.core.view.marginTop
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.computable.computedOrNull
@@ -24,7 +22,6 @@ import io.posidon.android.slablauncher.ui.home.pinned.TileDiffCallback.Companion
 import io.posidon.android.slablauncher.ui.home.pinned.TileDiffCallback.Companion.CHANGE_LABEL
 import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.DropTargetViewHolder
 import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.TileViewHolder
-import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.atAGlance.AtAGlanceViewHolder
 import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.bindDropTargetViewHolder
 
 class PinnedTilesAdapter(
@@ -36,43 +33,35 @@ class PinnedTilesAdapter(
     private var dropTargetIndex = -1
     private var items: MutableList<LauncherItem> = ArrayList()
 
-    override fun getItemCount(): Int = items.size + if (dropTargetIndex == -1) 1 else 2
+    override fun getItemCount(): Int = items.size + if (dropTargetIndex == -1) 0 else 1
 
     val tileCount get() = items.size
 
     override fun getItemViewType(i: Int): Int {
         return when (i) {
-            0 -> 2
-            dropTargetIndex + 1 -> 1
+            dropTargetIndex -> 1
             else -> 0
         }
     }
 
     fun adapterPositionToI(position: Int): Int {
         return when {
-            dropTargetIndex == -1 -> position - 1
-            dropTargetIndex + 1 < position -> position - 2
+            dropTargetIndex == -1 -> position
+            dropTargetIndex < position -> position - 1
             else -> position - 1
         }
     }
 
     fun iToAdapterPosition(i: Int): Int {
         return when {
-            dropTargetIndex == -1 -> i + 1
-            dropTargetIndex < i -> i + 2
-            else -> i + 1
+            dropTargetIndex == -1 -> i
+            dropTargetIndex < i -> i + 1
+            else -> i
         }
     }
 
-    private var atAGlanceViewHolder: AtAGlanceViewHolder? = null
-
-    val verticalOffset get() = atAGlanceViewHolder?.itemView
-        ?.run { height + marginTop + marginBottom } ?: 0
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            2 -> AtAGlanceViewHolder(LayoutInflater.from(parent.context)
-                .inflate(R.layout.at_a_glance, parent, false), activity, fragment).also { atAGlanceViewHolder = it }
             1 -> DropTargetViewHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.tile_drop_target, parent, false))
             else -> TileViewHolder(LayoutInflater.from(parent.context)
@@ -81,12 +70,7 @@ class PinnedTilesAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, ii: Int) {
-        if (ii == 0) {
-            holder as AtAGlanceViewHolder
-            holder.onBind(items)
-            return
-        }
-        if (ii == dropTargetIndex + 1) {
+        if (ii == dropTargetIndex) {
             holder as DropTargetViewHolder
             bindDropTargetViewHolder(holder)
             return
@@ -101,12 +85,7 @@ class PinnedTilesAdapter(
         ii: Int,
         payloads: MutableList<Any>
     ) {
-        if (ii == 0) {
-            holder as AtAGlanceViewHolder
-            holder.onBind(items)
-            return
-        }
-        if (ii == dropTargetIndex + 1) {
+        if (ii == dropTargetIndex) {
             holder as DropTargetViewHolder
             bindDropTargetViewHolder(holder)
             return
@@ -189,16 +168,16 @@ class PinnedTilesAdapter(
                 i == -1 -> {
                     val old = dropTargetIndex
                     dropTargetIndex = -1
-                    notifyItemRemoved(old + 1)
+                    notifyItemRemoved(old)
                 }
                 dropTargetIndex == -1 -> {
                     dropTargetIndex = i
-                    notifyItemInserted(i + 1)
+                    notifyItemInserted(i)
                 }
                 else -> {
                     val old = dropTargetIndex
                     dropTargetIndex = i
-                    notifyItemMoved(old + 1, i + 1)
+                    notifyItemMoved(old, i)
                 }
             }
         }
@@ -213,7 +192,7 @@ class PinnedTilesAdapter(
         val item = launcherContext.appManager.tryParseLauncherItem(clipData.getItemAt(0).text.toString(), v.context)
         item?.let { items.add(i, it) }
         dropTargetIndex = -1
-        notifyItemChanged(i + 1)
+        notifyItemChanged(i)
         updateItems(items)
         updatePins(v)
     }

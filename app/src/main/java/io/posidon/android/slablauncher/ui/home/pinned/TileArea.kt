@@ -14,7 +14,6 @@ import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.util.view.recycler.RecyclerViewLongPressHelper
 import posidon.android.conveniencelib.Device
-import posidon.android.conveniencelib.getNavigationBarHeight
 import kotlin.math.abs
 
 class TileArea(view: View, val fragment: TileAreaFragment, val launcherContext: LauncherContext) {
@@ -27,16 +26,13 @@ class TileArea(view: View, val fragment: TileAreaFragment, val launcherContext: 
 
     var scrollY: Int = 0
         private set
+
+    val atAGlance = AtAGlanceArea(view.findViewById<ViewGroup>(R.id.at_a_glace), this, fragment.requireActivity() as MainActivity)
+
     val pinnedAdapter = PinnedTilesAdapter(fragment.requireActivity() as MainActivity, launcherContext, fragment)
     @SuppressLint("ClickableViewAccessibility")
     val pinnedRecycler = view.findViewById<RecyclerView>(R.id.pinned_recycler).apply {
-        layoutManager = GridLayoutManager(fragment.requireContext(), COLUMNS, RecyclerView.VERTICAL, false).apply {
-            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(i: Int): Int {
-                    return if (i == 0) COLUMNS else 1
-                }
-            }
-        }
+        layoutManager = GridLayoutManager(fragment.requireContext(), COLUMNS, RecyclerView.VERTICAL, false)
         adapter = pinnedAdapter
         setOnDragListener(::onDrag)
         val activity = fragment.requireActivity() as MainActivity
@@ -49,7 +45,6 @@ class TileArea(view: View, val fragment: TileAreaFragment, val launcherContext: 
         RecyclerViewLongPressHelper.setOnLongPressListener(this) { v, x, y ->
             HomeLongPressPopup.show(
                 v, x, y,
-                activity.getNavigationBarHeight(),
                 launcherContext.settings,
                 activity::reloadColorPaletteSync,
                 activity::updateColorTheme,
@@ -79,7 +74,7 @@ class TileArea(view: View, val fragment: TileAreaFragment, val launcherContext: 
     }
 
     fun getPinnedItemIndex(x: Float, y: Float): Int {
-        var y = y - pinnedAdapter.verticalOffset + scrollY
+        var y = y + scrollY
         if (y < 0) return -1
         val x = x / pinnedRecycler.width * COLUMNS
         y = ((y - pinnedRecycler.paddingTop) / pinnedRecycler.width * COLUMNS) * WIDTH_TO_HEIGHT

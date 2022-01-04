@@ -58,7 +58,7 @@ class IconPackPickerAdapter(
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
     ): Boolean {
-        val toPosition = target.adapterPosition
+        val toPosition = target.bindingAdapterPosition
         if (target !is IconPackViewHolder && toPosition == 0) {
             return false
         }
@@ -66,7 +66,7 @@ class IconPackPickerAdapter(
             return false
         }
 
-        val fromPosition = viewHolder.adapterPosition
+        val fromPosition = viewHolder.bindingAdapterPosition
         var changed = false
         val chosenIconPacksSize = chosenIconPacks.size
         val isFromAvailable = fromPosition >= 1 + chosenIconPacksSize + 1

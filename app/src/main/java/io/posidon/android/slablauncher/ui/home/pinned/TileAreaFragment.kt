@@ -12,6 +12,8 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.core.app.ActivityCompat
+import androidx.core.view.doOnLayout
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
@@ -67,7 +69,7 @@ class TileAreaFragment : Fragment() {
         super.onResume()
         SuggestionsManager.onResume(requireContext()) {
             requireActivity().runOnUiThread {
-                tileArea.pinnedAdapter.notifyItemChanged(0)
+                tileArea.atAGlance.updateSuggestions(launcherContext.appManager.pinnedItems)
             }
         }
     }
@@ -78,18 +80,29 @@ class TileAreaFragment : Fragment() {
     }
 
     private fun configureWindow() {
-        val tileMargin = resources.getDimension(R.dimen.item_card_margin).toInt()
-        tileArea.pinnedRecycler.setPadding(tileMargin, tileMargin + requireContext().getStatusBarHeight(), tileMargin, tileMargin)
+        val t = resources.getDimension(R.dimen.item_card_margin).toInt()
+        tileArea.pinnedRecycler.setPadding(t, 0, t, t)
+        tileArea.atAGlance.view.setPadding(t, requireContext().getStatusBarHeight(), t, 0)
+        tileArea.atAGlance.view.doOnLayout {
+            it.updateLayoutParams {
+                val tileMargin = it.context.resources.getDimension(R.dimen.item_card_margin)
+                val tileWidth = (Device.screenWidth(it.context) - tileMargin * 2) / TileArea.COLUMNS - tileMargin * 2
+                val tileHeight = tileWidth / TileArea.WIDTH_TO_HEIGHT
+                val dockHeight = TileArea.DOCK_ROWS * (tileHeight + tileMargin * 2)
+                height = requireView().height - (tileMargin + dockHeight.toInt()).toInt() + 1
+            }
+        }
     }
 
     private fun updateBlur() {
         activity?.runOnUiThread {
-            tileArea.pinnedAdapter.notifyItemRangeChanged(1, tileArea.pinnedAdapter.itemCount - 1)
+            tileArea.pinnedAdapter.notifyItemRangeChanged(0, tileArea.pinnedAdapter.itemCount)
         }
     }
 
     private fun updateColorTheme() {
         activity?.runOnUiThread {
+            tileArea.atAGlance.updateColorTheme()
             tileArea.pinnedAdapter.notifyItemRangeChanged(0, tileArea.pinnedAdapter.itemCount)
         }
     }

@@ -7,7 +7,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.PopupWindow
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -51,7 +50,6 @@ class HomeLongPressPopup(
             parent: View,
             touchX: Float,
             touchY: Float,
-            navbarHeight: Int,
             settings: Settings,
             reloadColorPalette: () -> Unit,
             updateColorTheme: (ColorPalette) -> Unit,
@@ -106,8 +104,6 @@ class HomeLongPressPopup(
             content.findViewById<RecyclerView>(R.id.recycler).apply {
                 layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                 adapter = popupAdapter
-                val l = layoutParams as FrameLayout.LayoutParams
-
             }
 
             popup.update()
