@@ -193,7 +193,6 @@ class PinnedTilesAdapter(
         item?.let { items.add(i, it) }
         dropTargetIndex = -1
         notifyItemChanged(i)
-        updateItems(items)
         updatePins(v)
     }
 }

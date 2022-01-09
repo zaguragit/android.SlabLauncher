@@ -86,7 +86,7 @@ class TileContentMover(
         extraTextBoxHeight = (height - extraTitleY - sideMargin).coerceAtLeast(0f)
 
         view.getMarkBounds(tmpTextBounds)
-        markTextX = width - tmpTextBounds.width().toFloat()
+        markTextX = width - tmpTextBounds.width().toFloat() - view.resources.getDimension(R.dimen.item_card_margin) / 2
         markTextY = tmpTextBounds.height().toFloat()
 
         view.updateEllipsis(maxLabelWidth, innerWidth.toFloat())

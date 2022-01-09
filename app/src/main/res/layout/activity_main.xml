@@ -27,8 +27,9 @@
             android:layout_height="match_parent"
             android:alpha=".2"/>
         <LinearLayout
+            android:id="@+id/in_search_bar_container"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/search_bar_height"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginHorizontal="8dp">
             <ImageView

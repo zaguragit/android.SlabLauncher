@@ -174,7 +174,7 @@ class TileContentView : View {
     }
 
     private val markPaint = Paint().apply {
-        textSize = sp(52)
+        textSize = sp(56)
         isAntiAlias = true
         isLinearText = true
         isSubpixelText = true

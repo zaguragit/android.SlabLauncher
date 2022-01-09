@@ -72,6 +72,7 @@ class MainActivity : FragmentActivity() {
 
     private lateinit var blurBG: SeeThroughView
     private lateinit var searchBarContainer: View
+    private lateinit var inSearchBarContainer: View
     private lateinit var searchBarText: EditText
     private lateinit var searchBarIcon: ImageView
     private lateinit var searchBarBlurBG: SeeThroughView
@@ -96,9 +97,10 @@ class MainActivity : FragmentActivity() {
 
         blurBG = findViewById(R.id.blur_bg)
         searchBarContainer = findViewById(R.id.search_bar_container)!!
-        searchBarText = searchBarContainer.findViewById(R.id.search_bar_text)!!
-        searchBarIcon = searchBarContainer.findViewById(R.id.search_bar_icon)!!
         searchBarBlurBG = searchBarContainer.findViewById(R.id.search_bar_blur_bg)!!
+        inSearchBarContainer = searchBarContainer.findViewById(R.id.in_search_bar_container)!!
+        searchBarText = inSearchBarContainer.findViewById(R.id.search_bar_text)!!
+        searchBarIcon = inSearchBarContainer.findViewById(R.id.search_bar_icon)!!
 
         viewPager = findViewById(R.id.view_pager)
 
@@ -232,7 +234,7 @@ class MainActivity : FragmentActivity() {
                 i.getInsets(WindowInsets.Type.systemBars()).bottom
             ) ?: 0
         } else getNavigationBarHeight()
-        searchBarContainer.setPadding(0, 0, 0, bottomInset)
+        inSearchBarContainer.setPadding(0, 0, 0, bottomInset)
     }
 
     override fun onNewIntent(intent: Intent) {

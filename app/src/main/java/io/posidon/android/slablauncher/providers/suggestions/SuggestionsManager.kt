@@ -27,10 +27,17 @@ object SuggestionsManager {
     fun getUsageTimeMark(context: Context, app: App): String? {
         val usageStatsManager = context.getSystemService(UsageStatsManager::class.java)
         val c = Calendar.getInstance()
+        val millis = System.currentTimeMillis()
         c.add(Calendar.DAY_OF_YEAR, -1)
-        return usageStatsManager.queryAndAggregateUsageStats(c.timeInMillis, System.currentTimeMillis())[app.packageName]?.let {
+        return usageStatsManager.queryAndAggregateUsageStats(c.timeInMillis, millis)[app.packageName]?.let {
             c.timeInMillis = it.totalTimeInForeground
-            "${c[Calendar.HOUR]}:${c[Calendar.MINUTE].toString().padStart(2, '0')}"
+            val h = c[Calendar.HOUR_OF_DAY] - 1
+            val m = c[Calendar.MINUTE]
+            when {
+                m == 0 -> null
+                h == 0 -> "$m"
+                else -> "$h:${m.toString().padStart(2, '0')}"
+            }
         }
     }
 
