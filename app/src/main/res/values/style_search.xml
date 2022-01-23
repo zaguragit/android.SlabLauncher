@@ -102,4 +102,13 @@
         <item name="android:textColor">@color/feed_card_text_dark_title</item>
         <item name="android:padding">@dimen/feed_card_spacing</item>
     </style>
+
+    <style name="SlabLauncher.SearchResult.SimpleBox.Text" parent="SlabLauncher">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/feed_card_text_dark_title</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:paddingHorizontal">@dimen/feed_card_spacing</item>
+        <item name="android:paddingVertical">@dimen/feed_card_spacing</item>
+        <item name="android:layout_margin">@dimen/feed_card_padding</item>
+    </style>
 </resources>

@@ -43,6 +43,7 @@ class SideListFragment : Fragment() {
             ::AppProvider,
             ::ContactProvider,
             ::DuckDuckGoProvider,
+            ::MathProvider,
             update = ::updateResults
         )
     }

@@ -1,5 +1,5 @@
 buildscript {
-    val kotlinVersion by extra("1.6.0")
+    val kotlinVersion by extra("1.6.10")
     repositories {
         google()
         mavenCentral()

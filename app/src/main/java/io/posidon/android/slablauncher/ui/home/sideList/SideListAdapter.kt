@@ -6,15 +6,13 @@ import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.App
-import io.posidon.android.slablauncher.data.search.AppResult
-import io.posidon.android.slablauncher.data.search.CompactResult
-import io.posidon.android.slablauncher.data.search.InstantAnswerResult
-import io.posidon.android.slablauncher.data.search.SearchResult
+import io.posidon.android.slablauncher.data.search.*
 import io.posidon.android.slablauncher.providers.search.SearchQuery
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.sideList.viewHolders.TitleViewHolder
 import io.posidon.android.slablauncher.ui.home.sideList.viewHolders.search.CompactSearchViewHolder
 import io.posidon.android.slablauncher.ui.home.sideList.viewHolders.search.SearchViewHolder
+import io.posidon.android.slablauncher.ui.home.sideList.viewHolders.search.SimpleBoxSearchViewHolder
 import io.posidon.android.slablauncher.ui.home.sideList.viewHolders.search.instantAnswer.AnswerSearchViewHolder
 
 class SideListAdapter(
@@ -44,6 +42,7 @@ class SideListAdapter(
         return when (items[realI]) {
             is CompactResult -> RESULT_COMPACT
             is InstantAnswerResult -> RESULT_ANSWER
+            is MathResult -> RESULT_SIMPLE_BOX
             else -> throw Exception("Invalid search result")
         }
     }
@@ -53,6 +52,7 @@ class SideListAdapter(
             TITLE -> TitleViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.title, parent, false))
             RESULT_COMPACT -> CompactSearchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.search_result_compact, parent, false))
             RESULT_ANSWER -> AnswerSearchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.search_result_answer, parent, false))
+            RESULT_SIMPLE_BOX -> SimpleBoxSearchViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.search_result_simple_box, parent, false))
             else -> throw Exception("Invalid view type")
         }
     }
@@ -102,6 +102,7 @@ class SideListAdapter(
         const val TITLE = -1
         const val RESULT_ANSWER = 0
         const val RESULT_COMPACT = 1
+        const val RESULT_SIMPLE_BOX = 2
 
         const val SCREEN_SEARCH = 1
         const val SCREEN_ALL_APPS = 2
