@@ -14,6 +14,7 @@ import android.view.*
 import androidx.core.app.ActivityCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.updateLayoutParams
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
@@ -47,7 +48,7 @@ class TileAreaFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = inflater.inflate(R.layout.activity_launcher, container, false).apply {
-        tileArea = TileArea(this, this@TileAreaFragment, launcherContext)
+        tileArea = TileArea(this as NestedScrollView, this@TileAreaFragment, launcherContext)
 
         val a = requireActivity() as MainActivity
         a.setOnColorThemeUpdateListener(TileAreaFragment::class.simpleName!!, ::updateColorTheme)

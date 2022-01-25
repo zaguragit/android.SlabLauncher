@@ -394,7 +394,7 @@ class MainActivity : FragmentActivity() {
         updateBlurLevel()
     }
 
-    var overlayOpacity = 1f
+    var overlayOpacity = 0f
     var blurLevel = 0f
         private set
     fun updateBlurLevel() {

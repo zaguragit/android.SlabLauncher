@@ -41,6 +41,7 @@
         <entry key="app/src/main/res/drawable/ripple.xml" value="0.2171875" />
         <entry key="app/src/main/res/drawable/round_bg.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/drawable/sign_continue.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/tile_drop_area.xml" value="0.184375" />
         <entry key="app/src/main/res/drawable/tile_drop_target.xml" value="0.36875" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.26145833333333335" />
         <entry key="app/src/main/res/layout/activity_intro.xml" value="0.35260416666666666" />
@@ -120,7 +121,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="Android API 31 Platform" project-jdk-type="Android SDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

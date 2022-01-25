@@ -4,8 +4,8 @@
         <shape>
             <gradient
                 android:angle="315"
-                android:startColor="#5191ec"
-                android:endColor="#0e46b7"/>
+                android:startColor="#158EA3"
+                android:endColor="#0ee463"/>
         </shape>
     </background>
     <foreground android:drawable="@drawable/launcher_adaptive_foreground"/>

@@ -8,6 +8,6 @@ object DefaultPalette : ColorPalette {
     override val neutralLight: Int = 0xffdddddd.toInt()
     override val neutralVeryLight: Int = 0xffffffff.toInt()
 
-    override val primary: Int = 0xff4e80e9.toInt()
-    override val secondary: Int = 0xff4e80e9.toInt()
+    override val primary: Int = 0xff0ee463.toInt()
+    override val secondary: Int = 0xff0ee463.toInt()
 }

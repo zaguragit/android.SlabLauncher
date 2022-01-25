@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.view.*
 import androidx.core.view.isVisible
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.LauncherContext
@@ -16,7 +17,7 @@ import io.posidon.android.slablauncher.util.view.recycler.RecyclerViewLongPressH
 import posidon.android.conveniencelib.Device
 import kotlin.math.abs
 
-class TileArea(view: View, val fragment: TileAreaFragment, val launcherContext: LauncherContext) {
+class TileArea(val view: NestedScrollView, val fragment: TileAreaFragment, val launcherContext: LauncherContext) {
 
     companion object {
         const val COLUMNS = 3
@@ -24,17 +25,32 @@ class TileArea(view: View, val fragment: TileAreaFragment, val launcherContext: 
         const val WIDTH_TO_HEIGHT = 5f / 4f
     }
 
-    var scrollY: Int = 0
-        private set
+    inline val scrollY: Int
+        get() = view.scrollY
 
     val atAGlance = AtAGlanceArea(view.findViewById<ViewGroup>(R.id.at_a_glace), this, fragment.requireActivity() as MainActivity)
+
+    init {
+        val activity = fragment.requireActivity() as MainActivity
+        view.setOnScrollChangeListener { v, _, scrollY, _, _ ->
+            activity.overlayOpacity = run {
+                val tileMargin = v.resources.getDimension(R.dimen.item_card_margin)
+                val tileWidth = (Device.screenWidth(v.context) - tileMargin * 2) / COLUMNS - tileMargin * 2
+                val tileHeight = tileWidth / WIDTH_TO_HEIGHT
+                val dockRowHeight = (tileHeight + tileMargin * 2)
+                (scrollY / dockRowHeight).coerceAtMost(1f)
+            }
+            activity.updateBlurLevel()
+        }
+        view.setOnDragListener(::onDrag)
+    }
 
     val pinnedAdapter = PinnedTilesAdapter(fragment.requireActivity() as MainActivity, launcherContext, fragment)
     @SuppressLint("ClickableViewAccessibility")
     val pinnedRecycler = view.findViewById<RecyclerView>(R.id.pinned_recycler).apply {
         layoutManager = GridLayoutManager(fragment.requireContext(), COLUMNS, RecyclerView.VERTICAL, false)
         adapter = pinnedAdapter
-        setOnDragListener(::onDrag)
+        background.alpha = 0
         val activity = fragment.requireActivity() as MainActivity
         NotificationService.setOnUpdate(TileArea::class.simpleName!!) { old, new ->
             activity.runOnUiThread {
@@ -52,20 +68,6 @@ class TileArea(view: View, val fragment: TileAreaFragment, val launcherContext: 
                 activity::reloadBlur,
             )
         }
-
-        addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                this@TileArea.scrollY += dy
-                activity.overlayOpacity = run {
-                    val tileMargin = resources.getDimension(R.dimen.item_card_margin)
-                    val tileWidth = (Device.screenWidth(context) - tileMargin * 2) / COLUMNS - tileMargin * 2
-                    val tileHeight = tileWidth / WIDTH_TO_HEIGHT
-                    val dockRowHeight = (tileHeight + tileMargin * 2)
-                    (this@TileArea.scrollY / dockRowHeight).coerceAtMost(1f)
-                }
-                activity.updateBlurLevel()
-            }
-        })
     }
 
     fun showDropTarget(i: Int) {
@@ -74,7 +76,7 @@ class TileArea(view: View, val fragment: TileAreaFragment, val launcherContext: 
     }
 
     fun getPinnedItemIndex(x: Float, y: Float): Int {
-        var y = y + scrollY
+        var y = y + scrollY - atAGlance.view.height
         if (y < 0) return -1
         val x = x / pinnedRecycler.width * COLUMNS
         y = ((y - pinnedRecycler.paddingTop) / pinnedRecycler.width * COLUMNS) * WIDTH_TO_HEIGHT
@@ -90,12 +92,19 @@ class TileArea(view: View, val fragment: TileAreaFragment, val launcherContext: 
         pinnedAdapter.updateItems(launcherContext.appManager.pinnedItems)
     }
 
+    var highlightDropArea = false
+        set(value) {
+            field = value
+            pinnedRecycler.background.alpha = if (value) 255 else 0
+        }
+
     fun onDrag(view: View, event: DragEvent): Boolean {
         when (event.action) {
             DragEvent.ACTION_DRAG_ENTERED,
             DragEvent.ACTION_DRAG_STARTED -> {
                 ((event.localState as? Pair<*, *>?)?.first as? View)?.visibility = View.INVISIBLE
                 val i = getPinnedItemIndex(event.x, event.y)
+                highlightDropArea = true
                 showDropTarget(i)
             }
             DragEvent.ACTION_DRAG_LOCATION -> {
@@ -117,10 +126,12 @@ class TileArea(view: View, val fragment: TileAreaFragment, val launcherContext: 
                 ItemLongPress.currentPopup?.isFocusable = true
                 ItemLongPress.currentPopup?.update()
                 showDropTarget(-1)
+                highlightDropArea = false
                 updatePinned()
             }
             DragEvent.ACTION_DRAG_EXITED -> {
                 showDropTarget(-1)
+                highlightDropArea = false
             }
             DragEvent.ACTION_DROP -> {
                 ((event.localState as? Pair<*, *>?)?.first as? View)?.visibility = View.VISIBLE
