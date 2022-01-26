@@ -2,6 +2,7 @@ package io.posidon.android.slablauncher.providers.notification
 
 import android.app.Notification
 import android.app.NotificationManager
+import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -10,8 +11,11 @@ import android.os.Bundle
 import android.service.notification.StatusBarNotification
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.net.toFile
 import io.posidon.android.slablauncher.data.notification.NotificationData
 import io.posidon.android.slablauncher.data.notification.TempNotificationData
+import java.io.File
+import java.net.URI
 
 object NotificationCreator {
 
@@ -41,13 +45,30 @@ object NotificationCreator {
         val b = extras[Notification.EXTRA_PICTURE] as Bitmap?
         if (b != null) {
             try {
-                val d = BitmapDrawable(context.resources, b)
                 if (b.width < 64 || b.height < 64) {
                     return null
                 }
-                return d
+                return BitmapDrawable(context.resources, b)
             } catch (e: Exception) {
                 e.printStackTrace()
+            }
+        }
+        return null
+    }
+
+    inline fun getBigImageFromMessages(context: Context, messagingStyle: NotificationCompat.MessagingStyle): Drawable? {
+        messagingStyle.messages.asReversed().forEach {
+            it.dataUri?.let { uri ->
+                runCatching {
+                    return Drawable.createFromStream(context.contentResolver.openInputStream(uri), null)
+                }
+            }
+        }
+        messagingStyle.historicMessages.asReversed().forEach {
+            it.dataUri?.let { uri ->
+                runCatching {
+                    return Drawable.createFromStream(context.contentResolver.openInputStream(uri), null)
+                }
             }
         }
         return null
@@ -79,14 +100,17 @@ object NotificationCreator {
         val channel = NotificationManagerCompat.from(context).getNotificationChannel(notification.notification.channelId)
         val importance = channel?.importance?.let { getImportance(it) } ?: 0
 
-        val bigPic = getBigImage(context, extras)
+        var bigPic = getBigImage(context, extras)
 
         val messagingStyle = NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(
             notification.notification)
         val isConversation = messagingStyle != null
-        if (isConversation) {
-            messagingStyle?.conversationTitle?.toString()?.let { title = it }
-            messagingStyle?.messages?.lastOrNull()?.text?.toString()?.let { text = it }
+        if (messagingStyle != null) {
+            messagingStyle.conversationTitle?.toString()?.let { title = it }
+            messagingStyle.messages.lastOrNull()?.text?.toString()?.let { text = it }
+            if (bigPic == null) {
+                bigPic = getBigImageFromMessages(context, messagingStyle)
+            }
         }
 
         return TempNotificationData(
