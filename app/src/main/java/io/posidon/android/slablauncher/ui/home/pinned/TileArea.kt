@@ -66,6 +66,7 @@ class TileArea(val view: NestedScrollView, val fragment: TileAreaFragment, val l
                 activity::updateColorTheme,
                 activity::loadApps,
                 activity::reloadBlur,
+                atAGlance::updateLayout,
             )
         }
     }

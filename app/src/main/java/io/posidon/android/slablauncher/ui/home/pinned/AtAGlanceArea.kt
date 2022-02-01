@@ -5,6 +5,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
@@ -15,12 +16,13 @@ import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.pinned.suggestion.SuggestionsAdapter
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
+import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
 import io.posidon.android.slablauncher.util.view.recycler.RecyclerViewLongPressHelper
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.getStatusBarHeight
 
 @SuppressLint("ClickableViewAccessibility")
-class AtAGlanceArea(val view: View, tileArea: TileArea, mainActivity: MainActivity) {
+class AtAGlanceArea(val view: View, tileArea: TileArea, val mainActivity: MainActivity) {
 
     companion object {
         const val SUGGESTION_COUNT = 4
@@ -33,8 +35,13 @@ class AtAGlanceArea(val view: View, tileArea: TileArea, mainActivity: MainActivi
         adapter = suggestionsAdapter
     }
 
-    private val popupHeight get() = view.height - view.context.getStatusBarHeight() - suggestionsRecycler.height - view.resources.getDimension(R.dimen.item_card_margin).toInt() * 2
-    private val popupWidth get() = view.width - view.resources.getDimension(R.dimen.item_card_margin).toInt() * 4
+    private val popupHeight get() =
+        view.height -
+        view.context.getStatusBarHeight() -
+        suggestionsRecycler.let { if (it.isVisible) it.height else 0 } -
+        view.resources.getDimension(R.dimen.item_card_margin).toInt() * 2
+    private val popupWidth get() =
+        view.width - view.resources.getDimension(R.dimen.item_card_margin).toInt() * 4
 
     private var popupX = 0f
     private var popupY = 0f
@@ -61,6 +68,7 @@ class AtAGlanceArea(val view: View, tileArea: TileArea, mainActivity: MainActivi
                 mainActivity::updateColorTheme,
                 mainActivity::loadApps,
                 mainActivity::reloadBlur,
+                ::updateLayout,
                 if (tileArea.scrollY == 0) popupWidth else ViewGroup.LayoutParams.WRAP_CONTENT,
                 if (tileArea.scrollY == 0) popupHeight else HomeLongPressPopup.calculateHeight(it.context),
             )
@@ -77,10 +85,16 @@ class AtAGlanceArea(val view: View, tileArea: TileArea, mainActivity: MainActivi
                 mainActivity::updateColorTheme,
                 mainActivity::loadApps,
                 mainActivity::reloadBlur,
+                ::updateLayout,
                 if (tileArea.scrollY == 0) popupWidth else ViewGroup.LayoutParams.WRAP_CONTENT,
                 if (tileArea.scrollY == 0) popupHeight else HomeLongPressPopup.calculateHeight(v.context),
             )
         }
+        updateLayout()
+    }
+
+    fun updateLayout() {
+        suggestionsRecycler.isVisible = mainActivity.settings.doSuggestionStrip
     }
 
     fun updateColorTheme() {

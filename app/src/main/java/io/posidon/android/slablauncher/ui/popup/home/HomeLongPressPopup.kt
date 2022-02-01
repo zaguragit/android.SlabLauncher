@@ -27,6 +27,7 @@ import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.monochromatism
 import io.posidon.android.slablauncher.util.storage.DoReshapeAdaptiveIconsSetting.adaptiveIconsReshaping
 import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScreenOpenedSetting.doAutoKeyboardInAllApps
+import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
 import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.android.slablauncher.util.view.SeeThroughView
 import posidon.android.conveniencelib.Device
@@ -55,6 +56,7 @@ class HomeLongPressPopup(
             updateColorTheme: (ColorPalette) -> Unit,
             reloadApps: () -> Unit,
             reloadBlur: (() -> Unit) -> Unit,
+            updateAtAGlanceLayout: () -> Unit,
             popupWidth: Int = ViewGroup.LayoutParams.WRAP_CONTENT,
             popupHeight: Int = calculateHeight(parent.context),
         ) {
@@ -97,6 +99,9 @@ class HomeLongPressPopup(
                                 cardView.post { update() }
                             }
                         },
+                        updateAtAGlanceLayout = {
+                            parent.post(updateAtAGlanceLayout)
+                        }
                     )
                 )
             }
@@ -127,6 +132,7 @@ class HomeLongPressPopup(
             updateColorTheme: () -> Unit,
             reloadApps: () -> Unit,
             reloadBlur: () -> Unit,
+            updateAtAGlanceLayout: () -> Unit,
         ): List<ListPopupItem> {
             return listOf(
                 ListPopupItem(
@@ -175,6 +181,18 @@ class HomeLongPressPopup(
                         settings.edit(context) {
                             doBlur = value == 1
                             reloadBlur()
+                        }
+                    }
+                ),
+                ListPopupItem(
+                    context.getString(R.string.show_app_suggestions),
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_home),
+                    value = settings.doSuggestionStrip,
+                    states = 2,
+                    onStateChange = { _, value ->
+                        settings.edit(context) {
+                            doSuggestionStrip = value == 1
+                            updateAtAGlanceLayout()
                         }
                     }
                 ),

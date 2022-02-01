@@ -108,3 +108,16 @@ object DoShowKeyboardOnAllAppsScreenOpenedSetting {
 
     const val DEFAULT = false
 }
+
+object DoSuggestionStripSetting {
+    val Settings.doSuggestionStrip: Boolean
+        get() = get(KEY, DEFAULT)
+
+    var Settings.SettingsEditor.doSuggestionStrip: Boolean
+        get() = settings[KEY, DEFAULT]
+        set(value) = KEY set value
+
+    private const val KEY = "suggestions:show"
+
+    const val DEFAULT = true
+}
