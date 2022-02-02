@@ -1,11 +1,14 @@
 package io.posidon.android.slablauncher.ui.home.pinned
 
 import android.content.ClipData
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.computable.computedOrNull
@@ -128,11 +131,7 @@ class PinnedTilesAdapter(
             activity,
             activity.settings,
             onDragStart = {
-                val i = adapterPositionToI(holder.bindingAdapterPosition)
-                items.removeAt(i)
-                dropTargetIndex = i
-                notifyItemChanged(holder.bindingAdapterPosition)
-                updatePins(it)
+                holder.itemView.isInvisible = true
             },
         )
     }
@@ -158,8 +157,16 @@ class PinnedTilesAdapter(
         diff.dispatchUpdatesTo(this)
     }
 
-    private fun updatePins(v: View) {
-        launcherContext.appManager.setPinned(v.context, ArrayList(items))
+    private fun updatePins(context: Context) {
+        launcherContext.appManager.setPinned(context, ArrayList(items))
+    }
+
+    fun onDragOut(view: View, i: Int) {
+        view.isVisible = true
+        items.removeAt(i)
+        dropTargetIndex = i
+        notifyItemChanged(i)
+        updatePins(view.context)
     }
 
     fun showDropTarget(i: Int) {
@@ -193,6 +200,6 @@ class PinnedTilesAdapter(
         item?.let { items.add(i, it) }
         dropTargetIndex = -1
         notifyItemChanged(i)
-        updatePins(v)
+        updatePins(v.context)
     }
 }

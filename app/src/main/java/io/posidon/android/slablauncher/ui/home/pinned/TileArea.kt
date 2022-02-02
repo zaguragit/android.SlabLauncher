@@ -73,7 +73,7 @@ class TileArea(val view: NestedScrollView, val fragment: TileAreaFragment, val l
 
     fun showDropTarget(i: Int) {
         if (i != -1) pinnedRecycler.isVisible = true
-        pinnedAdapter.showDropTarget(i)
+        ItemLongPress.currentPopup ?: pinnedAdapter.showDropTarget(i)
     }
 
     fun getPinnedItemIndex(x: Float, y: Float): Int {
@@ -112,18 +112,22 @@ class TileArea(val view: NestedScrollView, val fragment: TileAreaFragment, val l
                 val pair = (event.localState as? Pair<*, *>?)
                 val v = pair?.first as? View
                 val location = pair?.second as? IntArray
+                val i = getPinnedItemIndex(event.x, event.y)
                 if (v != null && location != null) {
                     val x = abs(event.x - location[0] - v.measuredWidth / 2f)
                     val y = abs(event.y - location[1] - v.measuredHeight / 2f)
                     if (x > v.measuredWidth / 3.5f || y > v.measuredHeight / 3.5f) {
-                        ItemLongPress.currentPopup?.dismiss()
+                        ItemLongPress.currentPopup?.dismiss()?.let {
+                            pinnedAdapter.onDragOut(v, i)
+                        }
                     }
                 }
-
-                val i = getPinnedItemIndex(event.x, event.y)
                 showDropTarget(i)
             }
             DragEvent.ACTION_DRAG_ENDED -> {
+                val pair = (event.localState as? Pair<*, *>?)
+                val v = pair?.first as? View
+                v?.isVisible = true
                 ItemLongPress.currentPopup?.isFocusable = true
                 ItemLongPress.currentPopup?.update()
                 showDropTarget(-1)
@@ -135,13 +139,13 @@ class TileArea(val view: NestedScrollView, val fragment: TileAreaFragment, val l
                 highlightDropArea = false
             }
             DragEvent.ACTION_DROP -> {
-                ((event.localState as? Pair<*, *>?)?.first as? View)?.visibility = View.VISIBLE
+                ((event.localState as? Pair<*, *>?)?.first as? View)?.isVisible = true
                 ItemLongPress.currentPopup?.isFocusable = true
                 ItemLongPress.currentPopup?.update()
                 val i = getPinnedItemIndex(event.x, event.y)
                 if (i == -1)
-                    return false
-                onDrop(view, i, event.clipData)
+                    return true
+                ItemLongPress.currentPopup ?: onDrop(view, i, event.clipData)
             }
         }
         return true
