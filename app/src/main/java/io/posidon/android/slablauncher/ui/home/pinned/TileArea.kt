@@ -105,7 +105,8 @@ class TileArea(val view: NestedScrollView, val fragment: TileAreaFragment, val l
             DragEvent.ACTION_DRAG_STARTED -> {
                 ((event.localState as? Pair<*, *>?)?.first as? View)?.visibility = View.INVISIBLE
                 val i = getPinnedItemIndex(event.x, event.y)
-                highlightDropArea = true
+                if (ItemLongPress.currentPopup == null)
+                    highlightDropArea = true
                 showDropTarget(i)
             }
             DragEvent.ACTION_DRAG_LOCATION -> {
@@ -119,6 +120,7 @@ class TileArea(val view: NestedScrollView, val fragment: TileAreaFragment, val l
                     if (x > v.measuredWidth / 3.5f || y > v.measuredHeight / 3.5f) {
                         ItemLongPress.currentPopup?.dismiss()?.let {
                             pinnedAdapter.onDragOut(v, i)
+                            highlightDropArea = true
                         }
                     }
                 }
