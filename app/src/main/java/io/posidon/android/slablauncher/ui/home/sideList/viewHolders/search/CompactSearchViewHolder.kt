@@ -11,7 +11,7 @@ import io.posidon.android.slablauncher.data.search.SearchResult
 import io.posidon.android.slablauncher.providers.app.AppCollection.Companion.convertToGrayscale
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.MainActivity
-import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.hideIfNullOr
+import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.hideIfNullOr
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeIcons
 
 class CompactSearchViewHolder(

@@ -19,6 +19,10 @@ import java.net.URI
 
 object NotificationCreator {
 
+    inline fun getSource(context: Context, n: StatusBarNotification): String {
+        return context.packageManager.getApplicationLabel(context.packageManager.getApplicationInfo(n.packageName, 0)).toString()
+    }
+
     inline fun getTitle(extras: Bundle): CharSequence? {
         val title = extras.getCharSequence(Notification.EXTRA_TITLE)
         if (title == null || title.toString().replace(" ", "").isEmpty()) {
@@ -39,6 +43,14 @@ object NotificationCreator {
             }
             delete(lastIndex, length)
         }
+    }
+
+    inline fun getSmallIcon(context: Context, n: StatusBarNotification): Drawable? {
+        return n.notification.smallIcon?.loadDrawable(context)
+    }
+
+    inline fun getLargeIcon(context: Context, n: StatusBarNotification): Drawable? {
+        return n.notification.getLargeIcon()?.loadDrawable(context)
     }
 
     inline fun getBigImage(context: Context, extras: Bundle): Drawable? {
@@ -97,6 +109,9 @@ object NotificationCreator {
             text = null
         }
 
+        val source = getSource(context, notification)
+        val icon = getSmallIcon(context, notification)!!
+
         val channel = NotificationManagerCompat.from(context).getNotificationChannel(notification.notification.channelId)
         val importance = channel?.importance?.let { getImportance(it) } ?: 0
 
@@ -115,6 +130,8 @@ object NotificationCreator {
 
         return TempNotificationData(
             NotificationData(
+                icon = icon,
+                source = source,
                 title = title?.toString() ?: "",
                 description = text?.toString(),
                 image = bigPic,

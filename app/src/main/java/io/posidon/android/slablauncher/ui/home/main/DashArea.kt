@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.home.pinned
+package io.posidon.android.slablauncher.ui.home.main
 
 import android.annotation.SuppressLint
 import android.content.ClipData
@@ -9,26 +9,27 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
-import io.posidon.android.slablauncher.providers.notification.NotificationService
 import io.posidon.android.slablauncher.ui.home.MainActivity
+import io.posidon.android.slablauncher.ui.home.main.dash.AtAGlanceArea
+import io.posidon.android.slablauncher.ui.home.main.tile.PinnedTilesAdapter
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.util.view.recycler.RecyclerViewLongPressHelper
 import posidon.android.conveniencelib.Device
 import kotlin.math.abs
 
-class TileArea(val view: NestedScrollView, val fragment: TileAreaFragment, val launcherContext: LauncherContext) {
+class DashArea(val view: NestedScrollView, val fragment: DashAreaFragment, val launcherContext: LauncherContext) {
 
     companion object {
-        const val COLUMNS = 3
+        const val COLUMNS = 4
         const val DOCK_ROWS = 3
-        const val WIDTH_TO_HEIGHT = 5f / 4f
+        const val WIDTH_TO_HEIGHT = 6f / 5f
     }
 
     inline val scrollY: Int
         get() = view.scrollY
 
-    val atAGlance = AtAGlanceArea(view.findViewById<ViewGroup>(R.id.at_a_glace), this, fragment.requireActivity() as MainActivity)
+    val atAGlance = AtAGlanceArea(view.findViewById<ViewGroup>(R.id.dash), this, fragment.requireActivity() as MainActivity)
 
     init {
         val activity = fragment.requireActivity() as MainActivity
@@ -52,11 +53,6 @@ class TileArea(val view: NestedScrollView, val fragment: TileAreaFragment, val l
         adapter = pinnedAdapter
         background.alpha = 0
         val activity = fragment.requireActivity() as MainActivity
-        NotificationService.setOnUpdate(TileArea::class.simpleName!!) { old, new ->
-            activity.runOnUiThread {
-                pinnedAdapter.updateItems(old, new)
-            }
-        }
 
         RecyclerViewLongPressHelper.setOnLongPressListener(this) { v, x, y ->
             HomeLongPressPopup.show(
@@ -119,6 +115,7 @@ class TileArea(val view: NestedScrollView, val fragment: TileAreaFragment, val l
                     val y = abs(event.y - location[1] - v.measuredHeight / 2f)
                     if (x > v.measuredWidth / 3.5f || y > v.measuredHeight / 3.5f) {
                         ItemLongPress.currentPopup?.dismiss()?.let {
+                            val i = getPinnedItemIndex(location[0].toFloat(), location[1].toFloat())
                             pinnedAdapter.onDragOut(v, i)
                             highlightDropArea = true
                         }
@@ -151,5 +148,10 @@ class TileArea(val view: NestedScrollView, val fragment: TileAreaFragment, val l
             }
         }
         return true
+    }
+
+    fun updateBlur() {
+        pinnedAdapter.notifyItemRangeChanged(0, pinnedAdapter.itemCount)
+        atAGlance.updateBlur()
     }
 }

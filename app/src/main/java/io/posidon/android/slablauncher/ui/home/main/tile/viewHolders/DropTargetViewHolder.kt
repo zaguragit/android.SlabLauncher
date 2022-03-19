@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.home.pinned.viewHolders
+package io.posidon.android.slablauncher.ui.home.main.tile.viewHolders
 
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
-import io.posidon.android.slablauncher.ui.home.pinned.TileArea.Companion.WIDTH_TO_HEIGHT
+import io.posidon.android.slablauncher.ui.home.main.DashArea.Companion.WIDTH_TO_HEIGHT
 import io.posidon.android.slablauncher.util.view.HorizontalAspectRatioLayout
 
 class DropTargetViewHolder(

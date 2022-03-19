@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
-import io.posidon.android.slablauncher.ui.home.pinned.acrylicBlur
+import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.popup.PopupUtils
 import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupAdapter
 import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupItem
@@ -25,7 +25,6 @@ import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorTheme
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.setColorThemeDayNight
 import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.monochromatism
-import io.posidon.android.slablauncher.util.storage.DoReshapeAdaptiveIconsSetting.adaptiveIconsReshaping
 import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScreenOpenedSetting.doAutoKeyboardInAllApps
 import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
 import io.posidon.android.slablauncher.util.storage.Settings
@@ -203,20 +202,6 @@ class HomeLongPressPopup(
                 ) {
                     context.startActivity(Intent(context, IconPackPickerActivity::class.java))
                 },
-                ListPopupItem(
-                    context.getString(R.string.reshape_adaptive_icons),
-                    description = context.getString(R.string.reshape_adaptive_icons_explanation),
-                    icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),
-                    value = settings.adaptiveIconsReshaping,
-                    states = 3,
-                    unsafeLevel = 2,
-                    onStateChange = { _, value ->
-                        settings.edit(context) {
-                            adaptiveIconsReshaping = value
-                            reloadApps()
-                        }
-                    }
-                ),
                 ListPopupItem(
                     context.getString(R.string.monochrome_icons),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_color_dropper),

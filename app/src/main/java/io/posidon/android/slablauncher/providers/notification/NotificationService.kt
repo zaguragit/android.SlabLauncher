@@ -93,18 +93,20 @@ class NotificationService : NotificationListenerService() {
                 tmpNotifications.sortByDescending {
                     var r = it.millis
                     when (it.importance) {
-                        1 -> r += 3600L * 2
-                        2 -> r += 3600L * 7
+                        1 -> r += 3600_000L * 3
+                        2 -> r += 3600_000L * 7
+                        else -> if (it.notificationData.sourcePackageName == "android")
+                            r -= 3600_000L * 1
                     }
                     if (it.isConversation) {
-                        r += 3600L * 4
+                        r += 3600_000L * 5
                     }
                     r
                 }
             }
             catch (e: Exception) { e.printStackTrace() }
             val old = Companion.notifications
-            Companion.notifications = tmpNotifications.map { it.notificationData }.distinctBy { it.sourcePackageName }.toMutableList()
+            Companion.notifications = tmpNotifications.map { it.notificationData }.toMutableList()
             listeners.forEach { (_, x) -> x(old, Companion.notifications) }
         }
     }

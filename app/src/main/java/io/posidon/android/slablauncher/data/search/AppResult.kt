@@ -38,7 +38,7 @@ class AppResult(
         )
     }
 
-    override val subtitle get() = app.getBanner().let { it.title ?: it.text }
+    override val subtitle = null
 
     override var relevance = Relevance(0f)
     override val onLongPress = { v: View, activity: Activity ->

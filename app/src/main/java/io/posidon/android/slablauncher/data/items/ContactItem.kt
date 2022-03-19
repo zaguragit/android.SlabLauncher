@@ -39,8 +39,6 @@ class ContactItem(
     override val color get() = Computable(0)
 
     override fun getBanner(notifications: List<NotificationData>) = LauncherItem.Banner(
-        null,
-        null,
         pic,
         1f,
         hideIcon = true

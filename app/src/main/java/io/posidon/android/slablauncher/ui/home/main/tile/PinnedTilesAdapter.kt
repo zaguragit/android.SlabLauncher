@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.home.pinned
+package io.posidon.android.slablauncher.ui.home.main.tile
 
 import android.content.ClipData
 import android.content.Context
@@ -11,26 +11,20 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import io.posidon.android.computable.computedOrNull
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.LauncherItem
-import io.posidon.android.slablauncher.data.items.getBanner
-import io.posidon.android.slablauncher.data.notification.NotificationData
 import io.posidon.android.slablauncher.providers.notification.NotificationService
 import io.posidon.android.slablauncher.ui.home.MainActivity
-import io.posidon.android.slablauncher.ui.home.pinned.TileDiffCallback.Companion.CHANGE_ALL
-import io.posidon.android.slablauncher.ui.home.pinned.TileDiffCallback.Companion.CHANGE_BANNER_TEXT
-import io.posidon.android.slablauncher.ui.home.pinned.TileDiffCallback.Companion.CHANGE_GRAPHICS
-import io.posidon.android.slablauncher.ui.home.pinned.TileDiffCallback.Companion.CHANGE_LABEL
-import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.DropTargetViewHolder
-import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.TileViewHolder
-import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.bindDropTargetViewHolder
+import io.posidon.android.slablauncher.ui.home.main.DashAreaFragment
+import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.DropTargetViewHolder
+import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.TileViewHolder
+import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.bindDropTargetViewHolder
 
 class PinnedTilesAdapter(
     val activity: MainActivity,
     val launcherContext: LauncherContext,
-    val fragment: TileAreaFragment,
+    val fragment: DashAreaFragment,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var dropTargetIndex = -1
@@ -80,52 +74,6 @@ class PinnedTilesAdapter(
         }
         val item = items[adapterPositionToI(ii)]
         holder as TileViewHolder
-        bindViewHolderUpdateAll(holder, item)
-    }
-
-    override fun onBindViewHolder(
-        holder: RecyclerView.ViewHolder,
-        ii: Int,
-        payloads: MutableList<Any>
-    ) {
-        if (ii == dropTargetIndex) {
-            holder as DropTargetViewHolder
-            bindDropTargetViewHolder(holder)
-            return
-        }
-        val item = items[adapterPositionToI(ii)]
-        holder as TileViewHolder
-
-        if (payloads.isEmpty()) {
-            return bindViewHolderUpdateAll(holder, item)
-        }
-        payloads.forEach { payload ->
-            payload as List<*>
-
-            if (payload.contains(CHANGE_ALL))
-                return bindViewHolderUpdateAll(holder, item)
-
-            if (payload.contains(CHANGE_BANNER_TEXT))
-                holder.updateBannerText(item.getBanner())
-
-            if (payload.contains(CHANGE_LABEL))
-                holder.updateLabel(item)
-
-            if (payload.contains(CHANGE_GRAPHICS)) {
-                val b = item.getBanner()
-                holder.updateBackground(item, b.background.computedOrNull(), activity.settings, b)
-            }
-        }
-
-        holder.updateTimeMark(item)
-
-        println("payloads: " + payloads.joinToString("; ") { (it as List<*>?)?.joinToString().toString() })
-    }
-
-    private fun bindViewHolderUpdateAll(
-        holder: TileViewHolder,
-        item: LauncherItem
-    ) {
         holder.bind(
             item,
             activity,
@@ -148,12 +96,6 @@ class PinnedTilesAdapter(
         val c = TileDiffCallback(this.items, items, NotificationService.notifications, NotificationService.notifications)
         val diff = DiffUtil.calculateDiff(c)
         this.items = items.toMutableList()
-        diff.dispatchUpdatesTo(this)
-    }
-
-    fun updateItems(old: List<NotificationData>, new: List<NotificationData>) {
-        val c = TileDiffCallback(this.items, items, old, new)
-        val diff = DiffUtil.calculateDiff(c)
         diff.dispatchUpdatesTo(this)
     }
 

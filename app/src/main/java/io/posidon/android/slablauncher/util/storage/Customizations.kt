@@ -35,30 +35,6 @@ object ColorThemeSetting {
     const val DEFAULT = 0
 }
 
-object DoReshapeAdaptiveIconsSetting {
-
-    inline val Settings.forceReshapeAdaptiveIcons: Boolean
-        get() = adaptiveIconsReshaping == FORCE
-
-    inline val Settings.doReshapeAdaptiveIcons: Boolean
-        get() = adaptiveIconsReshaping != NONE
-
-    val Settings.adaptiveIconsReshaping: Int
-        get() = get(KEY, DEFAULT)
-
-    var Settings.SettingsEditor.adaptiveIconsReshaping: Int
-        get() = settings[KEY, DEFAULT]
-        set(value) = KEY set value
-
-    private const val KEY = "icons:reshape_adaptive"
-
-    const val NONE = 0
-    const val SAFE = 1
-    const val FORCE = 2
-
-    const val DEFAULT = NONE
-}
-
 object DoMonochromeIconsSetting {
 
     val Settings.doMonochromeTileBackground: Boolean

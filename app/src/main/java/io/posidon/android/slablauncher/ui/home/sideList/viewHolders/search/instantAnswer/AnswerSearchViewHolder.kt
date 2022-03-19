@@ -11,7 +11,7 @@ import io.posidon.android.slablauncher.data.search.InstantAnswerResult
 import io.posidon.android.slablauncher.data.search.SearchResult
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.MainActivity
-import io.posidon.android.slablauncher.ui.home.pinned.acrylicBlur
+import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.home.sideList.viewHolders.search.SearchViewHolder
 import io.posidon.android.slablauncher.util.view.SeeThroughView
 

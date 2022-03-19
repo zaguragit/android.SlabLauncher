@@ -18,8 +18,6 @@ import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeIcons
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeTileBackground
-import io.posidon.android.slablauncher.util.storage.DoReshapeAdaptiveIconsSetting.doReshapeAdaptiveIcons
-import io.posidon.android.slablauncher.util.storage.DoReshapeAdaptiveIconsSetting.forceReshapeAdaptiveIcons
 import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.android.slablauncher.util.view.tile.TileContentMover
 import java.util.*
@@ -38,8 +36,6 @@ class AppCollection(
 
     private val tmpLab = DoubleArray(3)
 
-    private val doReshapeAdaptiveIcons = settings.doReshapeAdaptiveIcons
-    private val forceReshapeAdaptiveIcons = settings.forceReshapeAdaptiveIcons
     private val doMonochromeIcons = settings.doMonochromeIcons
     private val doMonochromeTileBackground = settings.doMonochromeTileBackground
 
@@ -135,7 +131,6 @@ class AppCollection(
                 bitmap.recycle()
             }
             icon is AdaptiveIconDrawable &&
-            doReshapeAdaptiveIcons &&
             icon.background != null &&
             icon.foreground != null -> {
                 val (i, b, c) = reshapeAdaptiveIcon(icon)
@@ -184,102 +179,25 @@ class AppCollection(
      */
     private fun reshapeAdaptiveIcon(icon: AdaptiveIconDrawable): Triple<Drawable, Drawable?, Int> {
         var color = 0
-        val b = icon.background
-        val isForegroundDangerous = run {
-            val fg = icon.foreground.toBitmap(24, 24)
-            val width = fg.width
-            val height = fg.height
-            val canvas = Canvas(fg)
-            canvas.drawRect(4f, 4f, width - 4f, height - 4f, Paint().apply {
-                xfermode = PorterDuff.Mode.CLEAR.toXfermode()
-            })
-            val pixels = IntArray(width * height)
-            fg.getPixels(pixels, 0, width, 0, 0, width, height)
-            for (pixel in pixels) {
-                if (pixel.alpha != 0) {
-                    return@run true
-                }
-            }
-            fg.recycle()
-            false
-        }
-        val (foreground, background) = when (b) {
+        when (val b = icon.background) {
             is ColorDrawable -> {
                 color = ensureNotPlainWhite(b.color, icon)
-                (if (isForegroundDangerous) icon else scale(icon.foreground)) to makeDrawable(color)
             }
             is ShapeDrawable -> {
                 color = ensureNotPlainWhite(b.paint.color, icon)
-                (if (isForegroundDangerous) icon else scale(icon.foreground)) to makeDrawable(color)
             }
             is GradientDrawable -> {
                 val bitmap = b.toBitmap(8, 8)
                 color = b.color?.defaultColor ?: Palette.from(bitmap).generate().getDominantColor(0)
                 bitmap.recycle()
-                (if (isForegroundDangerous) icon else scale(icon.foreground)) to b
             }
             else -> if (b != null) run {
                 val bitmap = b.toBitmap(24, 24)
-                if (forceReshapeAdaptiveIcons) {
-                    color = Palette.from(bitmap).generate().getDominantColor(0)
-                    return@run (if (isForegroundDangerous) icon else scale(icon.foreground)) to b
-                }
-                val px = run {
-                    val x = b.toBitmap(1, 1)
-                    x.getPixel(0, 0).also { x.recycle() }
-                }
-                val width = bitmap.width
-                val height = bitmap.height
-                val pixels = IntArray(width * height)
-                bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
-
-                var isOneColor = true
-                ColorUtils.colorToLAB(px, tmpLab)
-                var minL = tmpLab[0]
-                var maxL = tmpLab[0]
-                var minA = tmpLab[1]
-                var maxA = tmpLab[1]
-                var minB = tmpLab[2]
-                var maxB = tmpLab[2]
-                for (pixel in pixels) {
-                    if (pixel != px) {
-                        ColorUtils.colorToLAB(pixel, tmpLab)
-                        val (l, a, b) = tmpLab
-                        when {
-                            l < minL -> minL = l
-                            l > maxL -> maxL = l
-                        }
-                        when {
-                            a < minA -> minA = a
-                            a > maxA -> maxA = a
-                        }
-                        when {
-                            b < minB -> minB = b
-                            b > maxB -> maxB = b
-                        }
-                        isOneColor = false
-                    }
-                }
-                val lt = 7f
-                val at = 5f
-                val bt = 5f
-                if (isOneColor) {
-                    color = ensureNotPlainWhite(px, icon)
-                    bitmap.recycle()
-                    (if (isForegroundDangerous) icon else scale(icon.foreground)) to makeDrawable(color)
-                } else if (maxL - minL <= lt && maxA - minA <= at && maxB - minB <= bt) {
-                    color = px
-                    bitmap.recycle()
-                    (if (isForegroundDangerous) icon else scale(icon.foreground)) to b
-                } else {
-                    color = Palette.from(bitmap).generate().getDominantColor(0)
-                    bitmap.recycle()
-                    icon to null
-                }
-            } else icon to null
+                color = Palette.from(bitmap).generate().getDominantColor(0)
+            }
         }
 
-        return Triple(foreground, background, color)
+        return Triple(scale(icon.foreground), icon.background, color)
     }
 
     private fun putInMap(app: App) {

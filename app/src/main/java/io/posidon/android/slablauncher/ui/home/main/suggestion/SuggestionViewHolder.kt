@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.home.pinned.suggestion
+package io.posidon.android.slablauncher.ui.home.main.suggestion
 
 import android.content.res.ColorStateList
 import android.graphics.BlendMode

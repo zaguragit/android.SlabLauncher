@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.home.pinned.suggestion
+package io.posidon.android.slablauncher.ui.home.main.suggestion
 
 import android.app.Activity
 import android.view.LayoutInflater

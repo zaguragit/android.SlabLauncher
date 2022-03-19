@@ -45,7 +45,7 @@
         <entry key="app/src/main/res/drawable/tile_drop_target.xml" value="0.36875" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.26145833333333335" />
         <entry key="app/src/main/res/layout/activity_intro.xml" value="0.35260416666666666" />
-        <entry key="app/src/main/res/layout/activity_launcher.xml" value="0.11296859169199595" />
+        <entry key="app/src/main/res/layout/activity_launcher.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_launcher_search_bar.xml" value="0.2572463768115942" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.26145833333333335" />
         <entry key="app/src/main/res/layout/activity_search.xml" value="0.1" />
@@ -58,6 +58,7 @@
         <entry key="app/src/main/res/layout/app_drawer.xml" value="0.11296859169199595" />
         <entry key="app/src/main/res/layout/app_drawer_item.xml" value="0.21041666666666667" />
         <entry key="app/src/main/res/layout/at_a_glance.xml" value="0.26222826086956524" />
+        <entry key="app/src/main/res/layout/dash.xml" value="0.2115036231884058" />
         <entry key="app/src/main/res/layout/dock.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/feed_chooser_option_edit_dialog.xml" value="0.20416666666666666" />
         <entry key="app/src/main/res/layout/feed_filter.xml" value="0.26721014492753625" />
@@ -93,6 +94,7 @@
         <entry key="app/src/main/res/layout/long_press_item_popup.xml" value="0.21041666666666667" />
         <entry key="app/src/main/res/layout/long_press_item_popup_extra.xml" value="0.2" />
         <entry key="app/src/main/res/layout/long_press_item_popup_item.xml" value="0.2980072463768116" />
+        <entry key="app/src/main/res/layout/media_player.xml" value="0.2115036231884058" />
         <entry key="app/src/main/res/layout/notification.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/pinned_drop_target.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/pinned_item.xml" value="0.2572463768115942" />

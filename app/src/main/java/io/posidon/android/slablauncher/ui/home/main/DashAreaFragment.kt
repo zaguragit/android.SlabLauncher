@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.home.pinned
+package io.posidon.android.slablauncher.ui.home.main
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -7,7 +7,6 @@ import android.app.WallpaperManager
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.*
-import android.graphics.drawable.*
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -29,9 +28,9 @@ import kotlin.concurrent.thread
 var acrylicBlur: AcrylicBlur? = null
     private set
 
-class TileAreaFragment : Fragment() {
+class DashAreaFragment : Fragment() {
 
-    lateinit var tileArea: TileArea
+    lateinit var dashArea: DashArea
         private set
 
     private lateinit var launcherContext: LauncherContext
@@ -48,15 +47,15 @@ class TileAreaFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = inflater.inflate(R.layout.activity_launcher, container, false).apply {
-        tileArea = TileArea(this as NestedScrollView, this@TileAreaFragment, launcherContext)
+        dashArea = DashArea(this as NestedScrollView, this@DashAreaFragment, launcherContext)
 
         val a = requireActivity() as MainActivity
-        a.setOnColorThemeUpdateListener(TileAreaFragment::class.simpleName!!, ::updateColorTheme)
-        a.setOnBlurUpdateListener(TileAreaFragment::class.simpleName!!, ::updateBlur)
-        a.setOnAppsLoadedListener(TileAreaFragment::class.simpleName!!) {
+        a.setOnColorThemeUpdateListener(DashAreaFragment::class.simpleName!!, ::updateColorTheme)
+        a.setOnBlurUpdateListener(DashAreaFragment::class.simpleName!!, ::updateBlur)
+        a.setOnAppsLoadedListener(DashAreaFragment::class.simpleName!!) {
             a.runOnUiThread(::updatePinned)
         }
-        a.setOnPageScrollListener(TileAreaFragment::class.simpleName!!, ::onOffsetUpdate)
+        a.setOnPageScrollListener(DashAreaFragment::class.simpleName!!, ::onOffsetUpdate)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,9 +69,10 @@ class TileAreaFragment : Fragment() {
         super.onResume()
         SuggestionsManager.onResume(requireContext()) {
             requireActivity().runOnUiThread {
-                tileArea.atAGlance.updateSuggestions(launcherContext.appManager.pinnedItems)
+                dashArea.atAGlance.updateSuggestions(launcherContext.appManager.pinnedItems)
             }
         }
+        dashArea.atAGlance.onResume()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -82,14 +82,14 @@ class TileAreaFragment : Fragment() {
 
     private fun configureWindow() {
         val t = resources.getDimension(R.dimen.item_card_margin).toInt()
-        tileArea.pinnedRecycler.setPadding(t, 0, t, t)
-        tileArea.atAGlance.view.setPadding(t, requireContext().getStatusBarHeight(), t, 0)
-        tileArea.atAGlance.view.doOnLayout {
+        dashArea.pinnedRecycler.setPadding(t, 0, t, t)
+        dashArea.atAGlance.view.setPadding(t, requireContext().getStatusBarHeight(), t, 0)
+        dashArea.atAGlance.view.doOnLayout {
             it.updateLayoutParams {
                 val tileMargin = it.context.resources.getDimension(R.dimen.item_card_margin)
-                val tileWidth = (Device.screenWidth(it.context) - tileMargin * 2) / TileArea.COLUMNS - tileMargin * 2
-                val tileHeight = tileWidth / TileArea.WIDTH_TO_HEIGHT
-                val dockHeight = TileArea.DOCK_ROWS * (tileHeight + tileMargin * 2)
+                val tileWidth = (Device.screenWidth(it.context) - tileMargin * 2) / DashArea.COLUMNS - tileMargin * 2
+                val tileHeight = tileWidth / DashArea.WIDTH_TO_HEIGHT
+                val dockHeight = DashArea.DOCK_ROWS * (tileHeight + tileMargin * 2)
                 height = requireView().height - (tileMargin + dockHeight.toInt()).toInt() + 1
             }
         }
@@ -97,18 +97,18 @@ class TileAreaFragment : Fragment() {
 
     private fun updateBlur() {
         activity?.runOnUiThread {
-            tileArea.pinnedAdapter.notifyItemRangeChanged(0, tileArea.pinnedAdapter.itemCount)
+            dashArea.updateBlur()
         }
     }
 
     private fun updateColorTheme() {
         activity?.runOnUiThread {
-            tileArea.atAGlance.updateColorTheme()
-            tileArea.pinnedAdapter.notifyItemRangeChanged(0, tileArea.pinnedAdapter.itemCount)
+            dashArea.atAGlance.updateColorTheme()
+            dashArea.pinnedAdapter.notifyItemRangeChanged(0, dashArea.pinnedAdapter.itemCount)
         }
     }
 
-    private fun updatePinned() = tileArea.updatePinned()
+    private fun updatePinned() = dashArea.updatePinned()
 
     private fun onOffsetUpdate(offset: Float) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

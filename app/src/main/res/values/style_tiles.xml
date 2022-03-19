@@ -1,47 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="SlabLauncher.Drawer.Item.Container" parent="SlabLauncher">
+    <style name="SlabLauncher.TileArea.Item.Container" parent="SlabLauncher">
         <item name="cardCornerRadius">@dimen/item_card_radius</item>
         <item name="android:layout_margin">@dimen/item_card_margin</item>
         <item name="cardElevation">@dimen/item_card_elevation</item>
     </style>
 
-    <style name="SlabLauncher.Drawer.Item.Icon" parent="SlabLauncher">
+    <style name="SlabLauncher.TileArea.Item.Icon" parent="SlabLauncher">
         <item name="android:padding">8dp</item>
         <item name="android:layout_marginBottom">8dp</item>
         <item name="android:layout_width">56dp</item>
         <item name="android:layout_height">56dp</item>
     </style>
 
-    <style name="SlabLauncher.Drawer.Item.SmallIcon" parent="SlabLauncher">
-        <item name="android:layout_width">24dp</item>
-        <item name="android:layout_height">24dp</item>
-        <item name="android:layout_marginEnd">6dp</item>
+    <style name="SlabLauncher.TileArea.Item.Mark" parent="SlabLauncher">
+        <item name="android:textSize">56sp</item>
     </style>
 
-    <style name="SlabLauncher.Drawer.Item.LabelContainer" parent="SlabLauncher">
+    <style name="SlabLauncher.TileArea.Item.LabelContainer" parent="SlabLauncher">
         <item name="android:padding">8dp</item>
     </style>
 
-    <style name="SlabLauncher.Drawer.Item.LabelText" parent="SlabLauncher">
+    <style name="SlabLauncher.TileArea.Item.LabelText" parent="SlabLauncher">
         <item name="android:textSize">12sp</item>
-    </style>
-
-    <style name="SlabLauncher.Drawer.Item.Extra.Line.Title" parent="SlabLauncher">
-        <item name="android:paddingStart">8dp</item>
-        <item name="android:paddingEnd">6dp</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:maxLines">1</item>
-    </style>
-
-    <style name="SlabLauncher.Drawer.Item.Extra.Line.Description" parent="SlabLauncher">
-        <item name="android:paddingStart">8dp</item>
-        <item name="android:paddingEnd">6dp</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:maxLines">1</item>
     </style>
 
     <style name="SlabLauncher.TileArea.Suggestions.Item.Card" parent="SlabLauncher">

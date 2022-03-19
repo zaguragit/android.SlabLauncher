@@ -31,24 +31,11 @@ class App(
         val mediaItem = NotificationService.mediaItem
         if (mediaItem != null && mediaItem.sourcePackageName == packageName)
             return LauncherItem.Banner(
-                mediaItem.title,
-                mediaItem.subtitle,
                 Computable(mediaItem.image),
-                .4f
-            )
-        val notification = notifications.firstOrNull { it.sourcePackageName == packageName }
-        val image = notification?.image
-        if (image != null)
-            return LauncherItem.Banner(
-                notification.title.takeIf { label != it },
-                notification.description,
-                Computable(image),
                 .4f
             )
 
         return LauncherItem.Banner(
-            notification?.title.takeIf { label != it },
-            notification?.description,
             background,
             1f
         )

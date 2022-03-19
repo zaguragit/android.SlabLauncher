@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
-import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.hideIfNullOr
+import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.hideIfNullOr
 import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupItem
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import io.posidon.android.slablauncher.util.view.multiswitch.MultiSwitch

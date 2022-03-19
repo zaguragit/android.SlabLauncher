@@ -40,14 +40,12 @@ interface LauncherItem {
     }
 
     data class Banner(
-        val title: String?,
-        val text: String?,
         val background: Computable<Drawable?>,
         val bgOpacity: Float,
         val hideIcon: Boolean = false,
     ) {
         companion object {
-            const val ALPHA_MULTIPLIER = .6f
+            const val ALPHA_MULTIPLIER = 1f
         }
     }
 }

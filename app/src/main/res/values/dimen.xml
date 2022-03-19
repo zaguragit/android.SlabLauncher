@@ -5,9 +5,15 @@
 
     <dimen name="dock_corner_radius">26dp</dimen>
 
-    <dimen name="item_card_radius">11dp</dimen>
-    <dimen name="item_card_elevation">3dp</dimen>
+    <dimen name="item_card_radius">8dp</dimen>
+    <dimen name="item_card_elevation">2dp</dimen>
     <dimen name="item_card_margin">5dp</dimen>
+
+    <dimen name="summary_card_notification_margin">14dp</dimen>
+    <dimen name="summary_card_notification_spacing">6dp</dimen>
+
+    <dimen name="summary_card_image_radius">6dp</dimen>
+    <dimen name="summary_card_image_elevation">1dp</dimen>
 
     <dimen name="search_bar_height">52dp</dimen>
 

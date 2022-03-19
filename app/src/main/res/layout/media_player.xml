@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/SlabLauncher.MediaPlayer.Card"
-    android:id="@+id/card"
+    android:id="@+id/media_player"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <io.posidon.android.slablauncher.util.view.SeeThroughView
-        android:id="@+id/blur_bg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.18"/>
     <io.posidon.android.slablauncher.util.view.BackdropImageView
         android:id="@+id/image"
         android:layout_width="match_parent"
@@ -39,7 +33,7 @@
             android:orientation="horizontal"
             android:translationY="@dimen/feed_card_spacing">
             <ImageView
-                android:id="@+id/button_previous"
+                android:id="@+id/button_prev"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:padding="10dp"
@@ -59,4 +53,4 @@
                 android:src="@drawable/ic_track_next"/>
         </LinearLayout>
     </LinearLayout>
-</androidx.cardview.widget.CardView>
+</FrameLayout>

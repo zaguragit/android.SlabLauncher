@@ -4,7 +4,7 @@ import android.view.View
 import android.widget.TextView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
-import io.posidon.android.slablauncher.ui.home.pinned.viewHolders.hideIfNullOr
+import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.hideIfNullOr
 import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupItem
 
 class ListPopupTitleViewHolder(itemView: View) : ListPopupViewHolder(itemView) {

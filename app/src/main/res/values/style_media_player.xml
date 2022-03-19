@@ -1,6 +1,4 @@
 <resources>
-    <style name="SlabLauncher.MediaPlayer.Card" parent="SlabLauncher.Today.ItemCard"/>
-
     <style name="SlabLauncher.MediaPlayer.Container" parent="SlabLauncher">
         <item name="android:padding">@dimen/feed_card_padding</item>
     </style>

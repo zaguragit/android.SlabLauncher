@@ -9,13 +9,7 @@
 
     <string name="properties">Properties</string>
 
-    <plurals name="x_notifications">
-        <item quantity="few">%1$d notifications</item>
-        <item quantity="many">%1$d notifications</item>
-        <item quantity="one">%1$d notification</item>
-        <item quantity="other">%1$d notifications</item>
-        <item quantity="two">%1$d notifications</item>
-    </plurals>
+    <string name="x_more">+%1$d more</string>
 
     <string name="results_for_x">Results for \"%s\"</string>
     <string name="all_apps">All apps</string>
@@ -64,4 +58,10 @@
             <string name="permission_usage_access_explanation">To improve app suggestions</string>
         <!-- permissions end -->
     <!-- first time screen end -->
+
+    <!-- statements start -->
+        <string name="good_morning">Good morning!</string>
+        <string name="good_night">Good night!</string>
+        <string name="good_day">Nice day!</string>
+    <!-- statements end -->
 </resources>

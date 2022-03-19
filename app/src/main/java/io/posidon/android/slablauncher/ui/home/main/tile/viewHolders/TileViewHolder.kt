@@ -1,16 +1,14 @@
-package io.posidon.android.slablauncher.ui.home.pinned.viewHolders
+package io.posidon.android.slablauncher.ui.home.main.tile.viewHolders
 
 import android.app.Activity
 import android.content.res.ColorStateList
 import android.graphics.BlendMode
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.graphics.luminance
 import androidx.core.view.isVisible
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
@@ -23,15 +21,13 @@ import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.data.items.LauncherItem.Banner.Companion.ALPHA_MULTIPLIER
 import io.posidon.android.slablauncher.data.items.getBanner
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
-import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
-import io.posidon.android.slablauncher.ui.home.pinned.TileArea
-import io.posidon.android.slablauncher.ui.home.pinned.acrylicBlur
+import io.posidon.android.slablauncher.ui.home.main.DashArea
+import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeTileBackground
 import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.android.slablauncher.util.view.SeeThroughView
 import io.posidon.android.slablauncher.util.view.tile.TileContentView
-import posidon.android.conveniencelib.Colors
 import posidon.android.conveniencelib.getNavigationBarHeight
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
@@ -42,7 +38,7 @@ class TileViewHolder(
 ) : RecyclerView.ViewHolder(card) {
 
     private val contentView = itemView.findViewById<TileContentView>(R.id.tile_content)!!.apply {
-        widthToHeight = TileArea.WIDTH_TO_HEIGHT
+        widthToHeight = DashArea.WIDTH_TO_HEIGHT
     }
 
     private val imageView = itemView.findViewById<ImageView>(R.id.background_image)!!
@@ -54,18 +50,6 @@ class TileViewHolder(
         }
     }
 
-    fun updateBannerText(
-        banner: LauncherItem.Banner,
-    ) {
-        contentView.setExtraWithAnimation(banner.title, banner.text)
-    }
-
-    fun updateLabel(
-        item: LauncherItem,
-    ) {
-        contentView.label = item.label
-    }
-
     fun updateBackground(
         item: LauncherItem,
         background: Drawable?,
@@ -74,15 +58,7 @@ class TileViewHolder(
     ) {
         val itemColor = item.color.syncCompute()
         val backgroundColor = ColorTheme.tileColor(itemColor)
-        val title = ColorTheme.titleColorForBG(itemView.context, backgroundColor)
-        val text = ColorTheme.textColorForBG(itemView.context, backgroundColor)
-        val label = ColorTheme.adjustColorForContrast(backgroundColor, backgroundColor)
-        val mark = ColorTheme.darkestVisibleOn(backgroundColor, backgroundColor) and 0x20ffffff
         contentView.post {
-            contentView.labelColor = label
-            contentView.titleColor = title
-            contentView.textColor = text
-            contentView.markColor = mark
             card.setCardBackgroundColor(backgroundColor)
         }
         if (background == null) {
@@ -97,21 +73,6 @@ class TileViewHolder(
                     .also { bitmap.recycle() }
             }
             val newBackgroundColor = ColorTheme.tileColor(imageColor and 0xffffff)
-            val actuallyBackgroundColor =
-                Colors.blend(imageColor.let {
-                    if (
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-                        settings.doMonochromeTileBackground &&
-                        item !is ContactItem
-                    ) (it.luminance * 255).toInt()
-                        .let { a -> Color.rgb(a, a, a) }
-                    else it
-                }, newBackgroundColor, imageView.alpha)
-            val titleColor = ColorTheme.titleColorForBG(itemView.context, actuallyBackgroundColor)
-            val textColor = ColorTheme.textColorForBG(itemView.context, actuallyBackgroundColor)
-            val labelColor =
-                ColorTheme.adjustColorForContrast(actuallyBackgroundColor, actuallyBackgroundColor)
-            val markColor = ColorTheme.darkestVisibleOn(actuallyBackgroundColor, backgroundColor) and 0x20ffffff
 
             imageView.post {
                 imageView.isVisible = true
@@ -125,16 +86,8 @@ class TileViewHolder(
                 imageView.alpha = banner.bgOpacity * ALPHA_MULTIPLIER
 
                 card.setCardBackgroundColor(newBackgroundColor)
-                contentView.labelColor = labelColor
-                contentView.titleColor = titleColor
-                contentView.textColor = textColor
-                contentView.markColor = markColor
             }
         }
-    }
-
-    fun updateTimeMark(item: LauncherItem) {
-        contentView.mark = (item as? App)?.let { SuggestionsManager.getUsageTimeMark(itemView.context, item) }
     }
 
     fun bind(
@@ -145,15 +98,9 @@ class TileViewHolder(
     ) {
         blurBG.drawable = acrylicBlur?.insaneBlurDrawable
 
-        updateTimeMark(item)
-
         imageView.isVisible = false
         imageView.setImageDrawable(null)
         contentView.icon = null
-        contentView.labelColor = ColorTheme.cardTitle
-        contentView.titleColor = ColorTheme.cardTitle
-        contentView.textColor = ColorTheme.cardDescription
-        contentView.markColor = ColorTheme.cardDescription and 0x20ffffff
         card.setCardBackgroundColor(ColorTheme.cardBG)
 
         val banner = item.getBanner()
@@ -164,7 +111,6 @@ class TileViewHolder(
         } else banner.background.compute { background ->
             updateBackground(item, background, settings, banner)
         }
-        updateLabel(item)
         if (banner.hideIcon)
             contentView.icon = null
         else {
@@ -177,8 +123,6 @@ class TileViewHolder(
                 }
             }
         }
-        contentView.extraTitle = banner.title
-        contentView.extraText = banner.text
 
         itemView.setOnClickListener {
             item.open(it.context.applicationContext, it)
@@ -206,7 +150,6 @@ class TileViewHolder(
         blurBG.drawable = null
         imageView.setImageDrawable(null)
         contentView.icon = null
-        contentView.label = null
         item.icon.offload()
     }
 }

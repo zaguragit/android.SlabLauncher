@@ -41,9 +41,9 @@ import io.posidon.android.slablauncher.providers.color.ColorThemeOptions
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
-import io.posidon.android.slablauncher.ui.home.pinned.TileAreaFragment
-import io.posidon.android.slablauncher.ui.home.pinned.acrylicBlur
-import io.posidon.android.slablauncher.ui.home.pinned.loadBlur
+import io.posidon.android.slablauncher.ui.home.main.DashAreaFragment
+import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
+import io.posidon.android.slablauncher.ui.home.main.loadBlur
 import io.posidon.android.slablauncher.ui.home.sideList.SideListFragment
 import io.posidon.android.slablauncher.ui.popup.PopupUtils
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
@@ -108,7 +108,7 @@ class MainActivity : FragmentActivity() {
             override fun getItemCount() = 2
 
             override fun createFragment(i: Int): Fragment = when (i) {
-                0 -> TileAreaFragment()
+                0 -> DashAreaFragment()
                 1 -> SideListFragment()
                 else -> throw IndexOutOfBoundsException("Fragment [$i] doesn't exist")
             }

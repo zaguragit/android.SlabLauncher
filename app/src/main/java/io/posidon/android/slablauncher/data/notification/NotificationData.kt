@@ -3,6 +3,8 @@ package io.posidon.android.slablauncher.data.notification
 import android.graphics.drawable.Drawable
 
 class NotificationData(
+    val icon: Drawable,
+    val source: String,
     val title: String,
     val description: String?,
     val image: Drawable?,

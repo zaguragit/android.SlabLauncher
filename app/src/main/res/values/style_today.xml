@@ -6,6 +6,7 @@
         <item name="android:paddingHorizontal">18dp</item>
         <item name="android:paddingBottom">18dp</item>
         <item name="android:textSize">42sp</item>
+        <item name="android:fontFamily">@font/atkinson_hyperlegible_bold</item>
         <item name="android:maxLines">2</item>
         <item name="android:ellipsize">end</item>
     </style>
