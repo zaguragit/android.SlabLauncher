@@ -66,6 +66,7 @@
 
     <style name="SlabLauncher.Notification.XMoreText" parent="SlabLauncher">
         <item name="android:layout_marginHorizontal">@dimen/summary_card_notification_margin</item>
+        <item name="android:layout_marginBottom">@dimen/summary_card_notification_margin</item>
         <item name="android:gravity">center</item>
         <item name="android:padding">@dimen/summary_card_notification_spacing</item>
         <item name="android:includeFontPadding">false</item>

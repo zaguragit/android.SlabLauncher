@@ -14,7 +14,12 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationViewHolder>() {
     private var data = emptyList<NotificationData>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
-        return NotificationViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.notification, parent, false))
+        return NotificationViewHolder(LayoutInflater.from(parent.context)
+            .inflate(R.layout.notification, parent, false)).apply {
+            itemView.setOnClickListener {
+                data[bindingAdapterPosition].open()
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: NotificationViewHolder, i: Int) {

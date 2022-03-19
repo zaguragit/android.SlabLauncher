@@ -47,6 +47,8 @@ class AtAGlanceArea(val view: View, dashArea: DashArea, val mainActivity: MainAc
     val statement = card.findViewById<TextView>(R.id.statement)!!
     val date = card.findViewById<TextView>(R.id.date)!!
 
+    val notificationArea = card.findViewById<ViewGroup>(R.id.notification_area)!!
+
     val separators = arrayOf<View>(
         card.findViewById(R.id.separator),
         card.findViewById(R.id.separator1),
@@ -59,7 +61,7 @@ class AtAGlanceArea(val view: View, dashArea: DashArea, val mainActivity: MainAc
         adapter = notificationsAdapter
     }
 
-    val primaryNotification = view.findViewById<ViewGroup>(R.id.primary_notification)
+    val primaryNotification = notificationArea.findViewById<ViewGroup>(R.id.primary_notification)
     val notificationIcon = primaryNotification.findViewById<ImageView>(R.id.icon)
     val notificationSource = primaryNotification.findViewById<TextView>(R.id.source)
     val notificationTitle = primaryNotification.findViewById<TextView>(R.id.title)
@@ -147,8 +149,15 @@ class AtAGlanceArea(val view: View, dashArea: DashArea, val mainActivity: MainAc
         updateLayout()
     }
 
-    fun updateNotifications(new: List<NotificationData>) {
+    private fun updateNotifications(new: List<NotificationData>) {
         mainActivity.runOnUiThread {
+            if (new.isEmpty()) {
+                notificationArea.isVisible = false
+                separators[0].isVisible = false
+                return@runOnUiThread
+            }
+            notificationArea.isVisible = true
+            separators[0].isVisible = true
             val shownCount: Int
             val m = NotificationService.mediaItem != null
             if (new.size >= 3) {

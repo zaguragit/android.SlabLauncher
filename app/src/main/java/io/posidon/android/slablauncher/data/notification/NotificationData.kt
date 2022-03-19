@@ -9,6 +9,8 @@ class NotificationData(
     val description: String?,
     val image: Drawable?,
     val sourcePackageName: String?,
+    val open: () -> Unit,
+    val cancel: () -> Unit,
 )
 
 class TempNotificationData(

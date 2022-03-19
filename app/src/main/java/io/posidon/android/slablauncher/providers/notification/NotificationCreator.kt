@@ -98,7 +98,7 @@ object NotificationCreator {
         }
     }
 
-    fun create(context: Context, notification: StatusBarNotification): TempNotificationData {
+    fun create(context: Context, notification: StatusBarNotification, service: NotificationService): TempNotificationData {
 
         val extras = notification.notification.extras
 
@@ -128,6 +128,9 @@ object NotificationCreator {
             }
         }
 
+        val key = notification.key
+        val autoCancel = notification.notification.flags and Notification.FLAG_AUTO_CANCEL != 0
+
         return TempNotificationData(
             NotificationData(
                 icon = icon,
@@ -136,6 +139,20 @@ object NotificationCreator {
                 description = text?.toString(),
                 image = bigPic,
                 sourcePackageName = notification.packageName,
+                open = {
+                    try {
+                        notification.notification.contentIntent?.send()
+                        if (autoCancel)
+                            service.cancelNotification(key)
+                    }
+                    catch (e: Exception) {
+                        service.cancelNotification(key)
+                        e.printStackTrace()
+                    }
+                },
+                cancel = {
+                    service.cancelNotification(key)
+                }
             ),
             millis = notification.postTime,
             importance = importance.coerceAtLeast(0),

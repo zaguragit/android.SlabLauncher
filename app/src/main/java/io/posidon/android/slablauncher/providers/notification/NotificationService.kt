@@ -85,6 +85,7 @@ class NotificationService : NotificationListenerService() {
                             tmpNotifications += NotificationCreator.create(
                                 applicationContext,
                                 notification,
+                                this,
                             )
                         }
                         i++
