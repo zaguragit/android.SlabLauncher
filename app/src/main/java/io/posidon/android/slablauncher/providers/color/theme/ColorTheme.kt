@@ -75,15 +75,19 @@ interface ColorTheme {
             colorThemeInstance.tileColor(iconBackgroundColor)
 
 
-        fun titleColorForBG(context: Context, background: Int): Int {
+        fun tintPopup(color: Int): Int {
+            return tintWithColor(cardBG, tileColor(color))
+        }
+
+        fun titleColorForBG(background: Int): Int {
             return (if (background.luminance > .6f) 0 else 0xffffff) or 0xff000000.toInt()
         }
 
-        fun textColorForBG(context: Context, background: Int): Int {
+        fun textColorForBG(background: Int): Int {
             return (if (background.luminance > .6f) 0 else 0xffffff) or 0xd2000000.toInt()
         }
 
-        fun hintColorForBG(context: Context, background: Int): Int {
+        fun hintColorForBG(background: Int): Int {
             return (if (background.luminance > .6f) 0 else 0xffffff) or 0x55000000
         }
 

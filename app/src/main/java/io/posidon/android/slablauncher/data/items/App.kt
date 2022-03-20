@@ -7,13 +7,17 @@ import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import android.os.Process
 import android.os.UserHandle
 import android.view.View
 import io.posidon.android.computable.Computable
+import io.posidon.android.computable.syncCompute
+import io.posidon.android.launcherutils.IconTheming
 import io.posidon.android.slablauncher.data.notification.NotificationData
 import io.posidon.android.slablauncher.providers.notification.NotificationService
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
+import posidon.android.conveniencelib.drawable.MaskedDrawable
 import posidon.android.conveniencelib.isInstalled
 import java.util.*
 
@@ -103,4 +107,21 @@ class App(
             }
         }
     }
+}
+
+fun App.getCombinedIcon(): Drawable {
+    val background = background.syncCompute()
+    val icon = icon.syncCompute()
+    if (background == null || icon is MaskedDrawable) {
+        return icon
+    }
+    return MaskedDrawable(
+        LayerDrawable(arrayOf(
+            background.constantState?.newDrawable()?.mutate(),
+            icon,
+        )).apply {
+            setBounds(0, 0, icon.intrinsicWidth, icon.intrinsicHeight)
+        },
+        IconTheming.getSystemAdaptiveIconPath(icon.intrinsicWidth, icon.intrinsicHeight),
+    )
 }

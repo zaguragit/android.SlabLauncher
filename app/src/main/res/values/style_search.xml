@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="SlabLauncher.Title" parent="SlabLauncher">
-        <item name="android:layout_height">@dimen/today_title_container_height</item>
+        <item name="android:layout_height">@dimen/search_title_container_height</item>
         <item name="android:gravity">start|bottom</item>
         <item name="android:includeFontPadding">false</item>
         <item name="android:paddingHorizontal">18dp</item>

@@ -21,7 +21,7 @@ import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.data.items.LauncherItem.Banner.Companion.ALPHA_MULTIPLIER
 import io.posidon.android.slablauncher.data.items.getBanner
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
-import io.posidon.android.slablauncher.ui.home.main.DashArea
+import io.posidon.android.slablauncher.ui.home.main.HomeArea
 import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeTileBackground
@@ -38,7 +38,7 @@ class TileViewHolder(
 ) : RecyclerView.ViewHolder(card) {
 
     private val contentView = itemView.findViewById<TileContentView>(R.id.tile_content)!!.apply {
-        widthToHeight = DashArea.WIDTH_TO_HEIGHT
+        widthToHeight = HomeArea.WIDTH_TO_HEIGHT
     }
 
     private val imageView = itemView.findViewById<ImageView>(R.id.background_image)!!
@@ -130,11 +130,11 @@ class TileViewHolder(
         itemView.setOnLongClickListener { v ->
             if (item is App) {
                 item.color.compute {
-                    val backgroundColor = ColorTheme.tileColor(it)
+                    val backgroundColor = ColorTheme.tintPopup(it)
                     ItemLongPress.onItemLongPress(
                         v,
                         backgroundColor,
-                        ColorTheme.titleColorForBG(itemView.context, backgroundColor),
+                        ColorTheme.titleColorForBG(backgroundColor),
                         item,
                         activity.getNavigationBarHeight(),
                     )

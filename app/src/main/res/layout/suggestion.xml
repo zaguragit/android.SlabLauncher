@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
     android:id="@+id/card"
     style="@style/SlabLauncher.TileArea.Suggestions.Item.Card">
-    <io.posidon.android.slablauncher.ui.view.BackdropImageView
-        android:id="@+id/background_image"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/suggestion_height"
-        android:scaleType="centerCrop"/>
     <ImageView
         style="@style/SlabLauncher.TileArea.Suggestions.Item.Icon"
-        android:id="@+id/image"
-        android:layout_gravity="center"/>
-</androidx.cardview.widget.CardView>
+        android:id="@+id/icon"/>
+    <TextView
+        style="@style/SlabLauncher.TileArea.Suggestions.Item.Label"
+        android:id="@+id/label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

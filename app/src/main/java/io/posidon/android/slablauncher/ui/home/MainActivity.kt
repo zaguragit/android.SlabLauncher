@@ -27,23 +27,29 @@ import android.widget.EditText
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.core.view.doOnPreDraw
+import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import io.posidon.android.launcherutils.liveWallpaper.LiveWallpaper
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
+import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.providers.app.AppCallback
 import io.posidon.android.slablauncher.providers.app.AppCollection
 import io.posidon.android.slablauncher.providers.color.ColorThemeOptions
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
+import io.posidon.android.slablauncher.ui.home.main.HomeArea
 import io.posidon.android.slablauncher.ui.home.main.DashAreaFragment
 import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.home.main.loadBlur
+import io.posidon.android.slablauncher.ui.home.main.suggestion.SuggestionsAdapter
 import io.posidon.android.slablauncher.ui.home.sideList.SideListFragment
 import io.posidon.android.slablauncher.ui.popup.PopupUtils
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
@@ -55,11 +61,16 @@ import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorTheme
 import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
 import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScreenOpenedSetting.doAutoKeyboardInAllApps
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
+import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
 import posidon.android.conveniencelib.getNavigationBarHeight
 import kotlin.concurrent.thread
 
 
 class MainActivity : FragmentActivity() {
+
+    companion object {
+        const val SUGGESTION_COUNT = 2
+    }
 
     lateinit var viewPager: ViewPager2
 
@@ -76,14 +87,18 @@ class MainActivity : FragmentActivity() {
     private lateinit var searchBarText: EditText
     private lateinit var searchBarIcon: ImageView
     private lateinit var searchBarBlurBG: SeeThroughView
+    private lateinit var suggestionsRecycler: RecyclerView
 
-    val appReloader = object : BroadcastReceiver() {
+    private val suggestionsAdapter = SuggestionsAdapter(this, settings)
+
+    private val appReloader = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             loadApps()
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility", "WrongConstant")
+
+    @SuppressLint("ClickableViewAccessibility", "WrongConstant", "NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -153,6 +168,8 @@ class MainActivity : FragmentActivity() {
                     blurBG.offset = wallpaperOffset
                     searchBarBlurBG.offset = wallpaperOffset
                 }
+                suggestionsRecycler.alpha = 1 - wallpaperOffset
+                suggestionsRecycler.isVisible = true
                 onPageScrollListeners.forEach { (_, l) -> l(wallpaperOffset) }
             }
 
@@ -164,6 +181,7 @@ class MainActivity : FragmentActivity() {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                             searchBarContainer.windowInsetsController?.hide(WindowInsets.Type.ime())
                         }
+                        suggestionsRecycler.isVisible = true
                     }
                     1 -> {
                         if (settings.doAutoKeyboardInAllApps) {
@@ -175,6 +193,7 @@ class MainActivity : FragmentActivity() {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                                 searchBarContainer.windowInsetsController?.show(WindowInsets.Type.ime())
                             }
+                            suggestionsRecycler.isVisible = false
                         }
                     }
                 }
@@ -210,7 +229,13 @@ class MainActivity : FragmentActivity() {
             insets
         }
 
+        suggestionsRecycler = findViewById<RecyclerView>(R.id.suggestions_recycler)!!.apply {
+            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+            adapter = suggestionsAdapter
+        }
+
         configureWindow()
+        updateLayout()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -235,6 +260,10 @@ class MainActivity : FragmentActivity() {
             ) ?: 0
         } else getNavigationBarHeight()
         inSearchBarContainer.setPadding(0, 0, 0, bottomInset)
+    }
+
+    fun updateLayout() {
+        suggestionsRecycler.isVisible = settings.doSuggestionStrip
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -268,6 +297,11 @@ class MainActivity : FragmentActivity() {
         } else {
             if (settings.doBlur && acrylicBlur == null) {
                 loadBlur(::updateBlur)
+            }
+        }
+        SuggestionsManager.onResume(this) {
+            runOnUiThread {
+                updateSuggestions(launcherContext.appManager.pinnedItems)
             }
         }
     }
@@ -319,6 +353,7 @@ class MainActivity : FragmentActivity() {
             searchBarIcon.imageTintList =
                 ColorStateList.valueOf(ColorTheme.searchBarFG)
             HomeLongPressPopup.updateCurrent()
+            suggestionsAdapter.notifyItemRangeChanged(0, suggestionsAdapter.itemCount)
         }
         onColorThemeUpdateListeners.forEach { (_, l) -> l() }
     }
@@ -370,6 +405,19 @@ class MainActivity : FragmentActivity() {
     private val onPageScrollListeners = HashMap<String, (Float) -> Unit>()
     private val onAppsLoadedListeners = HashMap<String, (AppCollection) -> Unit>()
     private val onSearchQueryListeners = HashMap<String, (String?) -> Unit>()
+
+    fun updateSuggestions(pinnedItems: List<LauncherItem>) {
+        suggestionsAdapter.updateItems((SuggestionsManager.getTimeBasedSuggestions() - pinnedItems.let {
+            val s = HomeArea.DOCK_ROWS * HomeArea.COLUMNS
+            if (it.size > s) it.subList(0, s)
+            else it
+        }.toSet()).let {
+            if (it.size > SUGGESTION_COUNT) it.subList(0,
+                SUGGESTION_COUNT
+            )
+            else it
+        })
+    }
 
     private fun updateBlur() {
         onBlurUpdateListeners.forEach { (_, l) -> l() }

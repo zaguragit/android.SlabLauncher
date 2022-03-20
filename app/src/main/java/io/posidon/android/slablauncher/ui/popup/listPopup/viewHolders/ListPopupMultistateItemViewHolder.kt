@@ -44,7 +44,7 @@ class ListPopupMultistateItemViewHolder(itemView: View) : ListPopupViewHolder(it
         switch.borderColor = 0x88000000.toInt()
         switch.borderWidth = 1f
         switch.radius = itemView.dp(32)
-        switch.smallRadius = itemView.dp(3)
+        switch.smallRadius = itemView.dp(2)
         switch.cellMargin = itemView.dp(4)
 
         ripple.setColor(ColorStateList.valueOf(ColorTheme.accentColor and 0xffffff or 0x33000000))

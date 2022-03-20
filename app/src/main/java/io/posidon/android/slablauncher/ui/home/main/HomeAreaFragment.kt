@@ -17,7 +17,6 @@ import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
-import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.util.blur.AcrylicBlur
 import io.posidon.android.slablauncher.util.storage.*
@@ -30,7 +29,7 @@ var acrylicBlur: AcrylicBlur? = null
 
 class DashAreaFragment : Fragment() {
 
-    lateinit var dashArea: DashArea
+    lateinit var homeArea: HomeArea
         private set
 
     private lateinit var launcherContext: LauncherContext
@@ -47,7 +46,7 @@ class DashAreaFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = inflater.inflate(R.layout.activity_launcher, container, false).apply {
-        dashArea = DashArea(this as NestedScrollView, this@DashAreaFragment, launcherContext)
+        homeArea = HomeArea(this as NestedScrollView, this@DashAreaFragment, launcherContext)
 
         val a = requireActivity() as MainActivity
         a.setOnColorThemeUpdateListener(DashAreaFragment::class.simpleName!!, ::updateColorTheme)
@@ -67,12 +66,7 @@ class DashAreaFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        SuggestionsManager.onResume(requireContext()) {
-            requireActivity().runOnUiThread {
-                dashArea.atAGlance.updateSuggestions(launcherContext.appManager.pinnedItems)
-            }
-        }
-        dashArea.atAGlance.onResume()
+        homeArea.atAGlance.onResume()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -82,14 +76,14 @@ class DashAreaFragment : Fragment() {
 
     private fun configureWindow() {
         val t = resources.getDimension(R.dimen.item_card_margin).toInt()
-        dashArea.pinnedRecycler.setPadding(t, 0, t, t)
-        dashArea.atAGlance.view.setPadding(t, requireContext().getStatusBarHeight(), t, 0)
-        dashArea.atAGlance.view.doOnLayout {
+        homeArea.pinnedRecycler.setPadding(t, 0, t, t)
+        homeArea.atAGlance.view.setPadding(t, requireContext().getStatusBarHeight(), t, 0)
+        homeArea.atAGlance.view.doOnLayout {
             it.updateLayoutParams {
                 val tileMargin = it.context.resources.getDimension(R.dimen.item_card_margin)
-                val tileWidth = (Device.screenWidth(it.context) - tileMargin * 2) / DashArea.COLUMNS - tileMargin * 2
-                val tileHeight = tileWidth / DashArea.WIDTH_TO_HEIGHT
-                val dockHeight = DashArea.DOCK_ROWS * (tileHeight + tileMargin * 2)
+                val tileWidth = (Device.screenWidth(it.context) - tileMargin * 2) / HomeArea.COLUMNS - tileMargin * 2
+                val tileHeight = tileWidth / HomeArea.WIDTH_TO_HEIGHT
+                val dockHeight = HomeArea.DOCK_ROWS * (tileHeight + tileMargin * 2)
                 height = requireView().height - (tileMargin + dockHeight.toInt()).toInt() + 1
             }
         }
@@ -97,18 +91,18 @@ class DashAreaFragment : Fragment() {
 
     private fun updateBlur() {
         activity?.runOnUiThread {
-            dashArea.updateBlur()
+            homeArea.updateBlur()
         }
     }
 
     private fun updateColorTheme() {
         activity?.runOnUiThread {
-            dashArea.atAGlance.updateColorTheme()
-            dashArea.pinnedAdapter.notifyItemRangeChanged(0, dashArea.pinnedAdapter.itemCount)
+            homeArea.atAGlance.updateColorTheme()
+            homeArea.pinnedAdapter.notifyItemRangeChanged(0, homeArea.pinnedAdapter.itemCount)
         }
     }
 
-    private fun updatePinned() = dashArea.updatePinned()
+    private fun updatePinned() = homeArea.updatePinned()
 
     private fun onOffsetUpdate(offset: Float) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

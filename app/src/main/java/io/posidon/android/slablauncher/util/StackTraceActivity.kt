@@ -67,7 +67,7 @@ class StackTraceActivity : Activity() {
             try {
                 window.decorView.setBackgroundColor(ColorTheme.uiBG)
                 send.backgroundTintList = ColorStateList.valueOf(ColorTheme.buttonColor)
-                send.setTextColor(ColorTheme.titleColorForBG(this, ColorTheme.buttonColor))
+                send.setTextColor(ColorTheme.titleColorForBG(ColorTheme.buttonColor))
                 title.setTextColor(ColorTheme.uiTitle)
                 stackTrace.setTextColor(ColorTheme.uiDescription)
             } catch (e: Throwable) {

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<inset xmlns:android="http://schemas.android.com/apk/res/android">
+    <ripple android:color="#33ffffff">
+        <item>
+            <shape android:shape="rectangle">
+                <corners android:radius="@dimen/item_card_radius"/>
+                <solid android:color="#33ffffff"/>
+            </shape>
+        </item>
+    </ripple>
+</inset>

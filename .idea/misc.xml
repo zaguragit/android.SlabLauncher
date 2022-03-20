@@ -41,6 +41,7 @@
         <entry key="app/src/main/res/drawable/ripple.xml" value="0.2171875" />
         <entry key="app/src/main/res/drawable/round_bg.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/drawable/sign_continue.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/suggestion_bg.xml" value="0.1615" />
         <entry key="app/src/main/res/drawable/tile_drop_area.xml" value="0.184375" />
         <entry key="app/src/main/res/drawable/tile_drop_target.xml" value="0.36875" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.26145833333333335" />

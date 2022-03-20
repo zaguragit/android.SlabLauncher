@@ -12,36 +12,28 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
-import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.data.notification.NotificationData
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.notification.NotificationService
 import io.posidon.android.slablauncher.providers.personality.Statement
-import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.MainActivity
-import io.posidon.android.slablauncher.ui.home.main.DashArea
+import io.posidon.android.slablauncher.ui.home.main.HomeArea
 import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.home.main.dash.media.MediaPlayer
-import io.posidon.android.slablauncher.ui.home.main.suggestion.SuggestionsAdapter
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
-import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
+import io.posidon.android.slablauncher.util.drawable.setBackgroundColorFast
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.getStatusBarHeight
 import posidon.android.conveniencelib.pullStatusbar
 
 @SuppressLint("ClickableViewAccessibility")
-class AtAGlanceArea(val view: View, dashArea: DashArea, val mainActivity: MainActivity) {
-
-    companion object {
-        const val SUGGESTION_COUNT = 5
-    }
+class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivity) {
 
     val card = view.findViewById<CardView>(R.id.card)!!
     val statement = card.findViewById<TextView>(R.id.statement)!!
@@ -77,12 +69,6 @@ class AtAGlanceArea(val view: View, dashArea: DashArea, val mainActivity: MainAc
         }
     }
 
-    val suggestionsAdapter = SuggestionsAdapter(mainActivity, mainActivity.settings)
-    val suggestionsRecycler = view.findViewById<RecyclerView>(R.id.suggestions_recycler)!!.apply {
-        layoutManager = GridLayoutManager(view.context, SUGGESTION_COUNT, RecyclerView.VERTICAL, false)
-        adapter = suggestionsAdapter
-    }
-
     private val blurBG = view.findViewById<SeeThroughView>(R.id.dash_blur_bg)!!.apply {
         viewTreeObserver.addOnPreDrawListener {
             invalidate()
@@ -93,7 +79,6 @@ class AtAGlanceArea(val view: View, dashArea: DashArea, val mainActivity: MainAc
     private val popupHeight get() =
         view.height -
         view.context.getStatusBarHeight() -
-        suggestionsRecycler.let { if (it.isVisible) it.height else 0 } -
         view.resources.getDimension(R.dimen.item_card_margin).toInt() * 2
     private val popupWidth get() =
         view.width - view.resources.getDimension(R.dimen.item_card_margin).toInt() * 4
@@ -101,7 +86,7 @@ class AtAGlanceArea(val view: View, dashArea: DashArea, val mainActivity: MainAc
     private var popupX = 0f
     private var popupY = 0f
     init {
-        NotificationService.setOnUpdate(AtAGlanceArea::class.simpleName!!) { _, new -> updateNotifications(new) }
+        NotificationService.setOnUpdate(DashArea::class.simpleName!!) { _, new -> updateNotifications(new) }
         view.setOnTouchListener { _, e ->
             when (e.action and MotionEvent.ACTION_MASK) {
                 MotionEvent.ACTION_DOWN -> {
@@ -117,36 +102,35 @@ class AtAGlanceArea(val view: View, dashArea: DashArea, val mainActivity: MainAc
             val m = it.resources.getDimension(R.dimen.item_card_margin)
             HomeLongPressPopup.show(
                 it,
-                if (dashArea.scrollY == 0) Device.screenWidth(it.context) / 2f else popupX,
-                if (dashArea.scrollY == 0) popupHeight / 2f + view.context.getStatusBarHeight() + m else popupY,
+                if (homeArea.scrollY == 0) Device.screenWidth(it.context) / 2f else popupX,
+                if (homeArea.scrollY == 0) popupHeight / 2f + view.context.getStatusBarHeight() + m else popupY,
                 mainActivity.settings,
                 mainActivity::reloadColorPaletteSync,
                 mainActivity::updateColorTheme,
                 mainActivity::loadApps,
                 mainActivity::reloadBlur,
-                ::updateLayout,
-                if (dashArea.scrollY == 0) popupWidth else ViewGroup.LayoutParams.WRAP_CONTENT,
-                if (dashArea.scrollY == 0) popupHeight else HomeLongPressPopup.calculateHeight(it.context),
+                mainActivity::updateLayout,
+                if (homeArea.scrollY == 0) popupWidth else ViewGroup.LayoutParams.WRAP_CONTENT,
+                if (homeArea.scrollY == 0) popupHeight else HomeLongPressPopup.calculateHeight(it.context),
             )
             true
         }
-        RecyclerViewLongPressHelper.setOnLongPressListener(suggestionsRecycler) { v, x, y ->
+        RecyclerViewLongPressHelper.setOnLongPressListener(notificationsRecycler) { v, x, y ->
             val m = v.resources.getDimension(R.dimen.item_card_margin)
             HomeLongPressPopup.show(
                 v,
-                if (dashArea.scrollY == 0) Device.screenWidth(v.context) / 2f else x,
-                if (dashArea.scrollY == 0) popupHeight / 2f + view.context.getStatusBarHeight() + m else y,
+                if (homeArea.scrollY == 0) Device.screenWidth(v.context) / 2f else x,
+                if (homeArea.scrollY == 0) popupHeight / 2f + view.context.getStatusBarHeight() + m else y,
                 mainActivity.settings,
                 mainActivity::reloadColorPaletteSync,
                 mainActivity::updateColorTheme,
                 mainActivity::loadApps,
                 mainActivity::reloadBlur,
-                ::updateLayout,
-                if (dashArea.scrollY == 0) popupWidth else ViewGroup.LayoutParams.WRAP_CONTENT,
-                if (dashArea.scrollY == 0) popupHeight else HomeLongPressPopup.calculateHeight(v.context),
+                mainActivity::updateLayout,
+                if (homeArea.scrollY == 0) popupWidth else ViewGroup.LayoutParams.WRAP_CONTENT,
+                if (homeArea.scrollY == 0) popupHeight else HomeLongPressPopup.calculateHeight(v.context),
             )
         }
-        updateLayout()
     }
 
     private fun updateNotifications(new: List<NotificationData>) {
@@ -199,12 +183,8 @@ class AtAGlanceArea(val view: View, dashArea: DashArea, val mainActivity: MainAc
         }
     }
 
-    fun updateLayout() {
-        suggestionsRecycler.isVisible = mainActivity.settings.doSuggestionStrip
-    }
-
     fun updateColorTheme() {
-        separators.forEach { it.setBackgroundColor(ColorTheme.cardHint) }
+        separators.forEach { it.setBackgroundColorFast(ColorTheme.cardHint) }
         card.setCardBackgroundColor(ColorTheme.cardBG)
         statement.setTextColor(ColorTheme.cardTitle)
         date.setTextColor(ColorTheme.cardDescription)
@@ -222,17 +202,6 @@ class AtAGlanceArea(val view: View, dashArea: DashArea, val mainActivity: MainAc
     fun onResume() {
         statement.text = Statement.get(view.context, Calendar.getInstance())
         updateNotifications(NotificationService.notifications)
-    }
-
-    fun updateSuggestions(pinnedItems: List<LauncherItem>) {
-        suggestionsAdapter.updateItems((SuggestionsManager.getTimeBasedSuggestions() - pinnedItems.let {
-            val s = DashArea.DOCK_ROWS * DashArea.COLUMNS
-            if (it.size > s) it.subList(0, s)
-            else it
-        }.toSet()).let {
-            if (it.size > SUGGESTION_COUNT) it.subList(0, SUGGESTION_COUNT)
-            else it
-        })
     }
 
     fun updateBlur() {

@@ -76,6 +76,12 @@ object ItemLongPress {
         return window
     }
 
+    private fun dismissCurrent() {
+        val c = currentPopup
+        currentPopup = null
+        c?.dismiss()
+    }
+
     fun onItemLongPress(
         view: View,
         backgroundColor: Int,
@@ -83,11 +89,7 @@ object ItemLongPress {
         item: LauncherItem,
         navbarHeight: Int,
     ) {
-        run {
-            val c = currentPopup
-            currentPopup = null
-            c?.dismiss()
-        }
+        dismissCurrent()
         val context = view.context
         context.vibrate(14)
         val (x, y, gravity) = PopupUtils.getPopupLocationFromView(view, navbarHeight)
@@ -96,10 +98,14 @@ object ItemLongPress {
         }
         val hasDynamicShortcuts = !dynamicShortcuts.isNullOrEmpty()
         val extraPopupWindow = if (hasDynamicShortcuts) makeExtraPopupWindow(context, dynamicShortcuts!!, backgroundColor, textColor) else null
-        val popupWindow = makePopupWindow(context, item, backgroundColor, textColor, extraPopupWindow) {
-            item.showProperties(view, backgroundColor, textColor)
-        }
-        popupWindow.isFocusable = false
+        val popupWindow = makePopupWindow(
+            context,
+            item,
+            backgroundColor,
+            textColor,
+            extraPopupWindow,
+            item::showProperties,
+        )
         popupWindow.showAtLocation(view, gravity, x, y + (view.resources.getDimension(R.dimen.item_card_margin) * 2).toInt())
 
         currentPopup = popupWindow
@@ -130,6 +136,7 @@ object ItemLongPress {
         view: View,
         item: LauncherItem,
     ) {
+        dismissCurrent()
         val shadow = View.DragShadowBuilder(view)
         val clipData = ClipData(
             item.label,

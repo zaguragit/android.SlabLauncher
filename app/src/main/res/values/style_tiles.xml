@@ -25,15 +25,22 @@
         <item name="android:textSize">12sp</item>
     </style>
 
+
     <style name="SlabLauncher.TileArea.Suggestions.Item.Card" parent="SlabLauncher">
-        <item name="cardCornerRadius">@dimen/item_card_radius</item>
-        <item name="android:layout_margin">@dimen/suggestion_margin</item>
-        <item name="cardElevation">@dimen/item_card_elevation</item>
+        <item name="android:background">@drawable/round_bg</item>
+        <item name="android:layout_marginVertical">@dimen/suggestion_margin</item>
+        <item name="android:layout_marginEnd">@dimen/suggestion_margin</item>
     </style>
 
     <style name="SlabLauncher.TileArea.Suggestions.Item.Icon" parent="SlabLauncher">
-        <item name="android:padding">8dp</item>
-        <item name="android:layout_width">@dimen/suggestion_height</item>
-        <item name="android:layout_height">@dimen/suggestion_height</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_height">24dp</item>
+    </style>
+
+    <style name="SlabLauncher.TileArea.Suggestions.Item.Label" parent="SlabLauncher">
+        <item name="android:layout_marginEnd">12dp</item>
+        <item name="android:textSize">14sp</item>
     </style>
 </resources>

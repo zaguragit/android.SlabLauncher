@@ -21,7 +21,7 @@ class SuggestionsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestionViewHolder {
         return SuggestionViewHolder(LayoutInflater.from(parent.context)
-            .inflate(R.layout.suggestion, parent, false) as CardView)
+            .inflate(R.layout.suggestion, parent, false))
     }
 
     override fun onBindViewHolder(holder: SuggestionViewHolder, i: Int) {
@@ -29,7 +29,6 @@ class SuggestionsAdapter(
         holder.onBind(
             item,
             activity.getNavigationBarHeight(),
-            settings,
         )
     }
 

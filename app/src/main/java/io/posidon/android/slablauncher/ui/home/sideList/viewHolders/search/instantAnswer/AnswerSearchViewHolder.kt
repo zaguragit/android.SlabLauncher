@@ -61,10 +61,10 @@ class AnswerSearchViewHolder(
         sourceAction.text = itemView.context.getString(R.string.read_more_at_source, result.sourceName)
 
         actionsContainer.setCardBackgroundColor(ColorTheme.buttonColor)
-        searchAction.setTextColor(ColorTheme.titleColorForBG(itemView.context, ColorTheme.buttonColor))
-        actionSeparator.setBackgroundColorFast(ColorTheme.hintColorForBG(itemView.context, ColorTheme.buttonColor))
+        searchAction.setTextColor(ColorTheme.titleColorForBG(ColorTheme.buttonColor))
+        actionSeparator.setBackgroundColorFast(ColorTheme.hintColorForBG(ColorTheme.buttonColor))
 
-        sourceAction.setTextColor(ColorTheme.titleColorForBG(itemView.context, ColorTheme.buttonColorCallToAction))
+        sourceAction.setTextColor(ColorTheme.titleColorForBG(ColorTheme.buttonColorCallToAction))
         sourceAction.setBackgroundColorFast(ColorTheme.buttonColorCallToAction)
 
         sourceAction.setOnClickListener(result::open)

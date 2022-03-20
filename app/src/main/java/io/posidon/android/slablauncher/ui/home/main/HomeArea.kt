@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.ui.home.MainActivity
-import io.posidon.android.slablauncher.ui.home.main.dash.AtAGlanceArea
+import io.posidon.android.slablauncher.ui.home.main.dash.DashArea
 import io.posidon.android.slablauncher.ui.home.main.tile.PinnedTilesAdapter
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
@@ -18,7 +18,7 @@ import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHel
 import posidon.android.conveniencelib.Device
 import kotlin.math.abs
 
-class DashArea(val view: NestedScrollView, val fragment: DashAreaFragment, val launcherContext: LauncherContext) {
+class HomeArea(val view: NestedScrollView, val fragment: DashAreaFragment, val launcherContext: LauncherContext) {
 
     companion object {
         const val COLUMNS = 4
@@ -29,7 +29,7 @@ class DashArea(val view: NestedScrollView, val fragment: DashAreaFragment, val l
     inline val scrollY: Int
         get() = view.scrollY
 
-    val atAGlance = AtAGlanceArea(view.findViewById<ViewGroup>(R.id.dash), this, fragment.requireActivity() as MainActivity)
+    val atAGlance = DashArea(view.findViewById<ViewGroup>(R.id.dash), this, fragment.requireActivity() as MainActivity)
 
     init {
         val activity = fragment.requireActivity() as MainActivity
@@ -62,7 +62,7 @@ class DashArea(val view: NestedScrollView, val fragment: DashAreaFragment, val l
                 activity::updateColorTheme,
                 activity::loadApps,
                 activity::reloadBlur,
-                atAGlance::updateLayout,
+                activity::updateLayout,
             )
         }
     }
@@ -116,7 +116,9 @@ class DashArea(val view: NestedScrollView, val fragment: DashAreaFragment, val l
                     if (x > v.measuredWidth / 3.5f || y > v.measuredHeight / 3.5f) {
                         ItemLongPress.currentPopup?.dismiss()?.let {
                             val i = getPinnedItemIndex(location[0].toFloat(), location[1].toFloat())
-                            pinnedAdapter.onDragOut(v, i)
+                            if (i != -1) {
+                                pinnedAdapter.onDragOut(v, i)
+                            }
                             highlightDropArea = true
                         }
                     }
