@@ -11,6 +11,7 @@ abstract class AsyncSearchProvider(
 
     override fun getResults(query: SearchQuery): List<SearchResult> {
         return lastResults.getOrElse(query) {
+            lastQuery = query
             loadResults(query)
             emptyList()
         }
@@ -21,6 +22,6 @@ abstract class AsyncSearchProvider(
     fun update(query: SearchQuery, results: List<SearchResult>) {
         lastResults[query] = results
         if (lastQuery == query)
-            searcher.query(query.text)
+            searcher.query(query)
     }
 }
