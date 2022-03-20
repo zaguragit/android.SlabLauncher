@@ -20,7 +20,6 @@ import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.data.items.showProperties
 import io.posidon.android.slablauncher.ui.popup.PopupUtils
-import posidon.android.conveniencelib.vibrate
 
 object ItemLongPress {
 
@@ -82,6 +81,11 @@ object ItemLongPress {
         c?.dismiss()
     }
 
+    class State(
+        var view: View?,
+        val location: IntArray,
+    )
+
     fun onItemLongPress(
         view: View,
         backgroundColor: Int,
@@ -91,7 +95,6 @@ object ItemLongPress {
     ) {
         dismissCurrent()
         val context = view.context
-        context.vibrate(14)
         val (x, y, gravity) = PopupUtils.getPopupLocationFromView(view, navbarHeight)
         val dynamicShortcuts = (item as? App)?.getDynamicShortcuts(context.getSystemService(LauncherApps::class.java))?.let {
             it.subList(0, it.size.coerceAtMost(5))
@@ -129,7 +132,7 @@ object ItemLongPress {
 
         val location = IntArray(2)
         view.getLocationOnScreen(location)
-        view.startDragAndDrop(clipData, shadow, view to location, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
+        view.startDragAndDrop(clipData, shadow, State(view, location), View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
     }
 
     fun onItemLongPress(
@@ -145,6 +148,6 @@ object ItemLongPress {
 
         val location = IntArray(2)
         view.getLocationOnScreen(location)
-        view.startDragAndDrop(clipData, shadow, view to location, View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
+        view.startDragAndDrop(clipData, shadow, State(view, location), View.DRAG_FLAG_OPAQUE or View.DRAG_FLAG_GLOBAL)
     }
 }

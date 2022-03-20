@@ -83,25 +83,26 @@ class SideListFragment : Fragment() {
         setOnDragListener { _, event ->
             when (event.action) {
                 DragEvent.ACTION_DRAG_STARTED -> {
-                    ((event.localState as? Pair<*, *>?)?.first as? View)?.visibility = View.INVISIBLE
+                    (event.localState as? ItemLongPress.State?)?.view?.visibility = View.INVISIBLE
                     return@setOnDragListener true
                 }
                 DragEvent.ACTION_DRAG_LOCATION -> {
-                    val pair = (event.localState as? Pair<*, *>?)
-                    val v = pair?.first as? View
-                    val location = pair?.second as? IntArray
+                    val state = event.localState as? ItemLongPress.State?
+                    val v = state?.view
+                    val location = state?.location
                     if (v != null && location != null) {
                         val x = abs(event.x - location[0] - v.measuredWidth / 2f)
                         val y = abs(event.y - location[1] - v.measuredHeight / 2f)
                         if (x > v.width / 3.5f || y > v.height / 3.5f) {
                             ItemLongPress.currentPopup?.dismiss()
                             (requireActivity() as MainActivity).viewPager.currentItem = 0
+                            state.view = null
                         }
                     }
                 }
                 DragEvent.ACTION_DRAG_ENDED,
                 DragEvent.ACTION_DROP -> {
-                    ((event.localState as? Pair<*, *>?)?.first as? View)?.visibility = View.VISIBLE
+                    (event.localState as? ItemLongPress.State?)?.view?.visibility = View.VISIBLE
                     ItemLongPress.currentPopup?.isFocusable = true
                     ItemLongPress.currentPopup?.update()
                 }
