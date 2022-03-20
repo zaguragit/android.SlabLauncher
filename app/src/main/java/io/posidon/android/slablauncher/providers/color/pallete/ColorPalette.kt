@@ -15,6 +15,8 @@ import posidon.android.conveniencelib.Device
 import kotlin.math.min
 
 interface ColorPalette {
+    val estimatedWallColor: Int
+
     val neutralVeryDark: Int
     val neutralDark: Int
     val neutralMedium: Int
@@ -25,18 +27,29 @@ interface ColorPalette {
     val secondary: Int
 
     companion object {
-        var wallColor: Int = 0
-            private set
+        val wallColor: Int
+            get() = colorPaletteInstance.estimatedWallColor
 
         private var colorPaletteInstance: ColorPalette = DefaultPalette
 
-        fun <A : Context> loadWallColorTheme(context: A, onFinished: (A, ColorPalette) -> Unit) {
+        @RequiresApi(Build.VERSION_CODES.O_MR1)
+        fun getSystemWallColorPalette(context: Context, colors: WallpaperColors): AndroidOMR1Palette =
+            AndroidOMR1Palette(context, colors)
+
+        @RequiresApi(Build.VERSION_CODES.S)
+        fun getMonetColorPalette(
+            context: Context,
+        ): MonetPalette = MonetPalette(context.resources)
+
+        fun getDefaultColorPalette(): DefaultPalette = DefaultPalette
+
+        fun getWallColorPalette(context: Context): ColorPalette {
             if (ActivityCompat.checkSelfPermission(
                     context,
                     Manifest.permission.READ_EXTERNAL_STORAGE
-                ) != PackageManager.PERMISSION_GRANTED) {
-                loadDefaultColorTheme(context, onFinished)
-                return
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return getDefaultColorPalette()
             }
             val wp = context.getSystemService(WallpaperManager::class.java)
             val d = wp.fastDrawable
@@ -47,8 +60,11 @@ interface ColorPalette {
             val palette = Palette.from(wall)
                 .maximumColorCount(20)
                 .generate()
-            wallColor = palette.getDominantColor(0)
-            val newColorTheme = BitmapBasedPalette(palette)
+            return BitmapBasedPalette(palette)
+        }
+
+        fun <A : Context> loadWallColorTheme(context: A, onFinished: (A, ColorPalette) -> Unit) {
+            val newColorTheme = getWallColorPalette(context)
             if (newColorTheme != colorPaletteInstance) {
                 colorPaletteInstance = newColorTheme
                 onFinished(context, colorPaletteInstance)
@@ -61,9 +77,11 @@ interface ColorPalette {
             onFinished: (A, ColorPalette) -> Unit,
             colors: WallpaperColors
         ) {
-            wallColor = colors.primaryColor.toArgb()
-            colorPaletteInstance = AndroidOMR1Palette(context, colors)
-            onFinished(context, colorPaletteInstance)
+            val newColorTheme = getSystemWallColorPalette(context, colors)
+            if (newColorTheme != colorPaletteInstance) {
+                colorPaletteInstance = newColorTheme
+                onFinished(context, colorPaletteInstance)
+            }
         }
 
         @RequiresApi(Build.VERSION_CODES.S)
@@ -71,12 +89,14 @@ interface ColorPalette {
             context: A,
             onFinished: (A, ColorPalette) -> Unit,
         ) {
-            colorPaletteInstance = MonetPalette(context.resources)
-            onFinished(context, colorPaletteInstance)
+            val newColorTheme = getMonetColorPalette(context)
+            if (newColorTheme != colorPaletteInstance) {
+                colorPaletteInstance = newColorTheme
+                onFinished(context, colorPaletteInstance)
+            }
         }
 
         private fun <A : Context> loadDefaultColorTheme(context: A, onFinished: (A, ColorPalette) -> Unit) {
-            wallColor = 0
             if (colorPaletteInstance !== DefaultPalette) {
                 colorPaletteInstance = DefaultPalette
                 onFinished(context, colorPaletteInstance)

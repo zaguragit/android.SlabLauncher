@@ -13,7 +13,7 @@ import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.home.sideList.viewHolders.search.SearchViewHolder
-import io.posidon.android.slablauncher.util.view.SeeThroughView
+import io.posidon.android.slablauncher.ui.view.SeeThroughView
 
 class AnswerSearchViewHolder(
     itemView: View

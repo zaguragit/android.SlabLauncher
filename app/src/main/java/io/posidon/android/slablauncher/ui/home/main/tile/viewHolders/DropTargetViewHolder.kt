@@ -8,7 +8,7 @@ import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.main.DashArea.Companion.WIDTH_TO_HEIGHT
-import io.posidon.android.slablauncher.util.view.HorizontalAspectRatioLayout
+import io.posidon.android.slablauncher.ui.view.HorizontalAspectRatioLayout
 
 class DropTargetViewHolder(
     itemView: View

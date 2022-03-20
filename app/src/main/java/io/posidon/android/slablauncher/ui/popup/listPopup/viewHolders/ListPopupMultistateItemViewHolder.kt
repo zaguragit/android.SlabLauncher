@@ -11,7 +11,7 @@ import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.hideIfNullOr
 import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupItem
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
-import io.posidon.android.slablauncher.util.view.multiswitch.MultiSwitch
+import io.posidon.android.slablauncher.ui.view.multiswitch.MultiSwitch
 import posidon.android.conveniencelib.dp
 
 class ListPopupMultistateItemViewHolder(itemView: View) : ListPopupViewHolder(itemView) {

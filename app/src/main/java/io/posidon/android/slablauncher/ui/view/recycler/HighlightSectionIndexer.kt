@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.util.view.recycler
+package io.posidon.android.slablauncher.ui.view.recycler
 
 import android.content.Context
 import android.graphics.drawable.ShapeDrawable

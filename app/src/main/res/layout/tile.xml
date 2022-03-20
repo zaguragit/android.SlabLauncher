@@ -5,17 +5,17 @@
     android:layout_height="wrap_content"
     android:id="@+id/card"
     style="@style/SlabLauncher.TileArea.Item.Container">
-    <io.posidon.android.slablauncher.util.view.BackdropImageView
+    <io.posidon.android.slablauncher.ui.view.BackdropImageView
         android:id="@+id/background_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"/>
-    <io.posidon.android.slablauncher.util.view.SeeThroughView
+    <io.posidon.android.slablauncher.ui.view.SeeThroughView
         android:id="@+id/blur_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.2"/>
-    <io.posidon.android.slablauncher.util.view.tile.TileContentView
+    <io.posidon.android.slablauncher.ui.view.tile.TileContentView
         android:id="@+id/tile_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

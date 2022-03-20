@@ -14,7 +14,7 @@ import io.posidon.android.slablauncher.ui.home.main.dash.AtAGlanceArea
 import io.posidon.android.slablauncher.ui.home.main.tile.PinnedTilesAdapter
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
-import io.posidon.android.slablauncher.util.view.recycler.RecyclerViewLongPressHelper
+import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
 import posidon.android.conveniencelib.Device
 import kotlin.math.abs
 

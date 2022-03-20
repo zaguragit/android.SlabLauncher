@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.util.view
+package io.posidon.android.slablauncher.ui.view
 
 import android.content.Context
 import android.util.AttributeSet

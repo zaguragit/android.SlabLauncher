@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="top">
-        <io.posidon.android.slablauncher.util.view.SeeThroughView
+        <io.posidon.android.slablauncher.ui.view.SeeThroughView
             android:id="@+id/dash_blur_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

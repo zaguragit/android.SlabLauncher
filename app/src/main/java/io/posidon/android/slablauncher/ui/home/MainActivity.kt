@@ -54,7 +54,7 @@ import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorT
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
 import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
 import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScreenOpenedSetting.doAutoKeyboardInAllApps
-import io.posidon.android.slablauncher.util.view.SeeThroughView
+import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import posidon.android.conveniencelib.getNavigationBarHeight
 import kotlin.concurrent.thread
 
@@ -193,7 +193,7 @@ class MainActivity : FragmentActivity() {
             }
             doOnTextChanged { text, _, _, _ ->
                 if (hasFocus())
-                    onSearchQueryListeners.forEach { (_, l) -> l(text) }
+                    onSearchQueryListeners.forEach { (_, l) -> l(text.toString()) }
             }
             setOnEditorActionListener { v, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -361,7 +361,7 @@ class MainActivity : FragmentActivity() {
         onAppsLoadedListeners[key] = listener
     }
 
-    fun setOnSearchQueryListener(key: String, listener: (CharSequence?) -> Unit) {
+    fun setOnSearchQueryListener(key: String, listener: (String?) -> Unit) {
         onSearchQueryListeners[key] = listener
     }
 
@@ -369,7 +369,7 @@ class MainActivity : FragmentActivity() {
     private val onBlurUpdateListeners = HashMap<String, () -> Unit>()
     private val onPageScrollListeners = HashMap<String, (Float) -> Unit>()
     private val onAppsLoadedListeners = HashMap<String, (AppCollection) -> Unit>()
-    private val onSearchQueryListeners = HashMap<String, (CharSequence?) -> Unit>()
+    private val onSearchQueryListeners = HashMap<String, (String?) -> Unit>()
 
     private fun updateBlur() {
         onBlurUpdateListeners.forEach { (_, l) -> l() }

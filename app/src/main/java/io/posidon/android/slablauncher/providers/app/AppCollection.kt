@@ -19,8 +19,7 @@ import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeIcons
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeTileBackground
 import io.posidon.android.slablauncher.util.storage.Settings
-import io.posidon.android.slablauncher.util.view.tile.TileContentMover
-import java.util.*
+import io.posidon.android.slablauncher.ui.view.tile.TileContentMover
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 

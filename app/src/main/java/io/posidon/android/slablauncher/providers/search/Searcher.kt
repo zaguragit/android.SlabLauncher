@@ -3,6 +3,7 @@ package io.posidon.android.slablauncher.providers.search
 import android.app.Activity
 import android.content.Context
 import io.posidon.android.slablauncher.LauncherContext
+import io.posidon.android.slablauncher.data.search.DebugResult
 import io.posidon.android.slablauncher.data.search.SearchResult
 import io.posidon.android.slablauncher.providers.app.AppCollection
 import java.util.*
@@ -19,6 +20,11 @@ class Searcher(
     fun query(query: SearchQuery) {
         val r = LinkedList<SearchResult>()
         providers.flatMapTo(r) { it.getResults(query) }
+        if (query.text == "!debug") {
+            r += DebugResult()
+        }
+        println(r)
+        println(query.text)
         r.sortWith { a, b ->
             b.relevance.compareTo(a.relevance)
         }
@@ -26,7 +32,7 @@ class Searcher(
         update(query, tr)
     }
 
-    fun query(query: CharSequence?) {
+    fun query(query: String?) {
         val q = query?.let(::SearchQuery) ?: SearchQuery.EMPTY
         if (query == null)
             update(q, emptyList())

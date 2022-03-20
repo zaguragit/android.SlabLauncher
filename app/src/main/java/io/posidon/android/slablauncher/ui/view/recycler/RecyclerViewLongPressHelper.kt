@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.util.view.recycler
+package io.posidon.android.slablauncher.ui.view.recycler
 
 import android.annotation.SuppressLint
 import android.view.HapticFeedbackConstants

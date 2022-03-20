@@ -29,8 +29,8 @@ import io.posidon.android.slablauncher.ui.home.main.dash.media.MediaPlayer
 import io.posidon.android.slablauncher.ui.home.main.suggestion.SuggestionsAdapter
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
-import io.posidon.android.slablauncher.util.view.SeeThroughView
-import io.posidon.android.slablauncher.util.view.recycler.RecyclerViewLongPressHelper
+import io.posidon.android.slablauncher.ui.view.SeeThroughView
+import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
 import posidon.android.conveniencelib.getStatusBarHeight

@@ -8,7 +8,7 @@ import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.providers.app.AppCollection
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.util.storage.Settings
-import io.posidon.android.slablauncher.util.view.tile.TileContentMover.Companion.calculateBigIconSize
+import io.posidon.android.slablauncher.ui.view.tile.TileContentMover.Companion.calculateBigIconSize
 
 class LauncherContext {
 

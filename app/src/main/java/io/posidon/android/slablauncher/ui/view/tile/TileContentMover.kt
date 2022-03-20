@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.util.view.tile
+package io.posidon.android.slablauncher.ui.view.tile
 
 import android.content.Context
 import android.graphics.Rect

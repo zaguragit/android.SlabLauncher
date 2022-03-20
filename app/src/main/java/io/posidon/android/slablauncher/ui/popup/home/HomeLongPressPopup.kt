@@ -28,7 +28,7 @@ import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.mon
 import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScreenOpenedSetting.doAutoKeyboardInAllApps
 import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
 import io.posidon.android.slablauncher.util.storage.Settings
-import io.posidon.android.slablauncher.util.view.SeeThroughView
+import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
 import java.util.concurrent.locks.ReentrantLock

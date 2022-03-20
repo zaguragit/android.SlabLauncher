@@ -14,8 +14,7 @@ import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.notification.MediaPlayerData
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.notification.NotificationService
-import io.posidon.android.slablauncher.util.view.BackdropImageView
-import posidon.android.conveniencelib.Colors
+import io.posidon.android.slablauncher.ui.view.BackdropImageView
 
 class MediaPlayer(val view: ViewGroup, val separator: View) {
 

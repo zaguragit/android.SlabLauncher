@@ -1,17 +1,12 @@
-package io.posidon.android.slablauncher.util.view.tile
+package io.posidon.android.slablauncher.ui.view.tile
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Paint
 import android.graphics.Rect
-import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
-import androidx.core.view.doOnLayout
-import io.posidon.android.slablauncher.R
-import posidon.android.conveniencelib.sp
 
 //
 // DEFAULT

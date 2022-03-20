@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     style="@style/SlabLauncher.TileArea.Item.Container">
-    <io.posidon.android.slablauncher.util.view.HorizontalAspectRatioLayout
+    <io.posidon.android.slablauncher.ui.view.HorizontalAspectRatioLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/aspect"/>

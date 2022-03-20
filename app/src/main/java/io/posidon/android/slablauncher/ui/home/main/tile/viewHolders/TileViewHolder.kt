@@ -26,8 +26,8 @@ import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeTileBackground
 import io.posidon.android.slablauncher.util.storage.Settings
-import io.posidon.android.slablauncher.util.view.SeeThroughView
-import io.posidon.android.slablauncher.util.view.tile.TileContentView
+import io.posidon.android.slablauncher.ui.view.SeeThroughView
+import io.posidon.android.slablauncher.ui.view.tile.TileContentView
 import posidon.android.conveniencelib.getNavigationBarHeight
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
