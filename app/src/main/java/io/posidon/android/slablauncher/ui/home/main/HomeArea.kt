@@ -29,7 +29,7 @@ class HomeArea(val view: NestedScrollView, val fragment: DashAreaFragment, val l
     inline val scrollY: Int
         get() = view.scrollY
 
-    val atAGlance = DashArea(view.findViewById<ViewGroup>(R.id.dash), this, fragment.requireActivity() as MainActivity)
+    val dash = DashArea(view.findViewById<ViewGroup>(R.id.dash), this, fragment.requireActivity() as MainActivity)
 
     init {
         val activity = fragment.requireActivity() as MainActivity
@@ -73,7 +73,7 @@ class HomeArea(val view: NestedScrollView, val fragment: DashAreaFragment, val l
     }
 
     fun getPinnedItemIndex(x: Float, y: Float): Int {
-        var y = y + scrollY - atAGlance.view.height
+        var y = y + scrollY - dash.view.height
         if (y < 0) return -1
         val x = x / pinnedRecycler.width * COLUMNS
         y = ((y - pinnedRecycler.paddingTop) / pinnedRecycler.width * COLUMNS) * WIDTH_TO_HEIGHT
@@ -154,6 +154,6 @@ class HomeArea(val view: NestedScrollView, val fragment: DashAreaFragment, val l
 
     fun updateBlur() {
         pinnedAdapter.notifyItemRangeChanged(0, pinnedAdapter.itemCount)
-        atAGlance.updateBlur()
+        dash.updateBlur()
     }
 }

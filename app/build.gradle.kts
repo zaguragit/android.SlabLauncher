@@ -11,7 +11,7 @@ android {
         minSdk = 26
         targetSdk = 31
         versionCode = 1
-        versionName = "2021.0.0"
+        versionName = "22.0.0"
 
         val plainName = "SlabLauncher"
         setProperty("archivesBaseName", "$plainName-v$versionName($versionCode)")

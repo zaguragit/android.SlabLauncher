@@ -150,6 +150,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
                 val notification = list.firstOrNull { it.image != null } ?: list[0]
                 list.remove(notification)
                 notificationsAdapter.updateItems(list)
+                primaryNotification.setOnClickListener { notification.open() }
                 notificationIcon.setImageDrawable(notification.icon)
                 notificationSource.text = notification.source
                 notificationTitle.text = notification.title

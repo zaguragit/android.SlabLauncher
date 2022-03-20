@@ -66,7 +66,7 @@ class DashAreaFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        homeArea.atAGlance.onResume()
+        homeArea.dash.onResume()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -77,8 +77,8 @@ class DashAreaFragment : Fragment() {
     private fun configureWindow() {
         val t = resources.getDimension(R.dimen.item_card_margin).toInt()
         homeArea.pinnedRecycler.setPadding(t, 0, t, t)
-        homeArea.atAGlance.view.setPadding(t, requireContext().getStatusBarHeight(), t, 0)
-        homeArea.atAGlance.view.doOnLayout {
+        homeArea.dash.view.setPadding(t, requireContext().getStatusBarHeight(), t, 0)
+        homeArea.dash.view.doOnLayout {
             it.updateLayoutParams {
                 val tileMargin = it.context.resources.getDimension(R.dimen.item_card_margin)
                 val tileWidth = (Device.screenWidth(it.context) - tileMargin * 2) / HomeArea.COLUMNS - tileMargin * 2
@@ -97,7 +97,7 @@ class DashAreaFragment : Fragment() {
 
     private fun updateColorTheme() {
         activity?.runOnUiThread {
-            homeArea.atAGlance.updateColorTheme()
+            homeArea.dash.updateColorTheme()
             homeArea.pinnedAdapter.notifyItemRangeChanged(0, homeArea.pinnedAdapter.itemCount)
         }
     }
