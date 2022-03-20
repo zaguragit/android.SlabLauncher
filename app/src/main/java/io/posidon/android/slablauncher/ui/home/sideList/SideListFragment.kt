@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.activity.addCallback
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -96,13 +97,14 @@ class SideListFragment : Fragment() {
                         if (x > v.width / 3.5f || y > v.height / 3.5f) {
                             ItemLongPress.currentPopup?.dismiss()
                             (requireActivity() as MainActivity).viewPager.currentItem = 0
+                            v.isVisible = true
                             state.view = null
                         }
                     }
                 }
                 DragEvent.ACTION_DRAG_ENDED,
                 DragEvent.ACTION_DROP -> {
-                    (event.localState as? ItemLongPress.State?)?.view?.visibility = View.VISIBLE
+                    (event.localState as? ItemLongPress.State?)?.view?.isVisible = true
                     ItemLongPress.currentPopup?.isFocusable = true
                     ItemLongPress.currentPopup?.update()
                 }

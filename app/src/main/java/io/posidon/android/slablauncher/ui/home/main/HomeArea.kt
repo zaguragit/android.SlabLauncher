@@ -122,6 +122,7 @@ class HomeArea(val view: NestedScrollView, val fragment: DashAreaFragment, val l
                             pinnedAdapter.onDragOut(v, i)
                         }
                         highlightDropArea = true
+                        v.isVisible = true
                         state.view = null
                     }
                 }
