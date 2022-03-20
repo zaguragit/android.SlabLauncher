@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="SlabLauncher.Title" parent="SlabLauncher">
+        <item name="android:layout_height">@dimen/today_title_container_height</item>
+        <item name="android:gravity">start|bottom</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:paddingHorizontal">18dp</item>
+        <item name="android:paddingBottom">18dp</item>
+        <item name="android:textSize">42sp</item>
+        <item name="android:fontFamily">@font/atkinson_hyperlegible_bold</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
     <style name="SlabLauncher.SearchBar.Text" parent="SlabLauncher">
         <item name="android:background">@null</item>
         <item name="android:textSize">16sp</item>
@@ -57,9 +69,9 @@
     </style>
 
     <style name="SlabLauncher.SearchResult.InstantAnswer.Title" parent="SlabLauncher">
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">24sp</item>
         <item name="android:textColor">@color/feed_card_text_dark_title</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/atkinson_hyperlegible_bold</item>
         <item name="android:paddingHorizontal">@dimen/feed_card_spacing</item>
     </style>
 
@@ -92,8 +104,9 @@
     </style>
 
     <style name="SlabLauncher.SearchResult.InstantAnswer.Infobox.Label" parent="SlabLauncher">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/feed_card_text_dark_title</item>
+        <item name="android:fontFamily">@font/atkinson_hyperlegible_bold</item>
         <item name="android:padding">@dimen/feed_card_spacing</item>
     </style>
 
@@ -106,7 +119,7 @@
     <style name="SlabLauncher.SearchResult.SimpleBox.Text" parent="SlabLauncher">
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/feed_card_text_dark_title</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/atkinson_hyperlegible_bold</item>
         <item name="android:paddingHorizontal">@dimen/feed_card_spacing</item>
         <item name="android:paddingVertical">@dimen/feed_card_spacing</item>
         <item name="android:layout_margin">@dimen/feed_card_padding</item>

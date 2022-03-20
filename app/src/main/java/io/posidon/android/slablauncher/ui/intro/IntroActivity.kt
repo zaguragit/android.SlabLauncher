@@ -73,8 +73,8 @@ class IntroActivity : FragmentActivity() {
     fun updateColorTheme(colorPalette: ColorPalette) {
         ColorTheme.updateColorTheme(DarkColorTheme(colorPalette))
         findViewById<ImageView>(R.id.button_next)!!.run {
-            backgroundTintList = ColorStateList.valueOf(ColorTheme.buttonColor)
-            imageTintList = ColorStateList.valueOf(ColorTheme.titleColorForBG(this@IntroActivity, ColorTheme.buttonColor))
+            backgroundTintList = ColorStateList.valueOf(ColorTheme.buttonColorCallToAction)
+            imageTintList = ColorStateList.valueOf(ColorTheme.titleColorForBG(this@IntroActivity, ColorTheme.buttonColorCallToAction))
         }
         window.decorView.setBackgroundColor(ColorTheme.uiBG)
     }

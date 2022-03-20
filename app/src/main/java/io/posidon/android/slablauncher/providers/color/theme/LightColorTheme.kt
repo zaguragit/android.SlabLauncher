@@ -7,6 +7,7 @@ import androidx.core.graphics.luminance
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme.Companion.hueTintClosest
+import io.posidon.android.slablauncher.providers.color.theme.ColorTheme.Companion.tintWithColor
 
 class LightColorTheme(
     val palette: ColorPalette,
@@ -24,11 +25,10 @@ class LightColorTheme(
     override val cardDescription = palette.neutralDark
     override val cardHint = palette.neutralMedium
 
-    override val buttonColor = palette.primary
+    override val buttonColor = palette.neutralVeryLight
+    override val buttonColorCallToAction = palette.secondary
 
-    override val appCardBase = palette.neutralVeryLight
-
-    override val searchBarBG = palette.neutralLight
+    override val searchBarBG = palette.neutralVeryLight
     override val searchBarFG = palette.neutralDark
 
     override fun adjustColorForContrast(base: Int, tint: Int): Int {
@@ -69,23 +69,5 @@ class LightColorTheme(
             palette.secondary,
             ColorPalette.wallColor,
         ))
-    }
-
-    override fun textColorForBG(context: Context, background: Int): Int {
-        return if (background.luminance > .6f)
-            context.getColor(R.color.feed_card_text_dark_description)
-        else context.getColor(R.color.feed_card_text_light_description)
-    }
-
-    override fun titleColorForBG(context: Context, background: Int): Int {
-        return if (background.luminance > .6f)
-            context.getColor(R.color.feed_card_text_dark_title)
-        else context.getColor(R.color.feed_card_text_light_title)
-    }
-
-    override fun hintColorForBG(context: Context, background: Int): Int {
-        return if (background.luminance > .6f)
-            context.getColor(R.color.feed_card_text_dark_hint)
-        else context.getColor(R.color.feed_card_text_light_hint)
     }
 }

@@ -26,9 +26,8 @@ class DarkColorTheme(
     override val cardDescription = palette.neutralLight
     override val cardHint = palette.neutralMedium
 
-    override val buttonColor = palette.primary
-
-    override val appCardBase = palette.neutralMedium
+    override val buttonColor = palette.neutralMedium
+    override val buttonColorCallToAction = palette.secondary
 
     override val searchBarBG = palette.neutralDark
     override val searchBarFG = palette.neutralLight
@@ -71,23 +70,5 @@ class DarkColorTheme(
             palette.secondary,
             ColorPalette.wallColor,
         ))
-    }
-
-    override fun textColorForBG(context: Context, background: Int): Int {
-        return tintWithColor(if (background.luminance > .6f)
-            context.getColor(R.color.feed_card_text_dark_description)
-        else context.getColor(R.color.feed_card_text_light_description), background)
-    }
-
-    override fun titleColorForBG(context: Context, background: Int): Int {
-        return tintWithColor(if (background.luminance > .6f)
-            context.getColor(R.color.feed_card_text_dark_title)
-        else context.getColor(R.color.feed_card_text_light_title), background)
-    }
-
-    override fun hintColorForBG(context: Context, background: Int): Int {
-        return tintWithColor(if (background.luminance > .6f)
-            context.getColor(R.color.feed_card_text_dark_hint)
-        else context.getColor(R.color.feed_card_text_light_hint), background)
     }
 }

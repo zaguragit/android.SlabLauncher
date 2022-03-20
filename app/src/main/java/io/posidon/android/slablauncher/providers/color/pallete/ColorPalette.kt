@@ -97,10 +97,8 @@ interface ColorPalette {
         }
 
         private fun <A : Context> loadDefaultColorTheme(context: A, onFinished: (A, ColorPalette) -> Unit) {
-            if (colorPaletteInstance !== DefaultPalette) {
-                colorPaletteInstance = DefaultPalette
-                onFinished(context, colorPaletteInstance)
-            }
+            colorPaletteInstance = DefaultPalette
+            onFinished(context, colorPaletteInstance)
         }
 
         @RequiresApi(Build.VERSION_CODES.O_MR1)
@@ -135,6 +133,6 @@ interface ColorPalette {
             }
         }
 
-        fun getCurrent() = colorPaletteInstance
+        fun getCurrent(): ColorPalette = colorPaletteInstance
     }
 }

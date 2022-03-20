@@ -14,6 +14,7 @@ import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.home.sideList.viewHolders.search.SearchViewHolder
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
+import io.posidon.android.slablauncher.util.drawable.setBackgroundColorFast
 
 class AnswerSearchViewHolder(
     itemView: View
@@ -59,13 +60,12 @@ class AnswerSearchViewHolder(
         description.text = result.description
         sourceAction.text = itemView.context.getString(R.string.read_more_at_source, result.sourceName)
 
-        val bg = ColorTheme.buttonColor
-        val fg = ColorTheme.titleColorForBG(itemView.context, bg)
-        val hint = ColorTheme.hintColorForBG(itemView.context, bg)
-        actionsContainer.setCardBackgroundColor(bg)
-        sourceAction.setTextColor(fg)
-        searchAction.setTextColor(fg)
-        actionSeparator.setBackgroundColor(hint)
+        actionsContainer.setCardBackgroundColor(ColorTheme.buttonColor)
+        searchAction.setTextColor(ColorTheme.titleColorForBG(itemView.context, ColorTheme.buttonColor))
+        actionSeparator.setBackgroundColorFast(ColorTheme.hintColorForBG(itemView.context, ColorTheme.buttonColor))
+
+        sourceAction.setTextColor(ColorTheme.titleColorForBG(itemView.context, ColorTheme.buttonColorCallToAction))
+        sourceAction.setBackgroundColorFast(ColorTheme.buttonColorCallToAction)
 
         sourceAction.setOnClickListener(result::open)
         searchAction.setOnClickListener(result::search)

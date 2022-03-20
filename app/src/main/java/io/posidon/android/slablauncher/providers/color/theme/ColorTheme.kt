@@ -26,8 +26,7 @@ interface ColorTheme {
     val cardHint: Int
 
     val buttonColor: Int
-
-    val appCardBase: Int
+    val buttonColorCallToAction: Int
 
     val searchBarBG: Int
     val searchBarFG: Int
@@ -35,12 +34,6 @@ interface ColorTheme {
     fun adjustColorForContrast(base: Int, tint: Int): Int
 
     fun tileColor(iconBackgroundColor: Int): Int
-
-    fun textColorForBG(context: Context, background: Int): Int
-
-    fun titleColorForBG(context: Context, background: Int): Int
-
-    fun hintColorForBG(context: Context, background: Int): Int
 
     companion object : ColorTheme {
 
@@ -68,8 +61,8 @@ interface ColorTheme {
             get() = colorThemeInstance.cardHint
         override val buttonColor: Int
             get() = colorThemeInstance.buttonColor
-        override val appCardBase: Int
-            get() = colorThemeInstance.appCardBase
+        override val buttonColorCallToAction: Int
+            get() = colorThemeInstance.buttonColorCallToAction
         override val searchBarBG: Int
             get() = colorThemeInstance.searchBarBG
         override val searchBarFG: Int
@@ -81,14 +74,18 @@ interface ColorTheme {
         override fun tileColor(iconBackgroundColor: Int): Int =
             colorThemeInstance.tileColor(iconBackgroundColor)
 
-        override fun textColorForBG(context: Context, background: Int): Int =
-            colorThemeInstance.textColorForBG(context, background)
 
-        override fun titleColorForBG(context: Context, background: Int): Int =
-            colorThemeInstance.titleColorForBG(context, background)
+        fun titleColorForBG(context: Context, background: Int): Int {
+            return (if (background.luminance > .6f) 0 else 0xffffff) or 0xff000000.toInt()
+        }
 
-        override fun hintColorForBG(context: Context, background: Int): Int =
-            colorThemeInstance.hintColorForBG(context, background)
+        fun textColorForBG(context: Context, background: Int): Int {
+            return (if (background.luminance > .6f) 0 else 0xffffff) or 0xd2000000.toInt()
+        }
+
+        fun hintColorForBG(context: Context, background: Int): Int {
+            return (if (background.luminance > .6f) 0 else 0xffffff) or 0x55000000
+        }
 
 
         fun tintWithColor(base: Int, color: Int): Int {
