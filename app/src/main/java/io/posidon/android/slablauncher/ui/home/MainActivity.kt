@@ -169,7 +169,7 @@ class MainActivity : FragmentActivity() {
                     searchBarBlurBG.offset = wallpaperOffset
                 }
                 suggestionsRecycler.alpha = 1 - wallpaperOffset
-                suggestionsRecycler.isVisible = true
+                suggestionsRecycler.isVisible = wallpaperOffset != 1f
                 onPageScrollListeners.forEach { (_, l) -> l(wallpaperOffset) }
             }
 
@@ -181,7 +181,6 @@ class MainActivity : FragmentActivity() {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                             searchBarContainer.windowInsetsController?.hide(WindowInsets.Type.ime())
                         }
-                        suggestionsRecycler.isVisible = true
                     }
                     1 -> {
                         if (settings.doAutoKeyboardInAllApps) {
@@ -193,7 +192,6 @@ class MainActivity : FragmentActivity() {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                                 searchBarContainer.windowInsetsController?.show(WindowInsets.Type.ime())
                             }
-                            suggestionsRecycler.isVisible = false
                         }
                     }
                 }
