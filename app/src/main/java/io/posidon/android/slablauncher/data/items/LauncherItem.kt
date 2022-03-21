@@ -10,7 +10,7 @@ import io.posidon.android.slablauncher.data.notification.NotificationData
 import io.posidon.android.slablauncher.providers.notification.NotificationService
 import java.util.*
 
-interface LauncherItem {
+sealed interface LauncherItem {
 
     val label: String
 

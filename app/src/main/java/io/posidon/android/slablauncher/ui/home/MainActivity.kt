@@ -4,15 +4,13 @@ import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.app.WallpaperColors
 import android.app.WallpaperManager
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.LauncherApps
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.LayerDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.UserHandle
@@ -36,6 +34,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import io.posidon.android.launcherutils.liveWallpaper.LiveWallpaper
+import io.posidon.android.slablauncher.BuildConfig
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.LauncherItem
@@ -63,6 +62,7 @@ import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScree
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
 import posidon.android.conveniencelib.getNavigationBarHeight
+import java.net.URL
 import kotlin.concurrent.thread
 
 
@@ -216,9 +216,27 @@ class MainActivity : FragmentActivity() {
             }
             setOnEditorActionListener { v, actionId, _ ->
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    val viewSearch = Intent(Intent.ACTION_WEB_SEARCH)
-                    viewSearch.putExtra(SearchManager.QUERY, v.text)
-                    v.context.startActivity(viewSearch)
+                    val query = v.text.toString()
+                    val hasScheme = query.startsWith("http://") || query.startsWith("https://")
+                    if (query.matches(Regex("([a-z]+://)?([a-zA-Z]+\\.)+[a-zA-Z]+"))) {
+                        val viewSearch = Intent(Intent.ACTION_VIEW, Uri.parse(query.let {
+                            if (hasScheme) it
+                            else "https://$it"
+                        }))
+                        v.context.startActivity(viewSearch)
+                        return@setOnEditorActionListener true
+                    }
+
+                    try {
+                        val viewSearch = Intent(Intent.ACTION_WEB_SEARCH)
+                        viewSearch.putExtra(SearchManager.QUERY, query)
+                        v.context.startActivity(viewSearch)
+                    } catch (e: ActivityNotFoundException) {
+                        val viewSearch = Intent(Intent.ACTION_VIEW, Uri.parse(
+                            "https://duckduckgo.com/?q=${Uri.encode(query)}&t=${BuildConfig.APPLICATION_ID}"
+                        ))
+                        v.context.startActivity(viewSearch)
+                    }
                     true
                 } else false
             }
