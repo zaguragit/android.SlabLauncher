@@ -11,12 +11,14 @@ import android.net.wifi.WifiManager
 import android.os.BatteryManager
 import android.os.Build
 import android.os.Process
+import io.posidon.android.slablauncher.BuildConfig
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.util.storage.Settings
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.concurrent.thread
 import kotlin.concurrent.withLock
@@ -24,48 +26,32 @@ import kotlin.math.pow
 
 object SuggestionsManager {
 
-    fun getUsageTimeMark(context: Context, app: App): String? {
-        val usageStatsManager = context.getSystemService(UsageStatsManager::class.java)
-        val c = Calendar.getInstance()
-        val millis = System.currentTimeMillis()
-        c.add(Calendar.DAY_OF_YEAR, -1)
-        return usageStatsManager.queryAndAggregateUsageStats(c.timeInMillis, millis)[app.packageName]?.let {
-            c.timeInMillis = it.totalTimeInForeground
-            val h = c[Calendar.HOUR_OF_DAY] - 1
-            val m = c[Calendar.MINUTE]
-            when {
-                m == 0 -> null
-                h == 0 -> "$m"
-                else -> "$h:${m.toString().padStart(2, '0')}"
-            }
-        }
-    }
-
     private const val MAX_CONTEXT_COUNT = 6
 
     private var contextMap = ContextMap<LauncherItem>(ContextArray.CONTEXT_DATA_SIZE, ContextArray::differentiator)
-    private var timeBased = emptyList<LauncherItem>()
     private var patternBased = emptyList<LauncherItem>()
     private val contextLock = ReentrantLock()
+    private var appsByPackage: List<App> = emptyList()
 
-    fun getPatternBasedSuggestions(): List<LauncherItem> = patternBased
-
-    fun getTimeBasedSuggestions(): List<LauncherItem> = timeBased
+    fun get(): List<LauncherItem> = patternBased
 
     fun onItemOpened(context: Context, item: LauncherItem) {
-        thread(isDaemon = false, name = "SuggestionManager: saving opening context") {
-            contextLock.withLock {
-                saveItemOpenContext(context, item)
+        if (item !is App || item.packageName != BuildConfig.APPLICATION_ID)
+            thread(isDaemon = false, name = "SuggestionManager: saving opening context") {
+                contextLock.withLock {
+                    saveItemOpenContext(context, item)
+                }
+                updateSuggestions(context)
             }
-            updateSuggestions(context)
-        }
     }
 
     fun onAppsLoaded(
         appManager: LauncherContext.AppManager,
         context: Context,
-        suggestionData: Settings
+        suggestionData: Settings,
+        appsByPackage: List<App>
     ) {
+        this.appsByPackage = appsByPackage
         loadFromStorage(suggestionData, context, appManager)
         updateSuggestions(context)
     }
@@ -108,25 +94,24 @@ object SuggestionsManager {
         val currentData = ContextArray()
         getCurrentContext(context, currentData)
 
-        contextLock.withLock {
-            this.timeBased = run {
-                val sortedEntries = contextMap.entries.sortedBy { (item, data) ->
-                    if (stats != null) {
-                        val lastUse = stats[(item as App).packageName]?.lastTimeUsed
-                        if (lastUse == null) 1f else run {
-                            val c = Calendar.getInstance()
-                            c.timeInMillis = System.currentTimeMillis() - lastUse
-                            (c[Calendar.MINUTE] / 20f).coerceAtMost(1f).pow(2)
-                        }
-                    } else 0f
-                }
-                sortedEntries.map { it.key }
+        val timeBased = if (stats != null) appsByPackage.sortedBy {
+            val lastUse = stats[it.packageName]?.lastTimeUsed
+            if (lastUse == null) 1f else run {
+                val c = Calendar.getInstance()
+                c.timeInMillis = System.currentTimeMillis() - lastUse
+                (c[Calendar.MINUTE] / 20f).coerceAtMost(1f).pow(2)
             }
+        }.filter { it.packageName != BuildConfig.APPLICATION_ID } else emptyList()
+
+        contextLock.withLock {
             this.patternBased = run {
                 val sortedEntries = contextMap.entries.sortedBy { (item, data) ->
                     contextMap.calculateDistance(currentData, data)
                 }
-                sortedEntries.map { it.key }
+                sortedEntries.mapTo(ArrayList()) { it.key }.run {
+                    addAll(timeBased)
+                    distinct()
+                }
             }
         }
     }

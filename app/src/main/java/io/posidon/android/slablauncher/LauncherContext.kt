@@ -35,7 +35,7 @@ class LauncherContext {
                 apps = it.list
                 appsByName = it.byName
                 _pinnedItems = settings.getStrings(PINNED_KEY)?.mapNotNull { LauncherItem.tryParse(it, appsByName, context) }?.toMutableList() ?: ArrayList()
-                SuggestionsManager.onAppsLoaded(this, context, suggestionData)
+                SuggestionsManager.onAppsLoaded(this, context, suggestionData, appsByName.values.map(List<App>::first))
                 onEnd(context, it)
             }
         }

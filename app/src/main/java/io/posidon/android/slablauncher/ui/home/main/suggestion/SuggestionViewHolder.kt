@@ -51,9 +51,10 @@ class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
 
         item.color.compute {
-            val backgroundColor = ColorTheme.tintWithColor(ColorTheme.searchBarFG, it) and 0xffffff or 0x33000000.toInt()
+            val backgroundColor = ColorTheme.tintWithColor(ColorTheme.searchBarFG, it) and 0xffffff or 0x33000000
             card.post {
                 card.backgroundTintList = ColorStateList.valueOf(backgroundColor)
+                label.setTextColor(ColorTheme.textColorForBG(backgroundColor))
             }
         }
     }

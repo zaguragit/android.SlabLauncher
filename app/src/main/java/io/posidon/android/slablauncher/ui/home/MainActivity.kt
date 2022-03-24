@@ -423,7 +423,7 @@ class MainActivity : FragmentActivity() {
     private val onSearchQueryListeners = HashMap<String, (String?) -> Unit>()
 
     fun updateSuggestions(pinnedItems: List<LauncherItem>) {
-        suggestionsAdapter.updateItems((SuggestionsManager.getTimeBasedSuggestions() - pinnedItems.let {
+        suggestionsAdapter.updateItems((SuggestionsManager.get() - pinnedItems.let {
             val s = HomeArea.DOCK_ROWS * HomeArea.COLUMNS
             if (it.size > s) it.subList(0, s)
             else it

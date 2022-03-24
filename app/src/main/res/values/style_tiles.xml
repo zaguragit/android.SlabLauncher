@@ -33,7 +33,7 @@
     </style>
 
     <style name="SlabLauncher.TileArea.Suggestions.Item.Icon" parent="SlabLauncher">
-        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_marginStart">10dp</item>
         <item name="android:layout_marginEnd">8dp</item>
         <item name="android:layout_width">24dp</item>
         <item name="android:layout_height">24dp</item>
@@ -42,5 +42,7 @@
     <style name="SlabLauncher.TileArea.Suggestions.Item.Label" parent="SlabLauncher">
         <item name="android:layout_marginEnd">12dp</item>
         <item name="android:textSize">14sp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:lines">1</item>
     </style>
 </resources>
