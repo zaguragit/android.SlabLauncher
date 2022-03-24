@@ -6,13 +6,10 @@ import android.widget.TextView
 import io.posidon.android.computable.compute
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.search.CompactResult
-import io.posidon.android.slablauncher.data.search.ContactResult
 import io.posidon.android.slablauncher.data.search.SearchResult
-import io.posidon.android.slablauncher.providers.app.AppCollection.Companion.convertToGrayscale
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.hideIfNullOr
-import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeIcons
 
 class CompactSearchViewHolder(
     itemView: View
@@ -29,9 +26,6 @@ class CompactSearchViewHolder(
         result as CompactResult
         icon.setImageDrawable(null)
         result.icon.compute { resultIcon ->
-            if (activity.settings.doMonochromeIcons && result !is ContactResult) {
-                resultIcon.convertToGrayscale()
-            } else resultIcon.colorFilter = null
             icon.post {
                 icon.setImageDrawable(resultIcon)
             }

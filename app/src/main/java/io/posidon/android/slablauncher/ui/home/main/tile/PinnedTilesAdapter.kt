@@ -93,7 +93,7 @@ class PinnedTilesAdapter(
     fun updateItems(
         items: List<LauncherItem>
     ) {
-        val c = TileDiffCallback(this.items, items, NotificationService.notifications, NotificationService.notifications)
+        val c = TileDiffCallback(this.items, items)
         val diff = DiffUtil.calculateDiff(c)
         this.items = items.toMutableList()
         diff.dispatchUpdatesTo(this)

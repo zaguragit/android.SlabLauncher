@@ -7,8 +7,6 @@ import io.posidon.android.slablauncher.data.notification.NotificationData
 class TileDiffCallback(
     val old: List<LauncherItem>,
     val new: List<LauncherItem>,
-    val oldNotifications: List<NotificationData>,
-    val newNotifications: List<NotificationData>,
 ) : DiffUtil.Callback() {
 
     fun getOld(i: Int) = old[i]
@@ -26,8 +24,8 @@ class TileDiffCallback(
     override fun areContentsTheSame(oldI: Int, newI: Int): Boolean {
         val old = getOld(oldI)
         val new = getNew(newI)
-        val oldBanner = old.getBanner(oldNotifications)
-        val newBanner = new.getBanner(newNotifications)
+        val oldBanner = old.tileImage
+        val newBanner = new.tileImage
         return old.label == new.label
             && old.icon.isComputed()
             && new.icon.isComputed()
@@ -35,9 +33,6 @@ class TileDiffCallback(
             && old.color.isComputed()
             && new.color.isComputed()
             && old.color.computed() == new.color.computed()
-            && oldBanner.background.isComputed()
-            && newBanner.background.isComputed()
-            && oldBanner.background.computed() === newBanner.background.computed()
             && oldBanner == newBanner
     }
 }

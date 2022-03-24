@@ -38,11 +38,7 @@ class ContactItem(
 
     override val color get() = Computable(0)
 
-    override fun getBanner(notifications: List<NotificationData>) = LauncherItem.Banner(
-        pic,
-        1f,
-        hideIcon = true
-    )
+    override val tileImage get() = pic
 
     override fun open(context: Context, view: View?) {
         val viewContact = Intent(Intent.ACTION_VIEW)

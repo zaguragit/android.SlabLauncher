@@ -10,13 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"/>
-    <io.posidon.android.slablauncher.ui.view.SeeThroughView
-        android:id="@+id/blur_bg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.2"/>
-    <io.posidon.android.slablauncher.ui.view.tile.TileContentView
-        android:id="@+id/tile_content"
+    <io.posidon.android.slablauncher.ui.view.HorizontalAspectRatioLayout
+        android:id="@+id/aspect"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </androidx.cardview.widget.CardView>

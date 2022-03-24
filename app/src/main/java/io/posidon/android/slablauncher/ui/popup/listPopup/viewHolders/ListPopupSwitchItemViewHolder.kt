@@ -54,7 +54,7 @@ class ListPopupSwitchItemViewHolder(itemView: View) : ListPopupViewHolder(itemVi
             setImageDrawable(it)
             imageTintList = ColorStateList.valueOf(ColorTheme.cardDescription)
         }
-        switch.isChecked = (item.value as? Boolean) ?: false
+        switch.isChecked = (item.value as? Boolean) ?: (item.value as? Int)?.equals(0)?.not() ?: false
         switch.setOnCheckedChangeListener { v, value ->
             item.onStateChange!!(v, if (value) 1 else 0)
         }

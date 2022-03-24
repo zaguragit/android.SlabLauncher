@@ -15,9 +15,10 @@ sealed interface LauncherItem {
     val label: String
 
     val icon: Computable<Drawable>
-    val color: Computable<Int>
 
-    fun getBanner(notifications: List<NotificationData>): Banner
+    val tileImage: Computable<Drawable>
+
+    val color: Computable<Int>
 
     /**
      * What to do when the item is clicked
@@ -38,19 +39,7 @@ sealed interface LauncherItem {
         ): LauncherItem? = App.tryParse(string, appsByName)
             ?: ContactItem.tryParse(string, ContactItem.getList(context))
     }
-
-    data class Banner(
-        val background: Computable<Drawable?>,
-        val bgOpacity: Float,
-        val hideIcon: Boolean = false,
-    ) {
-        companion object {
-            const val ALPHA_MULTIPLIER = 1f
-        }
-    }
 }
-
-fun LauncherItem.getBanner(): LauncherItem.Banner = getBanner(NotificationService.notifications)
 
 fun LauncherItem.showProperties(view: View) {
     if (this is App) {

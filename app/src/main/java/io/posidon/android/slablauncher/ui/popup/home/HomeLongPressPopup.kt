@@ -24,11 +24,11 @@ import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorT
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.setColorThemeDayNight
 import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
-import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.monochromatism
 import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScreenOpenedSetting.doAutoKeyboardInAllApps
 import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
 import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
+import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.monochromatism
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
 import java.util.concurrent.locks.ReentrantLock
@@ -206,7 +206,7 @@ class HomeLongPressPopup(
                     context.getString(R.string.monochrome_icons),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_color_dropper),
                     value = settings.monochromatism,
-                    states = 3,
+                    states = 2,
                     onStateChange = { _, value ->
                         settings.edit(context) {
                             monochromatism = value

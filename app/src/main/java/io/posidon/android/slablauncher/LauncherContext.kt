@@ -8,7 +8,7 @@ import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.providers.app.AppCollection
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.util.storage.Settings
-import io.posidon.android.slablauncher.ui.view.tile.TileContentMover.Companion.calculateBigIconSize
+import posidon.android.conveniencelib.dp
 
 class LauncherContext {
 
@@ -26,7 +26,7 @@ class LauncherContext {
 
         fun <T : Context> loadApps(context: T, onEnd: T.(apps: AppCollection) -> Unit) {
             val iconConfig = IconConfig(
-                size = calculateBigIconSize(context).toInt(),
+                size = context.dp(108).toInt(),
                 density = context.resources.configuration.densityDpi,
                 packPackages = settings.getStrings("icon_packs") ?: emptyArray(),
             )

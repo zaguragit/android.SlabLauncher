@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.*
 import android.graphics.drawable.*
-import android.os.Build
 import android.os.UserHandle
 import androidx.core.graphics.*
 import androidx.core.graphics.drawable.toBitmap
@@ -16,10 +15,9 @@ import io.posidon.android.launcherutils.IconTheming
 import io.posidon.android.launcherutils.appLoading.AppLoader
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
-import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeIcons
-import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeTileBackground
 import io.posidon.android.slablauncher.util.storage.Settings
-import io.posidon.android.slablauncher.ui.view.tile.TileContentMover
+import posidon.android.conveniencelib.clone
+import posidon.android.conveniencelib.drawable.MaskedDrawable
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -35,9 +33,6 @@ class AppCollection(
 
     private val tmpLab = DoubleArray(3)
 
-    private val doMonochromeIcons = settings.doMonochromeIcons
-    private val doMonochromeTileBackground = settings.doMonochromeTileBackground
-
     override fun addApp(
         context: Context,
         packageName: String,
@@ -52,48 +47,13 @@ class AppCollection(
                 val a = (extraIconData.color.luminance * 255).toInt()
                 Color.rgb(a, a, a)
             }
-            val b = extraIconData.background
-            if (b is FastColorDrawable) {
-                extraIconData.background = makeDrawable(extraIconData.color)
-            } else b?.convertToGrayscale()
-            extraIconData
-        } else if (doMonochromeTileBackground) extra.extraIconData.copy { extraIconData ->
-            extraIconData.color = extraIconData.color and 0xffffff
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                val b = extraIconData.background
-                if (b is FastColorDrawable) {
-                    val a = (extraIconData.color.luminance * 255).toInt()
-                    extraIconData.background = makeDrawable(Color.rgb(a, a, a))
-                } else b?.convertToGrayscale()
-            }
+            extraIconData.tile.makeGrayscale()
             extraIconData
         } else extra.extraIconData
 
-        val maxIconSize = TileContentMover.calculateBigIconSize(context)
-        val scaledIcon = icon.copy {
-            if (it is BitmapDrawable) {
-                val oldBitmap = it.bitmap
-                if (oldBitmap.width > maxIconSize || oldBitmap.height > maxIconSize) {
-                    return@copy BitmapDrawable(Bitmap.createScaledBitmap(
-                        oldBitmap,
-                        size,
-                        size,
-                        true
-                    ))
-                }
-            }
-            it
-        }
-        val icon = if (!extra.isUserRunning) scaledIcon.copy {
-            it.apply {
-                convertToGrayscale()
-                if (doMonochromeIcons) {
-                    alpha = 128
-                }
-            }
-        } else if (doMonochromeIcons) scaledIcon.copy {
-            it.apply { convertToGrayscale() }
-        } else scaledIcon
+        val icon = if (!extra.isUserRunning) icon.copy {
+            it.makeGrayscale()
+        } else icon
 
         val app = App(
             packageName,
@@ -101,7 +61,7 @@ class AppCollection(
             profile,
             label,
             icon,
-            extraIconData.dependentUse { it.background },
+            extraIconData.dependentUse { it.tile },
             extraIconData.dependentUse { it.color },
         )
 
@@ -117,25 +77,75 @@ class AppCollection(
         expandableBackground: Drawable?
     ): Pair<Drawable, ExtraIconData> {
         var color = 0
-        var icon = icon
-        var background: Drawable? = null
+        val image: LayerDrawable
+        val maskable: LayerDrawable
 
         when {
             expandableBackground != null -> {
-                background = expandableBackground
-                val bitmap = background.toBitmap(8, 8)
+                val bitmap = expandableBackground.toBitmap(8, 8)
                 val palette = Palette.from(bitmap).generate()
                 val d = palette.dominantSwatch
                 color = d?.rgb ?: color
                 bitmap.recycle()
+                image = LayerDrawable(arrayOf(
+                    expandableBackground,
+                    icon
+                )).apply {
+                    val i = (intrinsicWidth / 4f).toInt()
+                    setLayerInset(0, i, i, i, i)
+                    setLayerInset(1, i, i, i, i)
+                }
+                val bg = (expandableBackground.clone() ?: expandableBackground).mutate()
+                val fg = (icon.clone() ?: icon).mutate()
+                maskable = LayerDrawable(arrayOf(
+                    bg,
+                    fg
+                )).apply {
+                    val i = (intrinsicWidth / 8f).toInt()
+                    setLayerInset(0, i, i, i, i)
+                    setLayerInset(1, i, i, i, i)
+                    setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+                }
             }
             icon is AdaptiveIconDrawable &&
-            icon.background != null &&
-            icon.foreground != null -> {
-                val (i, b, c) = reshapeAdaptiveIcon(icon)
-                icon = i
-                background = b ?: background
-                color = c
+            icon.background != null -> {
+                val background: Drawable
+                when (val b = icon.background) {
+                    is ColorDrawable -> {
+                        color = ensureNotPlainWhite(b.color, icon)
+                        background = FastColorDrawable(b.color)
+                    }
+                    is ShapeDrawable -> {
+                        color = ensureNotPlainWhite(b.paint.color, icon)
+                        background = FastColorDrawable(b.paint.color)
+                    }
+                    is GradientDrawable -> {
+                        val bitmap = b.toBitmap(8, 8)
+                        color = b.color?.defaultColor ?: Palette.from(bitmap).generate().getDominantColor(0)
+                        bitmap.recycle()
+                        background = icon.background
+                    }
+                    else -> {
+                        val bitmap = b.toBitmap(24, 24)
+                        color = Palette.from(bitmap).generate().getDominantColor(0)
+                        background = icon.background
+                    }
+                }
+                image = LayerDrawable(arrayOf(
+                    background,
+                    icon.foreground
+                ))
+                val bg = (background.clone() ?: background).mutate()
+                val fg = (icon.foreground.clone() ?: icon.foreground).mutate()
+                maskable = LayerDrawable(arrayOf(
+                    bg,
+                    fg
+                )).apply {
+                    val i = -(intrinsicWidth / 6f).toInt()
+                    setLayerInset(0, i, i, i, i)
+                    setLayerInset(1, i, i, i, i)
+                    setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+                }
             }
             else -> {
                 val bitmap = icon.toBitmap(64, 64)
@@ -145,17 +155,32 @@ class AppCollection(
                     color = 0
                 }
                 bitmap.recycle()
+                image = LayerDrawable(arrayOf(
+                    FastColorDrawable(color),
+                    icon
+                )).apply {
+                    val i = (intrinsicWidth / 4f).toInt()
+                    setLayerInset(0, i, i, i, i)
+                    setLayerInset(1, i, i, i, i)
+                }
+                val bg = FastColorDrawable(color)
+                val fg = (icon.clone() ?: icon).mutate()
+                maskable = LayerDrawable(arrayOf(
+                    bg,
+                    fg
+                )).apply {
+                    val i = (intrinsicWidth / 8f).toInt()
+                    setLayerInset(0, i, i, i, i)
+                    setLayerInset(1, i, i, i, i)
+                    setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+                }
             }
         }
-
-        return icon to ExtraIconData(
-            background, color
-        )
+        return MaskedDrawable(
+            maskable,
+            IconTheming.getSystemAdaptiveIconPath(maskable.intrinsicWidth, maskable.intrinsicHeight),
+        ) to ExtraIconData(color, image)
     }
-
-    private inline fun makeDrawable(color: Int) =
-        if (doMonochromeTileBackground) ColorDrawable(color)
-        else FastColorDrawable(color)
 
     private fun ensureNotPlainWhite(
         color: Int,
@@ -171,32 +196,6 @@ class AppCollection(
             return ColorUtils.LABToColor(tmpLab[0], tmpLab[1], tmpLab[2])
         }
         return color
-    }
-
-    /**
-     * @return (icon, expandable background, color)
-     */
-    private fun reshapeAdaptiveIcon(icon: AdaptiveIconDrawable): Triple<Drawable, Drawable?, Int> {
-        var color = 0
-        when (val b = icon.background) {
-            is ColorDrawable -> {
-                color = ensureNotPlainWhite(b.color, icon)
-            }
-            is ShapeDrawable -> {
-                color = ensureNotPlainWhite(b.paint.color, icon)
-            }
-            is GradientDrawable -> {
-                val bitmap = b.toBitmap(8, 8)
-                color = b.color?.defaultColor ?: Palette.from(bitmap).generate().getDominantColor(0)
-                bitmap.recycle()
-            }
-            else -> if (b != null) run {
-                val bitmap = b.toBitmap(24, 24)
-                color = Palette.from(bitmap).generate().getDominantColor(0)
-            }
-        }
-
-        return Triple(scale(icon.foreground), icon.background, color)
     }
 
     private fun putInMap(app: App) {
@@ -310,22 +309,16 @@ class AppCollection(
 
     companion object {
 
-        fun Drawable.convertToGrayscale() {
+        inline fun Drawable.makeGrayscale(): Drawable {
             colorFilter = ColorMatrixColorFilter(ColorMatrix().apply {
                 setSaturation(0f)
             })
-        }
-
-        private fun scale(fg: Drawable): Drawable {
-            return InsetDrawable(
-                fg,
-                -1 / 3f
-            )
+            return this
         }
     }
 
     class ExtraIconData(
-        var background: Drawable?,
         var color: Int,
+        var tile: LayerDrawable,
     )
 }

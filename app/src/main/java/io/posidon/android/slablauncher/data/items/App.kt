@@ -6,10 +6,13 @@ import android.content.Context
 import android.content.pm.LauncherApps
 import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
+import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.InsetDrawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Process
 import android.os.UserHandle
+import android.os.UserManager
 import android.view.View
 import io.posidon.android.computable.Computable
 import io.posidon.android.computable.syncCompute
@@ -17,6 +20,7 @@ import io.posidon.android.launcherutils.IconTheming
 import io.posidon.android.slablauncher.data.notification.NotificationData
 import io.posidon.android.slablauncher.providers.notification.NotificationService
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
+import posidon.android.conveniencelib.clone
 import posidon.android.conveniencelib.drawable.MaskedDrawable
 import posidon.android.conveniencelib.isInstalled
 import java.util.*
@@ -27,29 +31,15 @@ class App(
     val userHandle: UserHandle = Process.myUserHandle(),
     override val label: String,
     override val icon: Computable<Drawable>,
-    val background: Computable<Drawable?>,
+    override val tileImage: Computable<Drawable>,
     override val color: Computable<Int>,
 ) : LauncherItem {
-
-    override fun getBanner(notifications: List<NotificationData>): LauncherItem.Banner {
-        val mediaItem = NotificationService.mediaItem
-        if (mediaItem != null && mediaItem.sourcePackageName == packageName)
-            return LauncherItem.Banner(
-                Computable(mediaItem.image),
-                .4f
-            )
-
-        return LauncherItem.Banner(
-            background,
-            1f
-        )
-    }
 
     override fun open(context: Context, view: View?) {
         SuggestionsManager.onItemOpened(context, this)
         try {
             context.getSystemService(LauncherApps::class.java).startMainActivity(ComponentName(packageName, name), userHandle, view?.clipBounds,
-                ActivityOptions.makeScaleUpAnimation(view, 0, 0, view?.measuredWidth ?: 0, view?.measuredHeight ?: 0).toBundle())
+                ActivityOptions.makeClipRevealAnimation(view, 0, 0, view?.measuredWidth ?: 0, view?.measuredHeight ?: 0).toBundle())
         } catch (e: Exception) { e.printStackTrace() }
     }
 
@@ -109,19 +99,5 @@ class App(
     }
 }
 
-fun App.getCombinedIcon(): Drawable {
-    val background = background.syncCompute()
-    val icon = icon.syncCompute()
-    if (background == null || icon is MaskedDrawable) {
-        return icon
-    }
-    return MaskedDrawable(
-        LayerDrawable(arrayOf(
-            background.constantState?.newDrawable()?.mutate(),
-            icon,
-        )).apply {
-            setBounds(0, 0, icon.intrinsicWidth, icon.intrinsicHeight)
-        },
-        IconTheming.getSystemAdaptiveIconPath(icon.intrinsicWidth, icon.intrinsicHeight),
-    )
-}
+inline fun App.isUserRunning(context: Context) =
+    context.getSystemService(UserManager::class.java).isUserRunning(userHandle)

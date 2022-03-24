@@ -37,11 +37,8 @@ object ColorThemeSetting {
 
 object DoMonochromeIconsSetting {
 
-    val Settings.doMonochromeTileBackground: Boolean
-        get() = monochromatism != NONE
-
-    inline val Settings.doMonochromeIcons: Boolean
-        get() = monochromatism == FULL
+    val Settings.doMonochrome: Boolean
+        get() = monochromatism == MONOCHROME
 
     val Settings.monochromatism: Int
         get() = get(KEY, DEFAULT)
@@ -53,8 +50,7 @@ object DoMonochromeIconsSetting {
     private const val KEY = "monochromatism"
 
     const val NONE = 0
-    const val TILE_BACKGROUND = 1
-    const val FULL = 2
+    const val MONOCHROME = 1
 
     const val DEFAULT = NONE
 }

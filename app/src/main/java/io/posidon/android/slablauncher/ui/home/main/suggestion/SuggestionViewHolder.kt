@@ -1,29 +1,16 @@
 package io.posidon.android.slablauncher.ui.home.main.suggestion
 
 import android.content.res.ColorStateList
-import android.graphics.BlendMode
-import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.core.graphics.drawable.toBitmap
-import androidx.core.view.isVisible
-import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.computable.compute
-import io.posidon.android.computable.syncCompute
 import io.posidon.android.slablauncher.R
-import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.LauncherItem
-import io.posidon.android.slablauncher.data.items.LauncherItem.Banner.Companion.ALPHA_MULTIPLIER
-import io.posidon.android.slablauncher.data.items.getBanner
-import io.posidon.android.slablauncher.data.items.getCombinedIcon
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
-import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochromeTileBackground
-import io.posidon.android.slablauncher.util.storage.Settings
 
 class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -42,7 +29,7 @@ class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         icon.setImageDrawable(null)
         item.icon.compute {
             icon.post {
-                icon.setImageDrawable(if (item is App) item.getCombinedIcon() else it)
+                icon.setImageDrawable(it)
             }
         }
 
