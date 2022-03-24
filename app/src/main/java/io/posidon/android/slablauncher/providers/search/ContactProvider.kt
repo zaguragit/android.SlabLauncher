@@ -29,8 +29,11 @@ class ContactProvider(
 
     override fun getResults(query: SearchQuery): List<SearchResult> {
         val results = LinkedList<SearchResult>()
+        val queryString = query.toString()
         contacts.forEach {
-            val r = FuzzySearch.tokenSortPartialRatio(query.toString(), it.title) / 100f * if (it.contact.isStarred) 1.1f else 1f
+            val name = FuzzySearch.tokenSortPartialRatio(queryString, it.title) / 100f * if (it.contact.isStarred) 1.1f else 1f
+            val initials = if (queryString.length > 1 && SearchProvider.matchInitials(queryString, it.title)) 0.5f else 0f
+            val r = name + initials
             if (r > .6f) {
                 it.relevance = Relevance(r)
                 results += it

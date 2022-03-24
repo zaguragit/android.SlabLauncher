@@ -11,4 +11,12 @@ interface SearchProvider {
     fun getResults(query: SearchQuery): List<SearchResult>
 
     fun onAppsLoaded(context: Context, apps: AppCollection) {}
+
+    companion object {
+        fun matchInitials(query: String, string: String): Boolean {
+            val initials = string.split(Regex("([ .\\-_]|([a-z](?=[A-Z0-9])))")).mapNotNull(String::firstOrNull).joinToString("")
+            val initialsBasic = string.split(Regex("[ .\\-_]")).mapNotNull(String::firstOrNull).joinToString("")
+            return initials.startsWith(query, ignoreCase = true) || initialsBasic.startsWith(query, ignoreCase = true)
+        }
+    }
 }

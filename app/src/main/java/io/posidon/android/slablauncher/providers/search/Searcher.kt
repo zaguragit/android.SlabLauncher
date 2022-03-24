@@ -23,8 +23,6 @@ class Searcher(
         if (query.text == "!debug") {
             r += DebugResult()
         }
-        println(r)
-        println(query.text)
         r.sortWith { a, b ->
             b.relevance.compareTo(a.relevance)
         }

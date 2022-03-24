@@ -80,11 +80,15 @@ class AppProvider(
         appList.forEach {
             val i = suggestions.indexOf(it)
             val suggestionFactor = if(i == -1) 0f else (suggestions.size - i).toFloat() / suggestions.size
-            val pr = run {
+            val packageFactor = run {
                 val r = FuzzySearch.tokenSortPartialRatio(queryString, it.packageName) / 100f
                 r * r * r * 0.8f
-            }
-            val r = FuzzySearch.tokenSortPartialRatio(queryString, it.label) / 100f + suggestionFactor * 0.5f + pr
+            } * 0.5f
+            val initialsFactor = if (queryString.length > 1 && SearchProvider.matchInitials(queryString, it.label)) 0.6f else 0f
+            val r = FuzzySearch.tokenSortPartialRatio(queryString, it.label) / 100f +
+                suggestionFactor +
+                initialsFactor +
+                packageFactor
             if (r > .8f) {
                 results += AppResult(it).apply {
                     relevance = Relevance(r.coerceAtLeast(0.98f))
@@ -94,7 +98,8 @@ class AppProvider(
         staticShortcuts.forEach {
             val l = FuzzySearch.tokenSortPartialRatio(queryString, it.title) / 100f
             val a = FuzzySearch.tokenSortPartialRatio(queryString, it.app.label) / 100f
-            val r = (a * a * .5f + l * l).pow(.2f)
+            val initials = if (queryString.length > 1 && SearchProvider.matchInitials(queryString, it.title)) 0.5f else 0f
+            val r = (a * a * .5f + l * l).pow(.2f) + initials
             if (r > .95f) {
                 it.relevance = Relevance(l)
                 results += it
@@ -103,7 +108,8 @@ class AppProvider(
         dynamicShortcuts.forEach {
             val l = FuzzySearch.tokenSortPartialRatio(queryString, it.title) / 100f
             val a = FuzzySearch.tokenSortPartialRatio(queryString, it.app.label) / 100f
-            val r = (a * a * .2f + l * l).pow(.3f)
+            val initials = if (queryString.length > 1 && SearchProvider.matchInitials(queryString, it.title)) 0.5f else 0f
+            val r = (a * a * .2f + l * l).pow(.3f) + initials
             if (r > .9f) {
                 it.relevance = Relevance(if (l >= .95) r.coerceAtLeast(0.98f) else r.coerceAtMost(0.9f))
                 results += it
