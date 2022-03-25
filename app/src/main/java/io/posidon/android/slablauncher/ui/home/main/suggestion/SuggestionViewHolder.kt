@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.computable.compute
 import io.posidon.android.slablauncher.R
@@ -51,10 +52,12 @@ class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
 
         item.color.compute {
-            val backgroundColor = ColorTheme.tintWithColor(ColorTheme.searchBarFG, it) and 0xffffff or 0x33000000
+            val f = ColorTheme.tintWithColor(ColorTheme.searchBarFG, it)
+            val backgroundColor = f and 0xffffff or 0x33000000
+            val fg = ColorUtils.blendARGB(ColorTheme.searchBarFG, f, 0.5f)
             card.post {
                 card.backgroundTintList = ColorStateList.valueOf(backgroundColor)
-                label.setTextColor(ColorTheme.textColorForBG(backgroundColor))
+                label.setTextColor(fg)
             }
         }
     }
