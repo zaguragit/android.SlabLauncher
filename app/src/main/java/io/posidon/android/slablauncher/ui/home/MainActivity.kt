@@ -168,8 +168,10 @@ class MainActivity : FragmentActivity() {
                     blurBG.offset = wallpaperOffset
                     searchBarBlurBG.offset = wallpaperOffset
                 }
-                suggestionsRecycler.alpha = 1 - wallpaperOffset
-                suggestionsRecycler.isVisible = wallpaperOffset != 1f
+                if (settings.doSuggestionStrip) {
+                    suggestionsRecycler.alpha = 1 - wallpaperOffset
+                    suggestionsRecycler.isVisible = wallpaperOffset != 1f
+                }
                 onPageScrollListeners.forEach { (_, l) -> l(wallpaperOffset) }
             }
 

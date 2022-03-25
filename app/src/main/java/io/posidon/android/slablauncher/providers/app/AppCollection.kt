@@ -86,7 +86,7 @@ class AppCollection(
                 val palette = Palette.from(bitmap).generate()
                 val d = palette.dominantSwatch
                 color = d?.rgb ?: color
-                bitmap.recycle()
+                if (expandableBackground !is BitmapDrawable || expandableBackground.bitmap != bitmap) bitmap.recycle()
                 image = LayerDrawable(arrayOf(
                     expandableBackground,
                     icon
@@ -109,6 +109,7 @@ class AppCollection(
             }
             icon is AdaptiveIconDrawable &&
             icon.background != null -> {
+                val iconForeground: Drawable? = icon.foreground
                 val background: Drawable
                 when (val b = icon.background) {
                     is ColorDrawable -> {
@@ -122,21 +123,22 @@ class AppCollection(
                     is GradientDrawable -> {
                         val bitmap = b.toBitmap(8, 8)
                         color = b.color?.defaultColor ?: Palette.from(bitmap).generate().getDominantColor(0)
-                        bitmap.recycle()
+                        if (b !is BitmapDrawable || b.bitmap != bitmap) bitmap.recycle()
                         background = icon.background
                     }
                     else -> {
                         val bitmap = b.toBitmap(24, 24)
                         color = Palette.from(bitmap).generate().getDominantColor(0)
+                        if (b !is BitmapDrawable || b.bitmap != bitmap) bitmap.recycle()
                         background = icon.background
                     }
                 }
                 image = LayerDrawable(arrayOf(
                     background,
-                    icon.foreground
+                    iconForeground
                 ))
                 val bg = (background.clone() ?: background).mutate()
-                val fg = (icon.foreground.clone() ?: icon.foreground).mutate()
+                val fg = (iconForeground?.clone() ?: iconForeground)?.mutate()
                 maskable = LayerDrawable(arrayOf(
                     bg,
                     fg
@@ -148,13 +150,13 @@ class AppCollection(
                 }
             }
             else -> {
-                val bitmap = icon.toBitmap(64, 64)
+                val bitmap = icon.toBitmap(32, 32)
                 val palette = Palette.from(bitmap).generate()
                 color = palette.getDominantColor(0)
                 if (color.red == color.blue && color.blue == color.green && color.green > 0xd0) {
                     color = 0
                 }
-                bitmap.recycle()
+                if (icon !is BitmapDrawable || icon.bitmap != bitmap) bitmap.recycle()
                 image = LayerDrawable(arrayOf(
                     FastColorDrawable(color),
                     icon
@@ -187,10 +189,11 @@ class AppCollection(
         icon: AdaptiveIconDrawable
     ): Int {
         if (color == 0xffffffff.toInt()) {
-            val bitmap = icon.foreground.toBitmap(24, 24)
+            val fg = icon.foreground
+            val bitmap = fg.toBitmap(24, 24)
             val c = Palette.from(bitmap).generate()
                 .getDominantColor(color)
-            bitmap.recycle()
+            if (fg !is BitmapDrawable || fg.bitmap != bitmap) bitmap.recycle()
             ColorUtils.colorToLAB(c, tmpLab)
             tmpLab[0] = (tmpLab[0] * 1.5).coerceAtLeast(70.0)
             return ColorUtils.LABToColor(tmpLab[0], tmpLab[1], tmpLab[2])
