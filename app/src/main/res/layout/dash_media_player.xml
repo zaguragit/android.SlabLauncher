@@ -8,7 +8,7 @@
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitEnd"/>
+        android:scaleType="centerCrop"/>
     <LinearLayout
         style="@style/SlabLauncher.MediaPlayer.Container"
         android:id="@+id/container"
@@ -37,14 +37,8 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:padding="10dp"
+                android:layout_marginEnd="16dp"
                 android:src="@drawable/ic_track_previous"/>
-            <ImageView
-                android:id="@+id/button_play"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="5dp"
-                android:src="@drawable/ic_play"
-                android:layout_marginHorizontal="8dp"/>
             <ImageView
                 android:id="@+id/button_next"
                 android:layout_width="48dp"
@@ -53,4 +47,13 @@
                 android:src="@drawable/ic_track_next"/>
         </LinearLayout>
     </LinearLayout>
+    <ImageView
+        android:id="@+id/button_play"
+        android:layout_width="69dp"
+        android:layout_height="48dp"
+        android:layout_margin="18dp"
+        android:layout_gravity="center_vertical|end"
+        android:padding="10dp"
+        android:src="@drawable/ic_play"
+        android:background="@drawable/round_bg"/>
 </FrameLayout>

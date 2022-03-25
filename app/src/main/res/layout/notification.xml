@@ -15,16 +15,16 @@
             style="@style/SlabLauncher.Notification.Item.Source.Icon"
             android:id="@+id/icon"/>
         <TextView
+            style="@style/SlabLauncher.Notification.Item.Title"
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
             style="@style/SlabLauncher.Notification.Item.Source.Text"
             android:id="@+id/source"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
-    <TextView
-        style="@style/SlabLauncher.Notification.Item.Title"
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
     <TextView
         style="@style/SlabLauncher.Notification.Item.Text"
         android:id="@+id/text"

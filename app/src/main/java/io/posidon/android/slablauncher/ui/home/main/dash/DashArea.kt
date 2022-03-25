@@ -1,6 +1,7 @@
 package io.posidon.android.slablauncher.ui.home.main.dash
 
 import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.content.res.ColorStateList
 import android.icu.util.Calendar
 import android.view.MotionEvent
@@ -38,6 +39,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
     val card = view.findViewById<CardView>(R.id.card)!!
     val statement = card.findViewById<TextView>(R.id.statement)!!
     val date = card.findViewById<TextView>(R.id.date)!!
+    val alarm = card.findViewById<TextView>(R.id.alarm)
 
     val notificationArea = card.findViewById<ViewGroup>(R.id.notification_area)!!
 
@@ -189,6 +191,8 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
         card.setCardBackgroundColor(ColorTheme.cardBG)
         statement.setTextColor(ColorTheme.cardTitle)
         date.setTextColor(ColorTheme.cardDescription)
+        alarm.setTextColor(ColorTheme.cardDescription)
+        alarm.compoundDrawableTintList = ColorStateList.valueOf(ColorTheme.cardDescription)
 
         notificationIcon.imageTintList = ColorStateList.valueOf(ColorTheme.cardDescription)
         notificationSource.setTextColor(ColorTheme.cardDescription)
@@ -202,6 +206,15 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
 
     fun onResume() {
         statement.text = Statement.get(view.context, Calendar.getInstance())
+        val nextAlarm = view.context.getSystemService(AlarmManager::class.java).nextAlarmClock
+        if (nextAlarm == null) {
+            alarm.isVisible = false
+        } else {
+            val c = Calendar.getInstance()
+            c.timeInMillis = nextAlarm.triggerTime
+            alarm.text = "${c[Calendar.HOUR_OF_DAY]}:${c[Calendar.MINUTE]}"
+            alarm.isVisible = true
+        }
         updateNotifications(NotificationService.notifications)
     }
 

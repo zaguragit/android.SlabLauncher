@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dash"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -20,18 +21,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <TextView
-                style="@style/SlabLauncher.Statement"
-                android:id="@+id/statement"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-            <TextClock
-                style="@style/SlabLauncher.Date"
-                android:id="@+id/date"
+            <LinearLayout
+                style="@style/SlabLauncher.Dash.Top"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:format24Hour="d MMMM, cccc"
-                android:format12Hour="d MMMM, cccc"/>
+                android:orientation="vertical"
+                android:gravity="center_horizontal">
+                <TextView
+                    style="@style/SlabLauncher.Dash.Statement"
+                    android:id="@+id/statement"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                    <TextClock
+                        style="@style/SlabLauncher.Dash.Date"
+                        android:id="@+id/date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:format24Hour="d MMMM, cccc"
+                        android:format12Hour="d MMMM, cccc"/>
+                    <TextView
+                        style="@style/SlabLauncher.Dash.Alarm"
+                        android:id="@+id/alarm"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_alarm"/>
+                </LinearLayout>
+            </LinearLayout>
             <View
                 android:id="@+id/separator"
                 android:layout_width="match_parent"
@@ -53,12 +73,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        tools:ignore="UseCompoundDrawables">
                         <ImageView
                             style="@style/SlabLauncher.Notification.Item.Source.Icon"
-                            android:id="@+id/icon"/>
+                            android:id="@+id/icon"
+                            tools:ignore="ContentDescription" />
                         <TextView
-                            style="@style/SlabLauncher.Notification.Item.Source.Text"
+                            style="@style/SlabLauncher.Notification.PrimaryItem.Source.Text"
                             android:id="@+id/source"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
@@ -110,7 +132,7 @@
                 android:id="@+id/separator2"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"/>
-            <include layout="@layout/media_player"/>
+            <include layout="@layout/dash_media_player"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

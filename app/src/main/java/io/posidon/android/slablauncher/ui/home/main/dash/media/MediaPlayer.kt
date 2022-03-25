@@ -50,6 +50,8 @@ class MediaPlayer(val view: ViewGroup, val separator: View) {
 
     private fun updateTint(mediaItem: MediaPlayerData) {
         val c = ColorTheme.adjustColorForContrast(ColorTheme.cardBG, mediaItem.color)
+        val buttonBGColor = ColorTheme.tintWithColor(ColorTheme.buttonColorCallToAction, c)
+        val buttonFGColor = ColorTheme.titleColorForBG(buttonBGColor)
         val titleColor = ColorTheme.tintWithColor(ColorTheme.cardTitle, c)
         val subtitleColor = ColorTheme.tintWithColor(ColorTheme.cardDescription, c)
         val titleTintList = ColorStateList.valueOf(titleColor)
@@ -57,8 +59,10 @@ class MediaPlayer(val view: ViewGroup, val separator: View) {
         title.setTextColor(titleTintList)
         subtitle.setTextColor(subtitleColor)
         buttonPrev.imageTintList = titleTintList
-        buttonPlay.imageTintList = titleTintList
         buttonNext.imageTintList = titleTintList
+
+        buttonPlay.backgroundTintList = ColorStateList.valueOf(buttonBGColor)
+        buttonPlay.imageTintList = ColorStateList.valueOf(buttonFGColor)
     }
 
     private fun updateTrack() {
