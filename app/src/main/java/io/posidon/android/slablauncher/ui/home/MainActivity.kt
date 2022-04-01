@@ -86,6 +86,7 @@ class MainActivity : FragmentActivity() {
     private lateinit var inSearchBarContainer: View
     private lateinit var searchBarText: EditText
     private lateinit var searchBarIcon: ImageView
+    private lateinit var searchBarSeparator: View
     private lateinit var searchBarBlurBG: SeeThroughView
     private lateinit var suggestionsRecycler: RecyclerView
 
@@ -116,6 +117,7 @@ class MainActivity : FragmentActivity() {
         inSearchBarContainer = searchBarContainer.findViewById(R.id.in_search_bar_container)!!
         searchBarText = inSearchBarContainer.findViewById(R.id.search_bar_text)!!
         searchBarIcon = inSearchBarContainer.findViewById(R.id.search_bar_icon)!!
+        searchBarSeparator = findViewById(R.id.search_bar_separator)!!
 
         viewPager = findViewById(R.id.view_pager)
 
@@ -240,6 +242,9 @@ class MainActivity : FragmentActivity() {
                     true
                 } else false
             }
+        }
+        searchBarIcon.setOnClickListener {
+            searchBarText.requestFocus()
         }
 
         blurBG.setOnApplyWindowInsetsListener { _, insets ->
@@ -368,6 +373,7 @@ class MainActivity : FragmentActivity() {
                 setTextColor(ColorTheme.searchBarFG)
                 highlightColor = ColorTheme.searchBarFG and 0x00ffffff or 0x66000000
             }
+            searchBarSeparator.setBackgroundColorFast(ColorTheme.searchBarFG and 0x00ffffff or 0x33000000)
             searchBarIcon.imageTintList =
                 ColorStateList.valueOf(ColorTheme.searchBarFG)
             HomeLongPressPopup.updateCurrent()

@@ -56,5 +56,9 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="end"/>
         </LinearLayout>
+        <View
+            android:id="@+id/search_bar_separator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
     </FrameLayout>
 </LinearLayout>
