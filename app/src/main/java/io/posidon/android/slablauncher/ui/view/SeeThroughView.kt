@@ -9,8 +9,10 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
+import io.posidon.android.slablauncher.R
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.getNavigationBarHeight
+import posidon.android.conveniencelib.getStatusBarHeight
 
 class SeeThroughView : View {
     constructor(c: Context) : super(c)
@@ -46,13 +48,13 @@ class SeeThroughView : View {
         val d = drawable
         if (d != null) {
             val dw = Device.screenWidth(context)
-            val h = Device.screenHeight(context) + ((context as? Activity)?.getNavigationBarHeight()
-                ?: 0)
-            val w = (h * (d.intrinsicWidth / d.intrinsicHeight.toFloat())).toInt()
+            val h = Device.screenHeight(context) +
+                ((context as? Activity)?.getNavigationBarHeight()?.toFloat() ?: 0f)
+            val w = (h * d.intrinsicWidth / d.intrinsicHeight.toFloat()).coerceAtLeast(dw.toFloat())
             getLocationOnScreen(lastScreenLocation)
-            val l = lastScreenLocation[0] + (offset * (w - dw)).toInt()
+            val l = lastScreenLocation[0] + offset * (w - dw)
             val t = lastScreenLocation[1]
-            bounds.set(-l, -t, w - l, h - t)
+            bounds.set(-l.toInt(), -t, (w - l).toInt(), (h - t).toInt())
         } else {
             bounds.set(0, 0, 0, 0)
         }
