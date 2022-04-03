@@ -35,6 +35,20 @@ object ColorThemeSetting {
     const val DEFAULT = 0
 }
 
+object DockRowCount {
+
+    val Settings.dockRowCount: Int
+        get() = get(KEY, DEFAULT)
+
+    var Settings.SettingsEditor.dockRowCount: Int
+        get() = settings[KEY, DEFAULT]
+        set(value) = KEY set value
+
+    private const val KEY = "dock:rows"
+
+    const val DEFAULT = 3
+}
+
 object DoMonochromeIconsSetting {
 
     val Settings.doMonochrome: Boolean

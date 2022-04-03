@@ -11,6 +11,7 @@ class ListPopupAdapter : RecyclerView.Adapter<ListPopupViewHolder>() {
     override fun getItemViewType(i: Int): Int {
         return when {
             items[i].states == 2 -> 2
+            items[i].states > 3 -> 4
             items[i].states > 2 -> 3
             items[i].isTitle -> 1
             else -> 0
@@ -22,6 +23,7 @@ class ListPopupAdapter : RecyclerView.Adapter<ListPopupViewHolder>() {
             1 -> ListPopupTitleViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_popup_title, parent, false))
             2 -> ListPopupSwitchItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_popup_switch_item, parent, false))
             3 -> ListPopupMultistateItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_popup_multistate_item, parent, false))
+            4 -> ListPopupSeekBarItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_popup_seekbar_item, parent, false))
             else -> ListPopupItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_popup_item, parent, false))
         }
     }

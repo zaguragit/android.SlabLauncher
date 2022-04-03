@@ -21,6 +21,7 @@ import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.util.blur.AcrylicBlur
 import io.posidon.android.slablauncher.util.storage.*
 import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
+import io.posidon.android.slablauncher.util.storage.DockRowCount.dockRowCount
 import posidon.android.conveniencelib.*
 import kotlin.concurrent.thread
 
@@ -55,6 +56,7 @@ class DashAreaFragment : Fragment() {
             a.runOnUiThread(::updatePinned)
         }
         a.setOnPageScrollListener(DashAreaFragment::class.simpleName!!, ::onOffsetUpdate)
+        a.setOnLayoutChangeListener(DashAreaFragment::class.simpleName!!, ::updateLayout)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,13 +80,17 @@ class DashAreaFragment : Fragment() {
         val t = resources.getDimension(R.dimen.item_card_margin).toInt()
         homeArea.pinnedRecycler.setPadding(t, 0, t, t)
         homeArea.dash.view.setPadding(t, requireContext().getStatusBarHeight(), t, 0)
+        updateLayout()
+    }
+
+    private fun updateLayout() {
         homeArea.dash.view.doOnLayout {
             it.updateLayoutParams {
                 val tileMargin = it.context.resources.getDimension(R.dimen.item_card_margin)
                 val tileWidth = (Device.screenWidth(it.context) - tileMargin * 2) / HomeArea.COLUMNS - tileMargin * 2
                 val tileHeight = tileWidth / HomeArea.WIDTH_TO_HEIGHT
-                val dockHeight = HomeArea.DOCK_ROWS * (tileHeight + tileMargin * 2)
-                height = requireView().height - (tileMargin + dockHeight.toInt()).toInt() + 1
+                val dockHeight = launcherContext.settings.dockRowCount * (tileHeight + tileMargin * 2)
+                height = requireView().height - (tileMargin + dockHeight.toInt()).toInt()
             }
         }
     }

@@ -1,13 +1,12 @@
 package io.posidon.android.slablauncher.ui.popup.listPopup.viewHolders
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.*
-import android.util.StateSet
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
-import android.widget.Switch
+import android.widget.SeekBar
 import android.widget.TextView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
@@ -16,33 +15,29 @@ import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupItem
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import posidon.android.conveniencelib.dp
 
-class ListPopupSwitchItemViewHolder(itemView: View) : ListPopupViewHolder(itemView) {
+class ListPopupSeekBarItemViewHolder(itemView: View) : ListPopupViewHolder(itemView) {
 
     val icon = itemView.findViewById<ImageView>(R.id.icon)
 
     val text = itemView.findViewById<TextView>(R.id.text)
     val description = itemView.findViewById<TextView>(R.id.description)
 
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
-    val switch = itemView.findViewById<Switch>(R.id.toggle)
+    val seekBar = itemView.findViewById<SeekBar>(R.id.seekbar)
 
     val ripple = RippleDrawable(ColorStateList.valueOf(0), null, FastColorDrawable(0xffffffff.toInt()))
 
     init {
         itemView.background = ripple
+        seekBar.splitTrack = false
     }
 
     override fun onBind(item: ListPopupItem) {
         text.text = item.text
         description.text = item.description
 
-        itemView.setOnClickListener {
-            switch.toggle()
-        }
-
         text.setTextColor(ColorTheme.cardTitle)
-        switch.trackDrawable = generateTrackDrawable()
-        switch.thumbDrawable = generateThumbDrawable(itemView.context)
+        seekBar.progressDrawable = generateDrawable()
+        seekBar.thumb = generateThumb(itemView.context)
 
         ripple.setColor(ColorStateList.valueOf(ColorTheme.accentColor and 0xffffff or 0x33000000))
 
@@ -54,24 +49,29 @@ class ListPopupSwitchItemViewHolder(itemView: View) : ListPopupViewHolder(itemVi
             setImageDrawable(it)
             imageTintList = ColorStateList.valueOf(ColorTheme.cardDescription)
         }
-        switch.isChecked = (item.value as? Boolean) ?: (item.value as? Int)?.equals(0)?.not() ?: false
-        switch.setOnCheckedChangeListener { v, value ->
-            item.onStateChange!!(v, if (value) 1 else 0)
-        }
+        seekBar.progress = item.value as? Int ?: 0
+        seekBar.max = item.states
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onStartTrackingTouch(v: SeekBar) {}
+            override fun onStopTrackingTouch(v: SeekBar) {}
+            override fun onProgressChanged(v: SeekBar, progress: Int, fromUser: Boolean) {
+                item.onStateChange!!(v, progress)
+            }
+        })
     }
 
-    private fun generateTrackDrawable(): Drawable {
-        val out = StateListDrawable()
-        out.addState(intArrayOf(android.R.attr.state_checked), generateBG(ColorTheme.accentColor and 0x00ffffff or 0x55000000))
-        out.addState(StateSet.WILD_CARD, generateBG(ColorTheme.cardHint and 0x00ffffff or 0x55000000))
+    private fun generateDrawable(): Drawable {
+        val out = LayerDrawable(arrayOf(
+            generateBG(0xff08090a.toInt()),
+            ClipDrawable(generateBG(ColorTheme.accentColor and 0x00ffffff or 0x88000000.toInt()), Gravity.LEFT, GradientDrawable.Orientation.BL_TR.ordinal)
+        ))
+        out.setId(0, android.R.id.background)
+        out.setId(1, android.R.id.progress)
         return out
     }
 
-    private fun generateThumbDrawable(context: Context): Drawable {
-        val out = StateListDrawable()
-        out.addState(intArrayOf(android.R.attr.state_checked), generateCircle(context, ColorTheme.accentColor))
-        out.addState(StateSet.WILD_CARD, generateCircle(context, ColorTheme.cardHint and 0x00ffffff or 0x55000000))
-        return out
+    private fun generateThumb(context: Context): Drawable {
+        return generateCircle(context, ColorTheme.accentColor)
     }
 
     fun generateCircle(context: Context, color: Int): Drawable {

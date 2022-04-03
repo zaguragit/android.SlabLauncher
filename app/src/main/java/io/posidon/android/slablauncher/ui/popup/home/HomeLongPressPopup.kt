@@ -29,6 +29,7 @@ import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doS
 import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.monochromatism
+import io.posidon.android.slablauncher.util.storage.DockRowCount.dockRowCount
 import posidon.android.conveniencelib.Device
 import posidon.android.conveniencelib.dp
 import java.util.concurrent.locks.ReentrantLock
@@ -55,7 +56,7 @@ class HomeLongPressPopup(
             updateColorTheme: (ColorPalette) -> Unit,
             reloadApps: () -> Unit,
             reloadBlur: (() -> Unit) -> Unit,
-            updateAtAGlanceLayout: () -> Unit,
+            updateLayout: () -> Unit,
             popupWidth: Int = ViewGroup.LayoutParams.WRAP_CONTENT,
             popupHeight: Int = calculateHeight(parent.context),
         ) {
@@ -98,8 +99,8 @@ class HomeLongPressPopup(
                                 cardView.post { update() }
                             }
                         },
-                        updateAtAGlanceLayout = {
-                            parent.post(updateAtAGlanceLayout)
+                        updateLayout = {
+                            parent.post(updateLayout)
                         }
                     )
                 )
@@ -131,7 +132,7 @@ class HomeLongPressPopup(
             updateColorTheme: () -> Unit,
             reloadApps: () -> Unit,
             reloadBlur: () -> Unit,
-            updateAtAGlanceLayout: () -> Unit,
+            updateLayout: () -> Unit,
         ): List<ListPopupItem> {
             return listOf(
                 ListPopupItem(
@@ -191,11 +192,23 @@ class HomeLongPressPopup(
                     onStateChange = { _, value ->
                         settings.edit(context) {
                             doSuggestionStrip = value == 1
-                            updateAtAGlanceLayout()
+                            updateLayout()
                         }
                     }
                 ),
                 ListPopupItem(context.getString(R.string.tiles), isTitle = true),
+                ListPopupItem(
+                    context.getString(R.string.dock_row_count),
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_home),
+                    value = settings.dockRowCount,
+                    states = 5,
+                    onStateChange = { _, value ->
+                        settings.edit(context) {
+                            dockRowCount = value
+                            updateLayout()
+                        }
+                    }
+                ),
                 ListPopupItem(
                     context.getString(R.string.icon_packs),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),

@@ -25,6 +25,8 @@
         <string name="reshape_adaptive_icons">Adaptive icon reshaping</string>
         <string name="reshape_adaptive_icons_explanation">Uses icon backgrounds to cover app cards</string>
 
+        <string name="dock_row_count">Dock row count</string>
+
         <string name="monochrome_icons">Monochromatism</string>
 
         <string name="auto_show_keyboard">Auto keyboard</string>

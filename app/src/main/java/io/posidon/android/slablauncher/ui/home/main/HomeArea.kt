@@ -22,7 +22,6 @@ class HomeArea(val view: NestedScrollView, val fragment: DashAreaFragment, val l
 
     companion object {
         const val COLUMNS = 4
-        const val DOCK_ROWS = 3
         const val WIDTH_TO_HEIGHT = 6f / 5f
     }
 

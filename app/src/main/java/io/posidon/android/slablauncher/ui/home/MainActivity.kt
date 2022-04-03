@@ -61,6 +61,7 @@ import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
 import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScreenOpenedSetting.doAutoKeyboardInAllApps
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
+import io.posidon.android.slablauncher.util.storage.DockRowCount.dockRowCount
 import posidon.android.conveniencelib.getNavigationBarHeight
 import java.net.URL
 import kotlin.concurrent.thread
@@ -287,6 +288,7 @@ class MainActivity : FragmentActivity() {
 
     fun updateLayout() {
         suggestionsRecycler.isVisible = settings.doSuggestionStrip
+        onLayoutChangeListeners.forEach { (_, l) -> l() }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -412,6 +414,10 @@ class MainActivity : FragmentActivity() {
         onBlurUpdateListeners[key] = listener
     }
 
+    fun setOnLayoutChangeListener(key: String, listener: () -> Unit) {
+        onLayoutChangeListeners[key] = listener
+    }
+
     fun setOnPageScrollListener(key: String, listener: (Float) -> Unit) {
         onPageScrollListeners[key] = listener
     }
@@ -426,13 +432,14 @@ class MainActivity : FragmentActivity() {
 
     private val onColorThemeUpdateListeners = HashMap<String, () -> Unit>()
     private val onBlurUpdateListeners = HashMap<String, () -> Unit>()
+    private val onLayoutChangeListeners = HashMap<String, () -> Unit>()
     private val onPageScrollListeners = HashMap<String, (Float) -> Unit>()
     private val onAppsLoadedListeners = HashMap<String, (AppCollection) -> Unit>()
     private val onSearchQueryListeners = HashMap<String, (String?) -> Unit>()
 
     fun updateSuggestions(pinnedItems: List<LauncherItem>) {
         suggestionsAdapter.updateItems((SuggestionsManager.get() - pinnedItems.let {
-            val s = HomeArea.DOCK_ROWS * HomeArea.COLUMNS
+            val s = settings.dockRowCount * HomeArea.COLUMNS
             if (it.size > s) it.subList(0, s)
             else it
         }.toSet()).let {
