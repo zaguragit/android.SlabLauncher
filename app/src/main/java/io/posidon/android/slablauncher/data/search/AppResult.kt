@@ -7,7 +7,7 @@ import io.posidon.android.computable.compute
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
-import posidon.android.conveniencelib.getNavigationBarHeight
+import io.posidon.android.conveniencelib.getNavigationBarHeight
 
 class AppResult(
     val app: App

@@ -30,8 +30,9 @@ import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.monochromatism
 import io.posidon.android.slablauncher.util.storage.DockRowCount.dockRowCount
-import posidon.android.conveniencelib.Device
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.thread
 import kotlin.concurrent.withLock
@@ -45,7 +46,10 @@ class HomeLongPressPopup(
 
     companion object {
 
-        fun calculateHeight(context: Context) = min(Device.screenHeight(context) / 2, context.dp(360).toInt())
+        fun calculateHeight(context: Context) = min(
+            Device.screenHeight(context) / 2,
+            360.dp.toPixels(context)
+        )
 
         fun show(
             parent: View,

@@ -13,7 +13,8 @@ import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.hideIfNullOr
 import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupItem
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 
 class ListPopupSeekBarItemViewHolder(itemView: View) : ListPopupViewHolder(itemView) {
 
@@ -75,8 +76,8 @@ class ListPopupSeekBarItemViewHolder(itemView: View) : ListPopupViewHolder(itemV
     }
 
     fun generateCircle(context: Context, color: Int): Drawable {
-        val r = context.dp(18).toInt()
-        val inset = context.dp(4).toInt()
+        val r = 18.dp.toPixels(context)
+        val inset = 4.dp.toPixels(context)
         return LayerDrawable(arrayOf(
             GradientDrawable().apply {
                 shape = GradientDrawable.OVAL

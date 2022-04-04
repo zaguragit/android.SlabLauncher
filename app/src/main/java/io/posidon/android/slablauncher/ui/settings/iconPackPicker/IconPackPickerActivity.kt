@@ -12,8 +12,8 @@ import io.posidon.android.launcherutils.IconTheming
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.ui.settings.SettingsActivity
 import io.posidon.android.slablauncher.ui.settings.iconPackPicker.viewHolders.IconPackViewHolder
-import posidon.android.conveniencelib.getNavigationBarHeight
-import posidon.android.conveniencelib.getStatusBarHeight
+import io.posidon.android.conveniencelib.getNavigationBarHeight
+import io.posidon.android.conveniencelib.getStatusBarHeight
 import java.util.*
 
 class IconPackPickerActivity : SettingsActivity() {

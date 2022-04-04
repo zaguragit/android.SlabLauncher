@@ -62,7 +62,7 @@ import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScree
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
 import io.posidon.android.slablauncher.util.storage.DockRowCount.dockRowCount
-import posidon.android.conveniencelib.getNavigationBarHeight
+import io.posidon.android.conveniencelib.getNavigationBarHeight
 import java.net.URL
 import kotlin.concurrent.thread
 
@@ -244,7 +244,7 @@ class MainActivity : FragmentActivity() {
                 } else false
             }
         }
-        searchBarIcon.setOnClickListener {
+        searchBarContainer.setOnClickListener {
             searchBarText.requestFocus()
         }
 

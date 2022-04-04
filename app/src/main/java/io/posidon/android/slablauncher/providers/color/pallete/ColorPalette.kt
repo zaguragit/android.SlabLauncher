@@ -11,7 +11,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.palette.graphics.Palette
 import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting
-import posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.Device
 import kotlin.math.min
 
 interface ColorPalette {

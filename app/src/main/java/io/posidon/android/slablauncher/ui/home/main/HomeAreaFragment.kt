@@ -22,7 +22,7 @@ import io.posidon.android.slablauncher.util.blur.AcrylicBlur
 import io.posidon.android.slablauncher.util.storage.*
 import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
 import io.posidon.android.slablauncher.util.storage.DockRowCount.dockRowCount
-import posidon.android.conveniencelib.*
+import io.posidon.android.conveniencelib.*
 import kotlin.concurrent.thread
 
 var acrylicBlur: AcrylicBlur? = null

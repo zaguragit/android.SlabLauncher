@@ -8,7 +8,8 @@ import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.providers.app.AppCollection
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.util.storage.Settings
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 
 class LauncherContext {
 
@@ -26,7 +27,7 @@ class LauncherContext {
 
         fun <T : Context> loadApps(context: T, onEnd: T.(apps: AppCollection) -> Unit) {
             val iconConfig = IconConfig(
-                size = context.dp(108).toInt(),
+                size = 108.dp.toPixels(context),
                 density = context.resources.configuration.densityDpi,
                 packPackages = settings.getStrings("icon_packs") ?: emptyArray(),
             )

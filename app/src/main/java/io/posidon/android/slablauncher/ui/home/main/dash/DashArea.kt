@@ -28,10 +28,11 @@ import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
 import io.posidon.android.slablauncher.util.drawable.setBackgroundColorFast
-import posidon.android.conveniencelib.Device
-import posidon.android.conveniencelib.dp
-import posidon.android.conveniencelib.getStatusBarHeight
-import posidon.android.conveniencelib.pullStatusbar
+import io.posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.getStatusBarHeight
+import io.posidon.android.conveniencelib.pullStatusbar
+import io.posidon.android.conveniencelib.units.toPixels
 
 @SuppressLint("ClickableViewAccessibility")
 class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivity) {
@@ -162,7 +163,9 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
                     notificationImageCard.isVisible = true
                     notificationImageCard.doOnLayout {
                         it.updateLayoutParams {
-                            height = (it.width * notification.image.intrinsicHeight / notification.image.intrinsicWidth).coerceAtMost(view.dp(256).toInt())
+                            height = (
+                                it.width * notification.image.intrinsicHeight / notification.image.intrinsicWidth
+                            ).coerceAtMost(256.dp.toPixels(view))
                         }
                     }
                 } else {

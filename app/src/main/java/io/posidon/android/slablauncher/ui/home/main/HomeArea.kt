@@ -15,7 +15,7 @@ import io.posidon.android.slablauncher.ui.home.main.tile.PinnedTilesAdapter
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
-import posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.Device
 import kotlin.math.abs
 
 class HomeArea(val view: NestedScrollView, val fragment: DashAreaFragment, val launcherContext: LauncherContext) {

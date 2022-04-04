@@ -29,7 +29,7 @@ import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.ui.view.HorizontalAspectRatioLayout
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochrome
 import io.posidon.android.slablauncher.util.storage.Settings
-import posidon.android.conveniencelib.getNavigationBarHeight
+import io.posidon.android.conveniencelib.getNavigationBarHeight
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract

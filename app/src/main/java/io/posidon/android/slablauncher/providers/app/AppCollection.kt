@@ -16,8 +16,8 @@ import io.posidon.android.launcherutils.appLoading.AppLoader
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import io.posidon.android.slablauncher.util.storage.Settings
-import posidon.android.conveniencelib.clone
-import posidon.android.conveniencelib.drawable.MaskedDrawable
+import io.posidon.android.conveniencelib.drawable.clone
+import io.posidon.android.conveniencelib.drawable.MaskedDrawable
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 

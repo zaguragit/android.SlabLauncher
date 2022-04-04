@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.Gravity
 import android.view.View
 import android.widget.PopupWindow
-import posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.Device
 
 object PopupUtils {
 

@@ -10,9 +10,9 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import io.posidon.android.slablauncher.R
-import posidon.android.conveniencelib.Device
-import posidon.android.conveniencelib.getNavigationBarHeight
-import posidon.android.conveniencelib.getStatusBarHeight
+import io.posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.getNavigationBarHeight
+import io.posidon.android.conveniencelib.getStatusBarHeight
 
 class SeeThroughView : View {
     constructor(c: Context) : super(c)

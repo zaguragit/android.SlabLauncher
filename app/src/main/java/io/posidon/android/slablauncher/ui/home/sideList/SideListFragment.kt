@@ -20,7 +20,7 @@ import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.sideList.SideListAdapter.Companion.SCREEN_ALL_APPS
 import io.posidon.android.slablauncher.ui.home.sideList.SideListAdapter.Companion.SCREEN_SEARCH
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
-import posidon.android.conveniencelib.getStatusBarHeight
+import io.posidon.android.conveniencelib.getStatusBarHeight
 import java.util.*
 import kotlin.concurrent.thread
 import kotlin.math.abs

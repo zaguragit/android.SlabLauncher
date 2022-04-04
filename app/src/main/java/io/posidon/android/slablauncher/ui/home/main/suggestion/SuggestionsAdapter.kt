@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.util.storage.Settings
-import posidon.android.conveniencelib.getNavigationBarHeight
+import io.posidon.android.conveniencelib.getNavigationBarHeight
 
 class SuggestionsAdapter(
     val activity: Activity,

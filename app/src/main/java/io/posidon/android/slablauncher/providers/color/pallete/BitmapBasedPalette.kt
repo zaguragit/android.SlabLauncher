@@ -2,11 +2,9 @@ package io.posidon.android.slablauncher.providers.color.pallete
 
 import androidx.core.graphics.ColorUtils
 import androidx.palette.graphics.Palette
-import posidon.android.conveniencelib.Colors
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sign
-import kotlin.math.sqrt
 
 class BitmapBasedPalette(
     wallpaper: Palette,

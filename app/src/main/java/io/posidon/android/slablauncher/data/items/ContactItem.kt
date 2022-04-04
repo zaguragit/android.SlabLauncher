@@ -17,7 +17,7 @@ import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.notification.NotificationData
 import io.posidon.android.slablauncher.util.drawable.ContactDrawable
 import io.posidon.android.slablauncher.util.drawable.NonDrawable
-import posidon.android.conveniencelib.drawable.MaskedDrawable
+import io.posidon.android.conveniencelib.drawable.MaskedDrawable
 import java.io.FileNotFoundException
 import kotlin.random.Random
 

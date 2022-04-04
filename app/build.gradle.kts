@@ -4,12 +4,12 @@ plugins {
 }
 
 android {
-    compileSdk = 31
+    compileSdk = 32
 
     defaultConfig {
         applicationId = "io.posidon.android.slablauncher"
         minSdk = 26
-        targetSdk = 31
+        targetSdk = 32
         versionCode = 1
         versionName = "22.0.0"
 
@@ -33,8 +33,8 @@ dependencies {
     implementation("com.willowtreeapps:fuzzywuzzy-kotlin-jvm:0.9.0")
 
     implementation("io.posidon:android.launcherUtils:master-SNAPSHOT")
-    implementation("io.posidon:android.loader:master-SNAPSHOT")
-    implementation("io.posidon:android.convenienceLib:master-SNAPSHOT")
+    implementation("io.posidon:android.libduckduckgo:22.0")
+    implementation("io.posidon:android.conveniencelib:22.0")
 
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.palette:palette-ktx:1.0.0")

@@ -15,14 +15,8 @@ import android.os.UserHandle
 import android.os.UserManager
 import android.view.View
 import io.posidon.android.computable.Computable
-import io.posidon.android.computable.syncCompute
-import io.posidon.android.launcherutils.IconTheming
-import io.posidon.android.slablauncher.data.notification.NotificationData
-import io.posidon.android.slablauncher.providers.notification.NotificationService
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
-import posidon.android.conveniencelib.clone
-import posidon.android.conveniencelib.drawable.MaskedDrawable
-import posidon.android.conveniencelib.isInstalled
+import io.posidon.android.conveniencelib.isInstalled
 import java.util.*
 
 class App(

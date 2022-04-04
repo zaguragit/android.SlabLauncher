@@ -12,7 +12,8 @@ import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.hideIfNullO
 import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupItem
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import io.posidon.android.slablauncher.ui.view.multiswitch.MultiSwitch
-import posidon.android.conveniencelib.dp
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toFloatPixels
 
 class ListPopupMultistateItemViewHolder(itemView: View) : ListPopupViewHolder(itemView) {
 
@@ -43,9 +44,9 @@ class ListPopupMultistateItemViewHolder(itemView: View) : ListPopupViewHolder(it
         switch.unsafeOffColor = ColorTheme.tintWithColor(ColorTheme.cardHint, 0xdd3333)
         switch.borderColor = 0x88000000.toInt()
         switch.borderWidth = 1f
-        switch.radius = itemView.dp(32)
-        switch.smallRadius = itemView.dp(2)
-        switch.cellMargin = itemView.dp(4)
+        switch.radius = 32.dp.toFloatPixels(itemView)
+        switch.smallRadius = 2.dp.toFloatPixels(itemView)
+        switch.cellMargin = 4.dp.toFloatPixels(itemView)
 
         ripple.setColor(ColorStateList.valueOf(ColorTheme.accentColor and 0xffffff or 0x33000000))
 
