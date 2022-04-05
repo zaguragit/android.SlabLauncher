@@ -10,13 +10,10 @@
 
 </div>
 
-A weird launcher inspired in windows phone's ui
-
+A launcher inspired in YASAN & Ratio launcher
 
 ## Contribute
-
-#### Code
 You can contribute to this repo, or to one of these libraries:
- - [android.loader](https://github.com/lposidon/android.loader)
- - [android.convenienceLib](https://github.com/lposidon/android.convenienceLib)
+ - [android.libduckduckgo](https://github.com/lposidon/android.libduckduckgo)
+ - [android.conveniencelib](https://github.com/lposidon/android.conveniencelib)
  - [android.launcherUtils](https://github.com/lposidon/android.launcherUtils)
