@@ -13,6 +13,8 @@ import io.posidon.android.slablauncher.R
 import io.posidon.android.conveniencelib.Device
 import io.posidon.android.conveniencelib.getNavigationBarHeight
 import io.posidon.android.conveniencelib.getStatusBarHeight
+import io.posidon.ksugar.delegates.observable
+import kotlin.properties.Delegates
 
 class SeeThroughView : View {
     constructor(c: Context) : super(c)
@@ -20,19 +22,15 @@ class SeeThroughView : View {
     constructor(c: Context, a: AttributeSet?, da: Int) : this(c, a, da, 0)
     constructor(c: Context, a: AttributeSet?, da: Int, dr: Int) : super(c, a, da, dr)
 
-    var drawable: Drawable? = null
-        set(value) {
-            field = value
-            updateBounds()
-            invalidate()
-        }
+    var drawable: Drawable? by Delegates.observable { _ ->
+        updateBounds()
+        invalidate()
+    }
 
-    var offset = 0f
-        set(value) {
-            field = value
-            updateBounds()
-            invalidate()
-        }
+    var offset by Delegates.observable(0f) { _ ->
+        updateBounds()
+        invalidate()
+    }
 
     private val lastScreenLocation = IntArray(2)
 

@@ -6,6 +6,8 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import io.posidon.ksugar.delegates.observable
+import kotlin.properties.Delegates
 
 class MultiSwitch : View {
     constructor(c: Context) : super(c)
@@ -16,75 +18,24 @@ class MultiSwitch : View {
     var backgroundColor = 0
         private set
 
-    var borderColor = 0
-        set(value) {
-            field = value
-            invalidate()
-        }
-    var borderWidth = 0f
-        set(value) {
-            field = value
-            invalidate()
-        }
+    var borderColor by Delegates.observable(0) { _ -> invalidate() }
+    var borderWidth by Delegates.observable(0f) { _ -> invalidate() }
+    var onColor by Delegates.observable(0) { _ -> invalidate() }
+    var offColor by Delegates.observable(0) { _ -> invalidate() }
+    var unsafeOnColor by Delegates.observable(0) { _ -> invalidate() }
+    var unsafeOffColor by Delegates.observable(0) { _ -> invalidate() }
+    var radius by Delegates.observable(0f) { _ -> invalidate() }
+    var smallRadius by Delegates.observable(0f) { _ -> invalidate() }
+    var cellMargin by Delegates.observable(0f) { _ -> invalidate() }
 
-    var onColor = 0
-        set(value) {
-            field = value
-            invalidate()
-        }
-    var offColor = 0
-        set(value) {
-            field = value
-            invalidate()
-        }
-    var unsafeOnColor = 0
-        set(value) {
-            field = value
-            invalidate()
-        }
-    var unsafeOffColor = 0
-        set(value) {
-            field = value
-            invalidate()
-        }
+    var state by Delegates.observable(0) { new ->
+        stateChangeListener?.invoke(this, new)
+        invalidate()
+    }
 
-    var state = 0
-        set(value) {
-            field = value
-            stateChangeListener?.invoke(this, value)
-            invalidate()
-        }
+    var states by Delegates.observable(1) { _ -> invalidate() }
+    var unsafeLevel by Delegates.observable(-1) { _ -> invalidate() }
 
-    var states = 1
-        set(value) {
-            field = value
-            invalidate()
-        }
-
-    var unsafeLevel = -1
-        set(value) {
-            field = value
-            invalidate()
-        }
-
-    var radius = 0f
-        set(value) {
-            field = value
-            invalidate()
-        }
-
-    var smallRadius = 0f
-        set(value) {
-            field = value
-            invalidate()
-        }
-
-    var cellMargin = 0f
-        set(value) {
-            field = value
-            invalidate()
-        }
-    
     fun setOnStateChangeListener(listener: ((MultiSwitch, Int) -> Unit)?) {
         stateChangeListener = listener
     }

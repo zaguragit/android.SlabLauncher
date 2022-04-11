@@ -6,16 +6,14 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
+import io.posidon.ksugar.delegates.observable
+import kotlin.properties.Delegates
 
 class ColorPaletteTestView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    var palette: ColorPalette? = null
-        set(value) {
-            field = value
-            invalidate()
-        }
+    var palette: ColorPalette? by Delegates.observable { _ -> invalidate() }
 
     private val paint = Paint()
 

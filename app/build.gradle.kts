@@ -35,6 +35,7 @@ dependencies {
     implementation("io.posidon:android.launcherUtils:master-SNAPSHOT")
     implementation("io.posidon:android.libduckduckgo:22.0")
     implementation("io.posidon:android.conveniencelib:22.0")
+    implementation("com.github.zaguragit:ksugar:fb31214198")
 
     implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.palette:palette-ktx:1.0.0")

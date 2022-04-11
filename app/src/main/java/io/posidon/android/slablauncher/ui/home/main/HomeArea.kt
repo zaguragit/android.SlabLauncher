@@ -16,7 +16,9 @@ import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
 import io.posidon.android.conveniencelib.Device
+import io.posidon.ksugar.delegates.observable
 import kotlin.math.abs
+import kotlin.properties.Delegates
 
 class HomeArea(val view: NestedScrollView, val fragment: DashAreaFragment, val launcherContext: LauncherContext) {
 
@@ -88,11 +90,9 @@ class HomeArea(val view: NestedScrollView, val fragment: DashAreaFragment, val l
         pinnedAdapter.updateItems(launcherContext.appManager.pinnedItems)
     }
 
-    var highlightDropArea = false
-        set(value) {
-            field = value
-            pinnedRecycler.background.alpha = if (value) 255 else 0
-        }
+    var highlightDropArea by Delegates.observable(false) { new ->
+        pinnedRecycler.background.alpha = if (new) 255 else 0
+    }
 
     fun onDrag(view: View, event: DragEvent): Boolean {
         when (event.action) {
