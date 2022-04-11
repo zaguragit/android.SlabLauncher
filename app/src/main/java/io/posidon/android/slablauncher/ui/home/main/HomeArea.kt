@@ -77,7 +77,7 @@ class HomeArea(val view: NestedScrollView, val fragment: DashAreaFragment, val l
         val x = x / pinnedRecycler.width * COLUMNS
         y = ((y - pinnedRecycler.paddingTop) / pinnedRecycler.width * COLUMNS) * WIDTH_TO_HEIGHT
         val i = y.toInt() * COLUMNS + x.toInt()
-        return if (i > pinnedAdapter.tileCount) -1 else i
+        return i.coerceAtMost(pinnedAdapter.tileCount)
     }
 
     fun onDrop(v: View, i: Int, clipData: ClipData) {
