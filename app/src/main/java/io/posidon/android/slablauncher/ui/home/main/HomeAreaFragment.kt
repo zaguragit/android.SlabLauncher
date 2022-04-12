@@ -87,7 +87,7 @@ class DashAreaFragment : Fragment() {
         homeArea.dash.view.doOnLayout {
             it.updateLayoutParams {
                 val tileMargin = it.context.resources.getDimension(R.dimen.item_card_margin)
-                val tileWidth = (Device.screenWidth(it.context) - tileMargin * 2) / HomeArea.COLUMNS - tileMargin * 2
+                val tileWidth = (Device.screenWidth(it.context) - tileMargin * 2) / HomeArea.calculateColumns(it.context) - tileMargin * 2
                 val tileHeight = tileWidth / HomeArea.WIDTH_TO_HEIGHT
                 val dockHeight = launcherContext.settings.dockRowCount * (tileHeight + tileMargin * 2)
                 height = requireView().height - (tileMargin + dockHeight.toInt()).toInt()

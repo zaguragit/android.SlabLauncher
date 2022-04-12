@@ -2,6 +2,7 @@ package io.posidon.android.slablauncher.ui.home.main
 
 import android.annotation.SuppressLint
 import android.content.ClipData
+import android.content.Context
 import android.view.*
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
@@ -16,6 +17,8 @@ import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
 import io.posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.ksugar.delegates.observable
 import kotlin.math.abs
 import kotlin.properties.Delegates
@@ -23,9 +26,12 @@ import kotlin.properties.Delegates
 class HomeArea(val view: NestedScrollView, val fragment: DashAreaFragment, val launcherContext: LauncherContext) {
 
     companion object {
-        const val COLUMNS = 4
         const val WIDTH_TO_HEIGHT = 6f / 5f
+
+        fun calculateColumns(context: Context): Int =
+            (Device.screenWidth(context) / 1.dp.toPixels(context) / 108).coerceAtLeast(2)
     }
+
 
     inline val scrollY: Int
         get() = view.scrollY
@@ -37,7 +43,7 @@ class HomeArea(val view: NestedScrollView, val fragment: DashAreaFragment, val l
         view.setOnScrollChangeListener { v, _, scrollY, _, _ ->
             activity.overlayOpacity = run {
                 val tileMargin = v.resources.getDimension(R.dimen.item_card_margin)
-                val tileWidth = (Device.screenWidth(v.context) - tileMargin * 2) / COLUMNS - tileMargin * 2
+                val tileWidth = (Device.screenWidth(v.context) - tileMargin * 2) / calculateColumns(view.context) - tileMargin * 2
                 val tileHeight = tileWidth / WIDTH_TO_HEIGHT
                 val dockRowHeight = (tileHeight + tileMargin * 2)
                 (scrollY / dockRowHeight).coerceAtMost(1f)
@@ -50,7 +56,7 @@ class HomeArea(val view: NestedScrollView, val fragment: DashAreaFragment, val l
     val pinnedAdapter = PinnedTilesAdapter(fragment.requireActivity() as MainActivity, launcherContext, fragment)
     @SuppressLint("ClickableViewAccessibility")
     val pinnedRecycler = view.findViewById<RecyclerView>(R.id.pinned_recycler).apply {
-        layoutManager = GridLayoutManager(fragment.requireContext(), COLUMNS, RecyclerView.VERTICAL, false)
+        layoutManager = GridLayoutManager(fragment.requireContext(), calculateColumns(view.context), RecyclerView.VERTICAL, false)
         adapter = pinnedAdapter
         background.alpha = 0
         val activity = fragment.requireActivity() as MainActivity
@@ -76,9 +82,9 @@ class HomeArea(val view: NestedScrollView, val fragment: DashAreaFragment, val l
     fun getPinnedItemIndex(x: Float, y: Float): Int {
         var y = y + scrollY - dash.view.height
         if (y < 0) return -1
-        val x = x / pinnedRecycler.width * COLUMNS
-        y = ((y - pinnedRecycler.paddingTop) / pinnedRecycler.width * COLUMNS) * WIDTH_TO_HEIGHT
-        val i = y.toInt() * COLUMNS + x.toInt()
+        val x = x / pinnedRecycler.width * calculateColumns(view.context)
+        y = ((y - pinnedRecycler.paddingTop) / pinnedRecycler.width * calculateColumns(view.context)) * WIDTH_TO_HEIGHT
+        val i = y.toInt() * calculateColumns(view.context) + x.toInt()
         return i.coerceAtMost(pinnedAdapter.tileCount)
     }
 
