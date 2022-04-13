@@ -18,13 +18,15 @@ import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.LauncherItem
+import io.posidon.android.slablauncher.data.items.ShortcutItem
 import io.posidon.android.slablauncher.data.items.showProperties
+import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 import io.posidon.android.slablauncher.ui.popup.PopupUtils
 
 object ItemLongPress {
 
     var currentPopup: PopupWindow? = null
-    fun makePopupWindow(context: Context, item: LauncherItem, backgroundColor: Int, textColor: Int, extraPopupWindow: PopupWindow?, onInfo: (View) -> Unit): PopupWindow {
+    fun makePopupWindow(context: Context, item: LauncherItem, backgroundColor: Int, textColor: Int, extraPopupWindow: PopupWindow?, graphicsLoader: GraphicsLoader, onInfo: (View) -> Unit): PopupWindow {
         val content = LayoutInflater.from(context).inflate(R.layout.long_press_item_popup, null)
         if (item is App) {
             val shortcuts = item.getStaticShortcuts(context.getSystemService(LauncherApps::class.java))
@@ -32,7 +34,7 @@ object ItemLongPress {
                 val recyclerView = content.findViewById<RecyclerView>(R.id.recycler)
                 recyclerView.isNestedScrollingEnabled = false
                 recyclerView.layoutManager = LinearLayoutManager(context)
-                recyclerView.adapter = ShortcutAdapter(shortcuts, textColor)
+                recyclerView.adapter = ShortcutAdapter(shortcuts, textColor, graphicsLoader)
             }
         }
         val window = PopupWindow(content, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)
@@ -58,13 +60,13 @@ object ItemLongPress {
         return window
     }
 
-    fun makeExtraPopupWindow(context: Context, shortcuts: List<ShortcutInfo>, backgroundColor: Int, textColor: Int): PopupWindow {
+    fun makeExtraPopupWindow(context: Context, shortcuts: List<ShortcutItem>, backgroundColor: Int, textColor: Int, graphicsLoader: GraphicsLoader): PopupWindow {
         val content = LayoutInflater.from(context).inflate(R.layout.long_press_item_popup_extra, null)
         if (shortcuts.isNotEmpty()) {
             val recyclerView = content.findViewById<RecyclerView>(R.id.recycler)
             recyclerView.isNestedScrollingEnabled = false
             recyclerView.layoutManager = LinearLayoutManager(context)
-            recyclerView.adapter = ShortcutAdapter(shortcuts, textColor)
+            recyclerView.adapter = ShortcutAdapter(shortcuts, textColor, graphicsLoader)
         }
         val window = PopupWindow(content, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)
 
@@ -92,6 +94,7 @@ object ItemLongPress {
         textColor: Int,
         item: LauncherItem,
         navbarHeight: Int,
+        graphicsLoader: GraphicsLoader,
     ) {
         dismissCurrent()
         val context = view.context
@@ -100,13 +103,20 @@ object ItemLongPress {
             it.subList(0, it.size.coerceAtMost(5))
         }
         val hasDynamicShortcuts = !dynamicShortcuts.isNullOrEmpty()
-        val extraPopupWindow = if (hasDynamicShortcuts) makeExtraPopupWindow(context, dynamicShortcuts!!, backgroundColor, textColor) else null
+        val extraPopupWindow = if (hasDynamicShortcuts) makeExtraPopupWindow(
+            context,
+            dynamicShortcuts!!,
+            backgroundColor,
+            textColor,
+            graphicsLoader,
+        ) else null
         val popupWindow = makePopupWindow(
             context,
             item,
             backgroundColor,
             textColor,
             extraPopupWindow,
+            graphicsLoader,
             item::showProperties,
         )
         popupWindow.showAtLocation(view, gravity, x, y + (view.resources.getDimension(R.dimen.item_card_margin) * 2).toInt())

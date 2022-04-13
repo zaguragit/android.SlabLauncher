@@ -9,10 +9,12 @@ import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.android.conveniencelib.getNavigationBarHeight
+import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 
 class SuggestionsAdapter(
     val activity: Activity,
     val settings: Settings,
+    val graphicsLoader: GraphicsLoader,
 ) : RecyclerView.Adapter<SuggestionViewHolder>() {
 
     private var items: List<LauncherItem> = emptyList()
@@ -29,6 +31,7 @@ class SuggestionsAdapter(
         holder.onBind(
             item,
             activity.getNavigationBarHeight(),
+            graphicsLoader,
         )
     }
 

@@ -5,7 +5,7 @@ import android.graphics.ColorFilter
 import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
 
-internal class NonDrawable : Drawable() {
+class NonDrawable : Drawable() {
 
     override fun draw(canvas: Canvas) {}
 

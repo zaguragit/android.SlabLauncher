@@ -3,9 +3,9 @@ package io.posidon.android.slablauncher.providers.search
 import android.app.Activity
 import android.content.Context
 import io.posidon.android.slablauncher.LauncherContext
+import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.search.DebugResult
 import io.posidon.android.slablauncher.data.search.SearchResult
-import io.posidon.android.slablauncher.providers.app.AppCollection
 import java.util.*
 
 class Searcher(
@@ -43,9 +43,9 @@ class Searcher(
         }
     }
 
-    fun onAppsLoaded(context: Context, apps: AppCollection) {
+    fun onAppsLoaded(context: Context, list: List<App>) {
         providers.forEach {
-            it.onAppsLoaded(context, apps)
+            it.onAppsLoaded(context, list)
         }
     }
 

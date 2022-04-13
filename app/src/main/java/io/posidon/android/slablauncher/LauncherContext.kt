@@ -1,15 +1,12 @@
 package io.posidon.android.slablauncher
 
 import android.content.Context
-import io.posidon.android.launcherutils.appLoading.AppLoader
-import io.posidon.android.launcherutils.appLoading.IconConfig
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.LauncherItem
-import io.posidon.android.slablauncher.providers.app.AppCollection
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.util.storage.Settings
-import io.posidon.android.conveniencelib.units.dp
-import io.posidon.android.conveniencelib.units.toPixels
+import io.posidon.android.launcherutil.Launcher
+import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 
 class LauncherContext {
 
@@ -25,28 +22,37 @@ class LauncherContext {
         var apps = emptyList<App>()
             private set
 
-        fun <T : Context> loadApps(context: T, onEnd: T.(apps: AppCollection) -> Unit) {
-            val iconConfig = IconConfig(
-                size = 108.dp.toPixels(context),
-                density = context.resources.configuration.densityDpi,
-                packPackages = settings.getStrings("icon_packs") ?: emptyArray(),
-            )
+        fun <T : Context> loadApps(context: T, onEnd: T.(List<App>) -> Unit) {
+            val list = ArrayList<App>()
+            val byName = HashMap<String, MutableList<App>>()
 
-            appLoader.async(context, iconConfig) {
-                apps = it.list
-                appsByName = it.byName
-                _pinnedItems = settings.getStrings(PINNED_KEY)?.mapNotNull { LauncherItem.tryParse(it, appsByName, context) }?.toMutableList() ?: ArrayList()
-                SuggestionsManager.onAppsLoaded(this, context, suggestionData, appsByName.values.map(List<App>::first))
-                onEnd(context, it)
-            }
+            Launcher.appLoader.loadAsync(
+                context,
+                onEnd = {
+                    list.sortWith { o1, o2 ->
+                        o1.label.compareTo(o2.label, ignoreCase = true)
+                    }
+                    apps = list
+                    appsByName = byName
+                    _pinnedItems = settings.getStrings(PINNED_KEY)?.mapNotNull { tryParseLauncherItem(it, context) }?.toMutableList() ?: ArrayList()
+                    SuggestionsManager.onAppsLoaded(this, context, suggestionData, appsByName.values.map(List<App>::first))
+                    onEnd(context, list)
+                },
+                forEachApp = {
+                    val app = App(
+                        it.packageName,
+                        it.name,
+                        it.profile,
+                        it.getBadgedLabel(context),
+                    )
+                    list.add(app)
+                    putInMap(app, byName)
+                },
+            )
         }
 
         fun tryParseLauncherItem(string: String, context: Context): LauncherItem? {
             return LauncherItem.tryParse(string, appsByName, context)
-        }
-
-        fun tryParseApp(string: String): App? {
-            return App.tryParse(string, appsByName)
         }
 
         fun getAppByPackage(packageName: String): LauncherItem? = appsByName[packageName]?.first()
@@ -81,11 +87,24 @@ class LauncherContext {
             }
         }
 
-        private val appLoader = AppLoader { AppCollection(it, settings) }
-
         private var appsByName = HashMap<String, MutableList<App>>()
-
         private var _pinnedItems: MutableList<LauncherItem> = ArrayList()
+
+        private inline fun putInMap(app: App, byName: HashMap<String, MutableList<App>>) {
+            val list = byName[app.packageName]
+            if (list == null) {
+                byName[app.packageName] = arrayListOf(app)
+                return
+            }
+            val thisAppI = list.indexOfFirst {
+                it.name == app.name && it.userHandle.hashCode() == app.userHandle.hashCode()
+            }
+            if (thisAppI == -1) {
+                list.add(app)
+                return
+            }
+            list[thisAppI] = app
+        }
     }
 
     companion object {

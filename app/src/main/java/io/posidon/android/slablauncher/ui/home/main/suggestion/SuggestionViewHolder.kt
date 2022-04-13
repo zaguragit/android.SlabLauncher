@@ -7,10 +7,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.RecyclerView
-import io.posidon.android.computable.compute
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
+import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 
 class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -23,36 +23,17 @@ class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun onBind(
         item: LauncherItem,
         navbarHeight: Int,
+        graphicsLoader: GraphicsLoader,
     ) {
-
         label.text = item.label
         label.setTextColor(ColorTheme.searchBarFG)
         icon.setImageDrawable(null)
-        item.icon.compute {
+
+        graphicsLoader.load(itemView.context, item) {
             icon.post {
-                icon.setImageDrawable(it)
+                icon.setImageDrawable(it.icon)
             }
-        }
-
-        itemView.setOnClickListener {
-            item.open(it.context.applicationContext, it)
-        }
-        itemView.setOnLongClickListener { v ->
-            item.color.compute {
-                val backgroundColor = ColorTheme.tintPopup(it)
-                ItemLongPress.onItemLongPress(
-                    v,
-                    backgroundColor,
-                    ColorTheme.titleColorForBG(backgroundColor),
-                    item,
-                    navbarHeight,
-                )
-            }
-            true
-        }
-
-        item.color.compute {
-            val f = ColorTheme.tintWithColor(ColorTheme.searchBarFG, it)
+            val f = ColorTheme.tintWithColor(ColorTheme.searchBarFG, it.extra.color)
             val backgroundColor = f and 0xffffff or 0x33000000
             val fg = ColorUtils.blendARGB(ColorTheme.searchBarFG, f, 0.5f)
             card.post {
@@ -60,9 +41,26 @@ class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
                 label.setTextColor(fg)
             }
         }
+
+        itemView.setOnClickListener {
+            item.open(it.context.applicationContext, it)
+        }
+        itemView.setOnLongClickListener { v ->
+            val color = graphicsLoader.load(itemView.context, item).extra.color
+            val backgroundColor = ColorTheme.tintPopup(color)
+            ItemLongPress.onItemLongPress(
+                v,
+                backgroundColor,
+                ColorTheme.titleColorForBG(backgroundColor),
+                item,
+                navbarHeight,
+                graphicsLoader,
+            )
+            true
+        }
     }
 
     fun recycle(item: LauncherItem) {
-        item.icon.offload()
+        icon.setImageDrawable(null)
     }
 }

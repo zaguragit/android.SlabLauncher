@@ -2,23 +2,14 @@ package io.posidon.android.slablauncher.data.items
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.View
-import io.posidon.android.computable.Computable
-import io.posidon.android.slablauncher.data.notification.NotificationData
-import io.posidon.android.slablauncher.providers.notification.NotificationService
+import io.posidon.android.slablauncher.providers.item.ContactLoader
 import java.util.*
 
 sealed interface LauncherItem {
 
     val label: String
-
-    val icon: Computable<Drawable>
-
-    val tileImage: Computable<Drawable>
-
-    val color: Computable<Int>
 
     /**
      * What to do when the item is clicked
@@ -37,7 +28,7 @@ sealed interface LauncherItem {
             appsByName: HashMap<String, MutableList<App>>,
             context: Context
         ): LauncherItem? = App.tryParse(string, appsByName)
-            ?: ContactItem.tryParse(string, ContactItem.getList(context))
+            ?: ContactItem.tryParse(string, ContactLoader.load(context))
     }
 }
 

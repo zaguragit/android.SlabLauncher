@@ -78,6 +78,7 @@ class PinnedTilesAdapter(
             item,
             activity,
             activity.settings,
+            activity.graphicsLoader,
             onDragStart = {
                 holder.itemView.isInvisible = true
             },

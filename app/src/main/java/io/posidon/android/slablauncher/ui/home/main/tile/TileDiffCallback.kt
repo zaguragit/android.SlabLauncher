@@ -24,15 +24,6 @@ class TileDiffCallback(
     override fun areContentsTheSame(oldI: Int, newI: Int): Boolean {
         val old = getOld(oldI)
         val new = getNew(newI)
-        val oldBanner = old.tileImage
-        val newBanner = new.tileImage
         return old.label == new.label
-            && old.icon.isComputed()
-            && new.icon.isComputed()
-            && old.icon.computed() === new.icon.computed()
-            && old.color.isComputed()
-            && new.color.isComputed()
-            && old.color.computed() == new.color.computed()
-            && oldBanner == newBanner
     }
 }

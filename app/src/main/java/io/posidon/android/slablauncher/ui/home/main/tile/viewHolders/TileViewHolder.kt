@@ -1,28 +1,18 @@
 package io.posidon.android.slablauncher.ui.home.main.tile.viewHolders
 
 import android.app.Activity
-import android.content.res.ColorStateList
-import android.graphics.BlendMode
 import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
-import android.graphics.drawable.Drawable
-import android.os.Build
 import android.view.View
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.luminance
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.RecyclerView
-import io.posidon.android.computable.compute
-import io.posidon.android.computable.syncCompute
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.LauncherItem
-import io.posidon.android.slablauncher.data.items.isUserRunning
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.main.HomeArea
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
@@ -30,6 +20,9 @@ import io.posidon.android.slablauncher.ui.view.HorizontalAspectRatioLayout
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochrome
 import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.android.conveniencelib.getNavigationBarHeight
+import io.posidon.android.launcherutil.isUserRunning
+import io.posidon.android.launcherutil.loader.IconData
+import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -46,10 +39,10 @@ class TileViewHolder(
 
     fun updateBackground(
         item: LauncherItem,
-        background: Drawable,
+        iconData: IconData<GraphicsLoader.Extra>,
         settings: Settings,
     ) {
-        val itemColor = item.color.syncCompute().let {
+        val itemColor = iconData.extra.color.let {
             when {
                 settings.doMonochrome -> {
                     val a = (it.luminance * 255).toInt()
@@ -61,7 +54,7 @@ class TileViewHolder(
         val backgroundColor = ColorTheme.tileColor(itemColor)
         imageView.post {
             card.setCardBackgroundColor(backgroundColor)
-            imageView.setImageDrawable(background)
+            imageView.setImageDrawable(iconData.extra.tile)
             imageView.alpha = 1f
             card.cardElevation = itemView.context.resources.getDimension(R.dimen.item_card_elevation)
 
@@ -69,7 +62,7 @@ class TileViewHolder(
                 imageView.colorFilter = ColorMatrixColorFilter(ColorMatrix().apply {
                     setSaturation(0f)
                 })
-                if (item is App && !item.isUserRunning(itemView.context)) {
+                if (item is App && !itemView.context.isUserRunning(item.userHandle)) {
                     imageView.alpha = 0.7f
                     card.cardElevation = 0f
                     card.setCardBackgroundColor(0)
@@ -82,18 +75,14 @@ class TileViewHolder(
         item: LauncherItem,
         activity: Activity,
         settings: Settings,
+        graphicsLoader: GraphicsLoader,
         onDragStart: (View) -> Unit,
     ) {
         imageView.setImageDrawable(null)
         card.setCardBackgroundColor(ColorTheme.cardBG)
 
-        val banner = item.tileImage
-
-        if (banner.isComputed()) {
-            val background = banner.computed()
-            updateBackground(item, background, settings)
-        } else banner.compute { background ->
-            updateBackground(item, background, settings)
+        graphicsLoader.load(itemView.context, item) {
+            updateBackground(item, it, settings)
         }
 
         itemView.setOnClickListener {
@@ -101,16 +90,16 @@ class TileViewHolder(
         }
         itemView.setOnLongClickListener { v ->
             if (item is App) {
-                item.color.compute {
-                    val backgroundColor = ColorTheme.tintPopup(it)
-                    ItemLongPress.onItemLongPress(
-                        v,
-                        backgroundColor,
-                        ColorTheme.titleColorForBG(backgroundColor),
-                        item,
-                        activity.getNavigationBarHeight(),
-                    )
-                }
+                val color = graphicsLoader.load(itemView.context, item).extra.color
+                val backgroundColor = ColorTheme.tintPopup(color)
+                ItemLongPress.onItemLongPress(
+                    v,
+                    backgroundColor,
+                    ColorTheme.titleColorForBG(backgroundColor),
+                    item,
+                    activity.getNavigationBarHeight(),
+                    graphicsLoader,
+                )
             }
             else ItemLongPress.onItemLongPress(v, item)
             onDragStart(v)
@@ -120,7 +109,6 @@ class TileViewHolder(
 
     fun recycle(item: LauncherItem) {
         imageView.setImageDrawable(null)
-        item.icon.offload()
     }
 }
 

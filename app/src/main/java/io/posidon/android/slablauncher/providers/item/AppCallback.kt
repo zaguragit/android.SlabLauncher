@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.providers.app
+package io.posidon.android.slablauncher.providers.item
 
 import android.content.pm.LauncherApps
 import android.os.UserHandle

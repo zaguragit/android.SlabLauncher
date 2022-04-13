@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ItemTouchHelper.DOWN
 import androidx.recyclerview.widget.ItemTouchHelper.UP
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.posidon.android.launcherutils.IconTheming
+import io.posidon.android.launcherutil.IconTheming
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.ui.settings.SettingsActivity
 import io.posidon.android.slablauncher.ui.settings.iconPackPicker.viewHolders.IconPackViewHolder

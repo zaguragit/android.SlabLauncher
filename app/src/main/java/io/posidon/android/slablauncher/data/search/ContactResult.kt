@@ -4,20 +4,23 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import io.posidon.android.slablauncher.data.items.ContactItem
+import io.posidon.android.slablauncher.providers.item.ContactLoader
+import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 
 class ContactResult private constructor(
     val contact: ContactItem,
 ) : CompactResult() {
 
+    override val launcherItem get() = contact
+
     override val title get() = contact.label
 
-    override val icon get() = contact.icon
     override val subtitle = null
 
     override var relevance = Relevance(0f)
 
-    override val onLongPress = { v: View, _: Activity ->
+    override val onLongPress = { _: GraphicsLoader, v: View, _: Activity ->
         ItemLongPress.onItemLongPress(
             v,
             contact,
@@ -45,7 +48,7 @@ class ContactResult private constructor(
 
     companion object {
         fun getList(context: Context): Collection<ContactResult> {
-            return ContactItem.getList(context).map(::ContactResult)
+            return ContactLoader.load(context).map(::ContactResult)
         }
     }
 }

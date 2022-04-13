@@ -14,7 +14,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.UserHandle
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowInsets
@@ -33,13 +32,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import io.posidon.android.launcherutils.liveWallpaper.LiveWallpaper
+import io.posidon.android.launcherutil.liveWallpaper.LiveWallpaper
 import io.posidon.android.slablauncher.BuildConfig
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.LauncherItem
-import io.posidon.android.slablauncher.providers.app.AppCallback
-import io.posidon.android.slablauncher.providers.app.AppCollection
+import io.posidon.android.slablauncher.providers.item.AppCallback
 import io.posidon.android.slablauncher.providers.color.ColorThemeOptions
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
@@ -63,7 +61,8 @@ import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
 import io.posidon.android.slablauncher.util.storage.DockRowCount.dockRowCount
 import io.posidon.android.conveniencelib.getNavigationBarHeight
-import java.net.URL
+import io.posidon.android.slablauncher.data.items.App
+import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 import kotlin.concurrent.thread
 
 
@@ -77,6 +76,7 @@ class MainActivity : FragmentActivity() {
 
     val launcherContext = LauncherContext()
     val settings by launcherContext::settings
+    val graphicsLoader = GraphicsLoader()
 
     private lateinit var wallpaperManager: WallpaperManager
 
@@ -91,7 +91,7 @@ class MainActivity : FragmentActivity() {
     private lateinit var searchBarBlurBG: SeeThroughView
     private lateinit var suggestionsRecycler: RecyclerView
 
-    private val suggestionsAdapter = SuggestionsAdapter(this, settings)
+    private val suggestionsAdapter = SuggestionsAdapter(this, settings, graphicsLoader)
 
     private val appReloader = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -309,6 +309,10 @@ class MainActivity : FragmentActivity() {
         val shouldUpdate = settings.reload(applicationContext)
         if (shouldUpdate) {
             loadApps()
+        } else SuggestionsManager.onResume(this) {
+            runOnUiThread {
+                updateSuggestions(launcherContext.appManager.pinnedItems)
+            }
         }
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
             thread(isDaemon = true) {
@@ -322,11 +326,6 @@ class MainActivity : FragmentActivity() {
         } else {
             if (settings.doBlur && acrylicBlur == null) {
                 loadBlur(::updateBlur)
-            }
-        }
-        SuggestionsManager.onResume(this) {
-            runOnUiThread {
-                updateSuggestions(launcherContext.appManager.pinnedItems)
             }
         }
     }
@@ -385,10 +384,17 @@ class MainActivity : FragmentActivity() {
     }
 
     fun loadApps() {
-        launcherContext.appManager.loadApps(this) { apps: AppCollection ->
-            onAppsLoadedListeners.forEach { (_, l) -> l(apps) }
-            Log.d("SlabLauncher", "updated apps (${apps.size} items)")
+        launcherContext.appManager.loadApps(this) { list ->
+            invalidateItemGraphics()
+            runOnUiThread {
+                updateSuggestions(launcherContext.appManager.pinnedItems)
+            }
+            onAppsLoadedListeners.forEach { (_, l) -> l(list) }
         }
+    }
+
+    fun invalidateItemGraphics() {
+        graphicsLoader.setupNewAppIconLoader(this, settings)
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -422,7 +428,7 @@ class MainActivity : FragmentActivity() {
         onPageScrollListeners[key] = listener
     }
 
-    fun setOnAppsLoadedListener(key: String, listener: (AppCollection) -> Unit) {
+    fun setOnAppsLoadedListener(key: String, listener: (List<App>) -> Unit) {
         onAppsLoadedListeners[key] = listener
     }
 
@@ -434,7 +440,7 @@ class MainActivity : FragmentActivity() {
     private val onBlurUpdateListeners = HashMap<String, () -> Unit>()
     private val onLayoutChangeListeners = HashMap<String, () -> Unit>()
     private val onPageScrollListeners = HashMap<String, (Float) -> Unit>()
-    private val onAppsLoadedListeners = HashMap<String, (AppCollection) -> Unit>()
+    private val onAppsLoadedListeners = HashMap<String, (List<App>) -> Unit>()
     private val onSearchQueryListeners = HashMap<String, (String?) -> Unit>()
 
     fun updateSuggestions(pinnedItems: List<LauncherItem>) {

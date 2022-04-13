@@ -148,14 +148,14 @@ object SuggestionsManager {
     ) {
         suggestionData.getStrings("stats:app_opening_contexts")?.let {
             val contextMap = ContextMap<LauncherItem>(ContextArray.CONTEXT_DATA_SIZE, ContextArray::differentiator)
-            it.forEach { app ->
-                appManager.tryParseApp(app)?.let { item ->
-                    suggestionData.getStrings("stats:app_opening_context:$app")
+            it.forEach { itemRepresentation ->
+                appManager.tryParseLauncherItem(itemRepresentation, context)?.let { item ->
+                    suggestionData.getStrings("stats:app_opening_context:$itemRepresentation")
                         ?.map(String::toFloat)?.let { floats ->
                             contextMap[item] = floats.chunked(ContextArray.CONTEXT_DATA_SIZE).map(::ContextArray)
                         }
                 } ?: suggestionData.edit(context) {
-                    setStrings("stats:app_opening_context:$app", null)
+                    setStrings("stats:app_opening_context:$itemRepresentation", null)
                 }
             }
             this.contextMap = contextMap

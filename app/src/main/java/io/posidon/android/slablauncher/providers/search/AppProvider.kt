@@ -5,13 +5,12 @@ import android.content.Context
 import android.content.pm.LauncherApps
 import android.content.res.Resources
 import com.willowtreeapps.fuzzywuzzy.diffutils.FuzzySearch
-import io.posidon.android.computable.Computable
 import io.posidon.android.slablauncher.data.items.App
+import io.posidon.android.slablauncher.data.items.ShortcutItem
 import io.posidon.android.slablauncher.data.search.AppResult
 import io.posidon.android.slablauncher.data.search.Relevance
 import io.posidon.android.slablauncher.data.search.SearchResult
 import io.posidon.android.slablauncher.data.search.ShortcutResult
-import io.posidon.android.slablauncher.providers.app.AppCollection
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.util.drawable.NonDrawable
 import java.util.*
@@ -30,47 +29,23 @@ class AppProvider(
 
     override fun Activity.onCreate() {
         launcherApps = getSystemService(LauncherApps::class.java)
-        updateAppCache(resources, searcher.launcherContext.appManager.apps)
+        updateAppCache(searcher.launcherContext.appManager.apps)
     }
 
-    private fun updateAppCache(resources: Resources, list: List<App>) {
+    private fun updateAppCache(list: List<App>) {
         appList = list
         thread(isDaemon = true) {
             staticShortcuts = appList.flatMap { app ->
-                app.getStaticShortcuts(launcherApps).map {
-                    ShortcutResult(
-                        it,
-                        (it.longLabel ?: it.shortLabel).toString(),
-                        Computable {
-                            launcherApps.getShortcutIconDrawable(
-                                it,
-                                resources.displayMetrics.densityDpi
-                            ) ?: NonDrawable()
-                        },
-                        app
-                    )
-                }
+                app.getStaticShortcuts(launcherApps).map(::ShortcutResult)
             }
             dynamicShortcuts = appList.flatMap { app ->
-                app.getDynamicShortcuts(launcherApps).map {
-                    ShortcutResult(
-                        it,
-                        (it.longLabel ?: it.shortLabel).toString(),
-                        Computable {
-                            launcherApps.getShortcutIconDrawable(
-                                it,
-                                resources.displayMetrics.densityDpi
-                            ) ?: NonDrawable()
-                        },
-                        app
-                    )
-                }
+                app.getDynamicShortcuts(launcherApps).map(::ShortcutResult)
             }
         }
     }
 
-    override fun onAppsLoaded(context: Context, apps: AppCollection) {
-        updateAppCache(context.resources, apps.list)
+    override fun onAppsLoaded(context: Context, list: List<App>) {
+        updateAppCache(list)
     }
 
     override fun getResults(query: SearchQuery): List<SearchResult> {
@@ -97,7 +72,7 @@ class AppProvider(
         }
         staticShortcuts.forEach {
             val l = FuzzySearch.tokenSortPartialRatio(queryString, it.title) / 100f
-            val a = FuzzySearch.tokenSortPartialRatio(queryString, it.app.label) / 100f
+            val a = FuzzySearch.tokenSortPartialRatio(queryString, it.shortcut.app.label) / 100f
             val initials = if (queryString.length > 1 && SearchProvider.matchInitials(queryString, it.title)) 0.5f else 0f
             val r = (a * a * .5f + l * l).pow(.2f) + initials
             if (r > .95f) {
@@ -107,7 +82,7 @@ class AppProvider(
         }
         dynamicShortcuts.forEach {
             val l = FuzzySearch.tokenSortPartialRatio(queryString, it.title) / 100f
-            val a = FuzzySearch.tokenSortPartialRatio(queryString, it.app.label) / 100f
+            val a = FuzzySearch.tokenSortPartialRatio(queryString, it.shortcut.app.label) / 100f
             val initials = if (queryString.length > 1 && SearchProvider.matchInitials(queryString, it.title)) 0.5f else 0f
             val r = (a * a * .2f + l * l).pow(.3f) + initials
             if (r > .9f) {
