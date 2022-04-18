@@ -13,13 +13,14 @@ class ListPopupAdapter : RecyclerView.Adapter<ListPopupViewHolder>() {
             items[i].states == 2 -> 2
             items[i].states > 3 -> 4
             items[i].states > 2 -> 3
-            items[i].isTitle -> 1
+            items[i].isTitle -> if (items[i].icon != null) -1 else 1
             else -> 0
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListPopupViewHolder {
         return when (viewType) {
+            -1 -> ListPopupPrimaryTitleViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_popup_primary_title, parent, false))
             1 -> ListPopupTitleViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_popup_title, parent, false))
             2 -> ListPopupSwitchItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_popup_switch_item, parent, false))
             3 -> ListPopupMultistateItemViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_popup_multistate_item, parent, false))

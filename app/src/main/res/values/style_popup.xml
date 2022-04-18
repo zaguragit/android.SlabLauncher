@@ -60,8 +60,29 @@
     <style name="SlabLauncher.ListPopup.Title.Description" parent="SlabLauncher">
         <item name="android:textSize">14sp</item>
         <item name="android:paddingHorizontal">14dp</item>
-        <item name="android:paddingVertical">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
         <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="SlabLauncher.ListPopup.PrimaryTitle.Icon" parent="SlabLauncher">
+        <item name="android:layout_height">96sp</item>
+        <item name="android:padding">12dp</item>
+    </style>
+
+    <style name="SlabLauncher.ListPopup.PrimaryTitle.Label" parent="SlabLauncher">
+        <item name="android:textSize">36sp</item>
+        <item name="android:paddingHorizontal">14dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <style name="SlabLauncher.ListPopup.PrimaryTitle.Description" parent="SlabLauncher">
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingHorizontal">14dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:gravity">center_horizontal</item>
     </style>
 
 

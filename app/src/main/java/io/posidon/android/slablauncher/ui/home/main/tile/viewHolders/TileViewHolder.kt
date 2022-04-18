@@ -46,7 +46,7 @@ class TileViewHolder(
             when {
                 settings.doMonochrome -> {
                     val a = (it.luminance * 255).toInt()
-                    Color.rgb(a, a, a)
+                    Color.argb(0, a, a, a)
                 }
                 else -> it
             }

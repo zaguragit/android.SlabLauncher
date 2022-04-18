@@ -100,6 +100,14 @@ class PinnedTilesAdapter(
         diff.dispatchUpdatesTo(this)
     }
 
+    fun forceUpdateItems(
+        items: List<LauncherItem>
+    ) {
+        val oldItems = this.items
+        this.items = items.toMutableList()
+        notifyItemRangeChanged(0, oldItems.size)
+    }
+
     private fun updatePins(context: Context) {
         launcherContext.appManager.setPinned(context, ArrayList(items))
     }

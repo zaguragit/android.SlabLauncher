@@ -67,7 +67,7 @@ class HomeArea(val view: NestedScrollView, val fragment: DashAreaFragment, val l
                 launcherContext.settings,
                 activity::reloadColorPaletteSync,
                 activity::updateColorTheme,
-                activity::loadApps,
+                activity::invalidateItemGraphics,
                 activity::reloadBlur,
                 activity::updateLayout,
             )
@@ -94,6 +94,10 @@ class HomeArea(val view: NestedScrollView, val fragment: DashAreaFragment, val l
 
     fun updatePinned() {
         pinnedAdapter.updateItems(launcherContext.appManager.pinnedItems)
+    }
+
+    fun forceUpdatePinned() {
+        pinnedAdapter.forceUpdateItems(launcherContext.appManager.pinnedItems)
     }
 
     var highlightDropArea by Delegates.observable(false) { new ->

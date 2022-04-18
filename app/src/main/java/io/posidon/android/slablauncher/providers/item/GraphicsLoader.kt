@@ -161,7 +161,7 @@ class GraphicsLoader {
     ): Pair<Drawable, Extra> {
         var color = 0
         val image: LayerDrawable
-        val maskable: LayerDrawable
+        val finalIcon: Drawable
 
         when {
             resizableBackground != null -> {
@@ -180,7 +180,7 @@ class GraphicsLoader {
                 }
                 val bg = (resizableBackground.clone() ?: resizableBackground).mutate()
                 val fg = (icon?.clone() ?: icon)?.mutate()
-                maskable = LayerDrawable(arrayOf(
+                val maskable = LayerDrawable(arrayOf(
                     bg,
                     fg
                 )).apply {
@@ -189,6 +189,10 @@ class GraphicsLoader {
                     setLayerInset(1, i, i, i, i)
                     setBounds(0, 0, intrinsicWidth, intrinsicHeight)
                 }
+                finalIcon = MaskedDrawable(
+                    maskable,
+                    IconTheming.getSystemAdaptiveIconPath(maskable.intrinsicWidth, maskable.intrinsicHeight),
+                )
             }
             icon is AdaptiveIconDrawable &&
             icon.background != null -> {
@@ -222,7 +226,7 @@ class GraphicsLoader {
                 ))
                 val bg = (background.clone() ?: background).mutate()
                 val fg = (iconForeground?.clone() ?: iconForeground)?.mutate()
-                maskable = LayerDrawable(arrayOf(
+                val maskable = LayerDrawable(arrayOf(
                     bg,
                     fg
                 )).apply {
@@ -231,6 +235,10 @@ class GraphicsLoader {
                     setLayerInset(1, i, i, i, i)
                     setBounds(0, 0, intrinsicWidth, intrinsicHeight)
                 }
+                finalIcon = MaskedDrawable(
+                    maskable,
+                    IconTheming.getSystemAdaptiveIconPath(maskable.intrinsicWidth, maskable.intrinsicHeight),
+                )
             }
             else -> {
                 if (icon != null) {
@@ -250,23 +258,10 @@ class GraphicsLoader {
                     setLayerInset(0, i, i, i, i)
                     setLayerInset(1, i, i, i, i)
                 }
-                val bg = FastColorDrawable(color)
-                val fg = (icon?.clone() ?: icon)?.mutate()
-                maskable = LayerDrawable(arrayOf(
-                    bg,
-                    fg
-                )).apply {
-                    val i = (intrinsicWidth / 8f).toInt()
-                    setLayerInset(0, i, i, i, i)
-                    setLayerInset(1, i, i, i, i)
-                    setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-                }
+                finalIcon = (icon?.clone() ?: icon)?.mutate() ?: NonDrawable()
             }
         }
-        return MaskedDrawable(
-            maskable,
-            IconTheming.getSystemAdaptiveIconPath(maskable.intrinsicWidth, maskable.intrinsicHeight),
-        ) to Extra(image, color)
+        return finalIcon to Extra(image, color)
     }
 
     private fun ensureNotPlainWhite(

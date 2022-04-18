@@ -33,6 +33,7 @@ import io.posidon.android.slablauncher.util.storage.DockRowCount.dockRowCount
 import io.posidon.android.conveniencelib.Device
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toPixels
+import io.posidon.android.slablauncher.BuildConfig
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.thread
 import kotlin.concurrent.withLock
@@ -58,7 +59,7 @@ class HomeLongPressPopup(
             settings: Settings,
             reloadColorPalette: () -> Unit,
             updateColorTheme: (ColorPalette) -> Unit,
-            reloadApps: () -> Unit,
+            reloadItemGraphics: () -> Unit,
             reloadBlur: (() -> Unit) -> Unit,
             updateLayout: () -> Unit,
             popupWidth: Int = ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -97,7 +98,7 @@ class HomeLongPressPopup(
                             updateColorTheme(ColorPalette.getCurrent())
                             cardView.post { update() }
                         },
-                        reloadApps = reloadApps,
+                        reloadItemGraphics = reloadItemGraphics,
                         reloadBlur = {
                             reloadBlur {
                                 cardView.post { update() }
@@ -134,11 +135,18 @@ class HomeLongPressPopup(
             settings: Settings,
             reloadColorPalette: () -> Unit,
             updateColorTheme: () -> Unit,
-            reloadApps: () -> Unit,
+            reloadItemGraphics: () -> Unit,
             reloadBlur: () -> Unit,
             updateLayout: () -> Unit,
         ): List<ListPopupItem> {
             return listOf(
+                ListPopupItem(
+                    context.getString(R.string.app_name),
+                    BuildConfig.VERSION_NAME,
+                    icon = context.getDrawable(R.mipmap.ic_launcher),
+                    isTitle = true,
+                ),
+                ListPopupItem(context.getString(R.string.general), isTitle = true),
                 ListPopupItem(
                     context.getString(R.string.color_theme_gen),
                     description = context.resources.getStringArray(R.array.color_theme_gens)[settings.colorTheme],
@@ -188,6 +196,19 @@ class HomeLongPressPopup(
                         }
                     }
                 ),
+                ListPopupItem(context.getString(R.string.layout), isTitle = true),
+                ListPopupItem(
+                    context.getString(R.string.dock_row_count),
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_home),
+                    value = settings.dockRowCount,
+                    states = 5,
+                    onStateChange = { _, value ->
+                        settings.edit(context) {
+                            dockRowCount = value
+                            updateLayout()
+                        }
+                    }
+                ),
                 ListPopupItem(
                     context.getString(R.string.show_app_suggestions),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_home),
@@ -202,18 +223,6 @@ class HomeLongPressPopup(
                 ),
                 ListPopupItem(context.getString(R.string.tiles), isTitle = true),
                 ListPopupItem(
-                    context.getString(R.string.dock_row_count),
-                    icon = ContextCompat.getDrawable(context, R.drawable.ic_home),
-                    value = settings.dockRowCount,
-                    states = 5,
-                    onStateChange = { _, value ->
-                        settings.edit(context) {
-                            dockRowCount = value
-                            updateLayout()
-                        }
-                    }
-                ),
-                ListPopupItem(
                     context.getString(R.string.icon_packs),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),
                 ) {
@@ -227,7 +236,7 @@ class HomeLongPressPopup(
                     onStateChange = { _, value ->
                         settings.edit(context) {
                             monochromatism = value
-                            reloadApps()
+                            reloadItemGraphics()
                         }
                     }
                 ),
@@ -241,7 +250,6 @@ class HomeLongPressPopup(
                     onStateChange = { _, value ->
                         settings.edit(context) {
                             doAutoKeyboardInAllApps = value == 1
-                            reloadApps()
                         }
                     }
                 ),

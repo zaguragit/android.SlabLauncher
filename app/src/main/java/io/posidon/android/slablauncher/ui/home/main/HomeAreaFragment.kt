@@ -53,7 +53,10 @@ class DashAreaFragment : Fragment() {
         a.setOnColorThemeUpdateListener(DashAreaFragment::class.simpleName!!, ::updateColorTheme)
         a.setOnBlurUpdateListener(DashAreaFragment::class.simpleName!!, ::updateBlur)
         a.setOnAppsLoadedListener(DashAreaFragment::class.simpleName!!) {
-            a.runOnUiThread(::updatePinned)
+            a.runOnUiThread(homeArea::updatePinned)
+        }
+        a.setOnGraphicsLoaderChangeListener(DashAreaFragment::class.simpleName!!) {
+            a.runOnUiThread(homeArea::forceUpdatePinned)
         }
         a.setOnPageScrollListener(DashAreaFragment::class.simpleName!!, ::onOffsetUpdate)
         a.setOnLayoutChangeListener(DashAreaFragment::class.simpleName!!, ::updateLayout)
@@ -107,8 +110,6 @@ class DashAreaFragment : Fragment() {
             homeArea.pinnedAdapter.notifyItemRangeChanged(0, homeArea.pinnedAdapter.itemCount)
         }
     }
-
-    private fun updatePinned() = homeArea.updatePinned()
 
     private fun onOffsetUpdate(offset: Float) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

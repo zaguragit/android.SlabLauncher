@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import io.posidon.android.conveniencelib.Graphics
 import io.posidon.android.launcherutil.liveWallpaper.LiveWallpaper
 import io.posidon.android.slablauncher.BuildConfig
 import io.posidon.android.slablauncher.LauncherContext
@@ -397,6 +398,7 @@ class MainActivity : FragmentActivity() {
 
     fun invalidateItemGraphics() {
         graphicsLoader.setupNewAppIconLoader(this, settings)
+        onGraphicsLoaderChangedListeners.forEach { (_, l) -> l(graphicsLoader) }
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -434,6 +436,10 @@ class MainActivity : FragmentActivity() {
         onAppsLoadedListeners[key] = listener
     }
 
+    fun setOnGraphicsLoaderChangeListener(key: String, listener: (GraphicsLoader) -> Unit) {
+        onGraphicsLoaderChangedListeners[key] = listener
+    }
+
     fun setOnSearchQueryListener(key: String, listener: (String?) -> Unit) {
         onSearchQueryListeners[key] = listener
     }
@@ -443,6 +449,7 @@ class MainActivity : FragmentActivity() {
     private val onLayoutChangeListeners = HashMap<String, () -> Unit>()
     private val onPageScrollListeners = HashMap<String, (Float) -> Unit>()
     private val onAppsLoadedListeners = HashMap<String, (List<App>) -> Unit>()
+    private val onGraphicsLoaderChangedListeners = HashMap<String, (GraphicsLoader) -> Unit>()
     private val onSearchQueryListeners = HashMap<String, (String?) -> Unit>()
 
     fun updateSuggestions(pinnedItems: List<LauncherItem>) {
