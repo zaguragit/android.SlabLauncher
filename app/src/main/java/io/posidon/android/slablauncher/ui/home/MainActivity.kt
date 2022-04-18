@@ -64,6 +64,8 @@ import io.posidon.android.conveniencelib.getNavigationBarHeight
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 import kotlin.concurrent.thread
+import kotlin.math.max
+import kotlin.math.min
 
 
 class MainActivity : FragmentActivity() {
@@ -475,7 +477,14 @@ class MainActivity : FragmentActivity() {
                 )
             )
         }
-        searchBarBlurBG.drawable = acrylicBlur?.smoothBlurDrawable
+        searchBarBlurBG.drawable = acrylicBlur?.let { b ->
+            LayerDrawable(
+                arrayOf(
+                    BitmapDrawable(resources, b.smoothBlur),
+                    BitmapDrawable(resources, b.insaneBlur),
+                )
+            )
+        }
         updateBlurLevel()
     }
 
@@ -485,6 +494,7 @@ class MainActivity : FragmentActivity() {
     fun updateBlurLevel() {
         setBlurLevel(blurLevel)
         blurBG.invalidate()
+        searchBarBlurBG.invalidate()
     }
     private fun setBlurLevel(f: Float) {
         blurLevel = f
@@ -499,6 +509,9 @@ class MainActivity : FragmentActivity() {
         l.getDrawable(2).alpha = if (x < 2f) 0 else (255 * (x - 2f)).toInt()
         l.getDrawable(3).alpha = (200 * overlayOpacity * invF + 100 * f).toInt()
         viewPager.background?.alpha = (127 * overlayOpacity * invF + (191) * f).toInt()
+        val sl = searchBarBlurBG.drawable as? LayerDrawable ?: return
+        sl.getDrawable(0).alpha = ((35 + 220 * min(invF, 1 - overlayOpacity)) * 0.36f).toInt()
+        sl.getDrawable(1).alpha = (25 + 230 * max(f, overlayOpacity) * 0.16f).toInt()
     }
 
     override fun onDestroy() {

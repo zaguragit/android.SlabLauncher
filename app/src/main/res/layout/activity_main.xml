@@ -24,8 +24,7 @@
         <io.posidon.android.slablauncher.ui.view.SeeThroughView
             android:id="@+id/search_bar_blur_bg"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha=".2"/>
+            android:layout_height="match_parent"/>
         <LinearLayout
             android:id="@+id/in_search_bar_container"
             android:layout_width="match_parent"
