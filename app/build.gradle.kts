@@ -29,7 +29,7 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.20")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.21")
     implementation("com.willowtreeapps:fuzzywuzzy-kotlin-jvm:0.9.0")
 
     implementation("io.posidon:android.launcherutil:22.0")
