@@ -10,9 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.18"/>
-    <TextView
-        style="@style/SlabLauncher.SearchResult.SimpleBox.Text"
-        android:id="@+id/text"
+    <RelativeLayout
+        style="@style/SlabLauncher.SearchResult.InstantAnswer.Container"
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_card_border">
+        <TextView
+            style="@style/SlabLauncher.SearchResult.SimpleBox.Text"
+            android:id="@+id/text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
 </androidx.cardview.widget.CardView>

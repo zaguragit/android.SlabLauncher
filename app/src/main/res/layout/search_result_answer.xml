@@ -11,11 +11,11 @@
         android:layout_height="match_parent"
         android:alpha="0.18"/>
     <LinearLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="@dimen/feed_card_padding"
-        style="@style/SlabLauncher.SearchResult.Container">
+        style="@style/SlabLauncher.SearchResult.InstantAnswer.Container">
         <TextView
             style="@style/SlabLauncher.SearchResult.InstantAnswer.Title"
             android:id="@+id/title"

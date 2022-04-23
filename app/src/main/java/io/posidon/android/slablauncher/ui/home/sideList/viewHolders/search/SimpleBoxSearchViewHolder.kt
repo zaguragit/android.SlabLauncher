@@ -1,6 +1,7 @@
 package io.posidon.android.slablauncher.ui.home.sideList.viewHolders.search
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.view.View
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -17,8 +18,9 @@ class SimpleBoxSearchViewHolder(
     itemView: View
 ) : SearchViewHolder(itemView) {
 
-    val text = itemView.findViewById<TextView>(R.id.text)!!
     val card = itemView.findViewById<CardView>(R.id.card)!!
+    val container = card.findViewById<View>(R.id.container)!!
+    val text = container.findViewById<TextView>(R.id.text)!!
 
     val blurBG = itemView.findViewById<SeeThroughView>(R.id.blur_bg)!!.apply {
         viewTreeObserver.addOnPreDrawListener {
@@ -39,6 +41,7 @@ class SimpleBoxSearchViewHolder(
         activity.setOnPageScrollListener(AnswerSearchViewHolder::class.simpleName!!) { blurBG.offset = it }
 
         card.setCardBackgroundColor(ColorTheme.cardBG)
+        container.backgroundTintList = ColorStateList.valueOf(ColorTheme.separator)
         text.setTextColor(ColorTheme.cardTitle)
 
         text.text = "${result.operation} = ${result.result}"

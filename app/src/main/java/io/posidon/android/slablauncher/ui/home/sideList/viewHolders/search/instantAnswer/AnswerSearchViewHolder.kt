@@ -1,5 +1,6 @@
 package io.posidon.android.slablauncher.ui.home.sideList.viewHolders.search.instantAnswer
 
+import android.content.res.ColorStateList
 import android.view.View
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -21,8 +22,9 @@ class AnswerSearchViewHolder(
 ) : SearchViewHolder(itemView) {
 
     val card = itemView.findViewById<CardView>(R.id.card)!!
-    val title = card.findViewById<TextView>(R.id.title)!!
-    val description = card.findViewById<TextView>(R.id.description)!!
+    val container = card.findViewById<View>(R.id.container)!!
+    val title = container.findViewById<TextView>(R.id.title)!!
+    val description = container.findViewById<TextView>(R.id.description)!!
 
     val infoBoxAdapter = InfoBoxAdapter()
     val infoBox = itemView.findViewById<RecyclerView>(R.id.info_box)!!.apply {
@@ -53,6 +55,7 @@ class AnswerSearchViewHolder(
         activity.setOnPageScrollListener(AnswerSearchViewHolder::class.simpleName!!) { blurBG.offset = it }
 
         card.setCardBackgroundColor(ColorTheme.cardBG)
+        container.backgroundTintList = ColorStateList.valueOf(ColorTheme.separator)
         title.setTextColor(ColorTheme.cardTitle)
         description.setTextColor(ColorTheme.cardDescription)
 
