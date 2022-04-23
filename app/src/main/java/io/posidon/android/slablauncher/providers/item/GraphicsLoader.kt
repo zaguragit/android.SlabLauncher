@@ -27,6 +27,7 @@ import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.ContactItem
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.data.items.ShortcutItem
+import io.posidon.android.slablauncher.util.FastRandom
 import io.posidon.android.slablauncher.util.drawable.ContactDrawable
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import io.posidon.android.slablauncher.util.drawable.NonDrawable
@@ -100,11 +101,11 @@ class GraphicsLoader {
             contact.label,
             tmpLab,
             textP
-        ) ?: NonDrawable() else try {
+        ) else try {
             val inputStream = context.contentResolver.openInputStream(iconUri)
             Drawable.createFromStream(inputStream, iconUri.toString())
         } catch (e: FileNotFoundException) {
-            genProfilePic(contact.label, tmpLab, textP) ?: NonDrawable()
+            genProfilePic(contact.label, tmpLab, textP)
         }
         pic.setBounds(0, 0, pic.intrinsicWidth, pic.intrinsicHeight)
         val i = IconData(
@@ -282,20 +283,31 @@ class GraphicsLoader {
         return color
     }
 
-    private fun genProfilePic(name: String, tmpLab: DoubleArray, paint: Paint): Drawable? {
-        if (name.isEmpty()) return null
-        val realName = name.trim { !it.isLetterOrDigit() }.uppercase()
-        if (realName.isEmpty()) return null
-        val key = (realName[0].code shl 16) + realName[realName.length / 2].code
+    private fun genProfilePic(name: String, tmpLab: DoubleArray, paint: Paint): Drawable {
+        val realName = name.trim { !it.isLetterOrDigit() }.uppercase().padEnd(4, '$')
+        val key = (realName[0].code shl (16 * 3)).toLong() + (realName[2].code shl (16 * 2)).toLong() + (realName[1].code shl 16).toLong() + realName.last().code
         val random = Random(key)
-        val base = Color.HSVToColor(floatArrayOf(random.nextFloat() * 360f, 1f, 1f))
-        ColorUtils.colorToLAB(base, tmpLab)
-        return ContactDrawable(
+        val color = run {
+            val base = Color.HSVToColor(floatArrayOf(random.nextFloat() * 360f, 1f, 1f))
+            ColorUtils.colorToLAB(base, tmpLab)
+            tmpLab[1] *= 0.8
+            tmpLab[2] *= 0.8
             ColorUtils.LABToColor(
                 50.0,
-                tmpLab[1] / 2.0,
-                tmpLab[2] / 2.0
-            ),
+                tmpLab[1],
+                tmpLab[2],
+            )
+        }
+        val lightColor = run {
+            ColorUtils.LABToColor(
+                50.0,
+                (tmpLab[1] + random.nextFloat().let { it * 2 - 1 } * 60.0) * 1.2,
+                (tmpLab[2] + random.nextFloat().let { it * 2 - 1 } * 60.0) * 1.2,
+            )
+        }
+        return ContactDrawable(
+            color,
+            lightColor,
             realName[0],
             paint
         )

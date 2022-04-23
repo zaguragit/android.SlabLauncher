@@ -47,8 +47,7 @@ class ContactResult private constructor(
     override fun toString() = contact.toString()
 
     companion object {
-        fun getList(context: Context): Collection<ContactResult> {
-            return ContactLoader.load(context).map(::ContactResult)
-        }
+        fun getList(context: Context): List<ContactResult> =
+            ContactLoader.load(context).map(::ContactResult)
     }
 }
