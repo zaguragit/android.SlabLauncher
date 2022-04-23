@@ -24,7 +24,7 @@
         <item name="android:layout_marginHorizontal">@dimen/summary_card_notification_spacing</item>
         <item name="android:includeFontPadding">false</item>
         <item name="android:textSize">14sp</item>
-        <item name="android:fontFamily">@font/atkinson_hyperlegible_bold</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
     </style>
@@ -48,7 +48,7 @@
         <item name="android:layout_marginHorizontal">@dimen/summary_card_notification_margin</item>
         <item name="android:includeFontPadding">false</item>
         <item name="android:textSize">20sp</item>
-        <item name="android:fontFamily">@font/atkinson_hyperlegible_bold</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:ellipsize">end</item>
     </style>
     <style name="SlabLauncher.Notification.PrimaryItem.Text" parent="SlabLauncher">
