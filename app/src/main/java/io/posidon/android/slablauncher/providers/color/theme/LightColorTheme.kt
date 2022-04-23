@@ -25,6 +25,8 @@ class LightColorTheme(
     override val cardDescription = palette.neutralDark
     override val cardHint = palette.neutralMedium
 
+    override val separator = palette.neutralVeryDark and 0xffffff or 0x33000000
+
     override val buttonColor = palette.neutralVeryLight
     override val buttonColorCallToAction = palette.secondary
 

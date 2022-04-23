@@ -21,7 +21,7 @@ class InfoBoxAdapter : RecyclerView.Adapter<InfoboxEntryViewHolder>() {
 
         holder.label.setTextColor(ColorTheme.cardTitle)
         holder.value.setTextColor(ColorTheme.cardDescription)
-        holder.separator.setBackgroundColor(ColorTheme.hintColorForBG(ColorTheme.cardBG))
+        holder.separator.setBackgroundColor(ColorTheme.separator)
     }
 
     override fun getItemCount() = entries.size

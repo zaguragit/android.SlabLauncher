@@ -3,6 +3,7 @@ package io.posidon.android.slablauncher.ui.home.main.dash
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.content.res.ColorStateList
+import android.graphics.PorterDuff
 import android.icu.util.Calendar
 import android.view.MotionEvent
 import android.view.View
@@ -38,6 +39,7 @@ import io.posidon.android.conveniencelib.units.toPixels
 class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivity) {
 
     val card = view.findViewById<CardView>(R.id.card)!!
+    val container = card.findViewById<View>(R.id.container)!!
     val statement = card.findViewById<TextView>(R.id.statement)!!
     val date = card.findViewById<TextView>(R.id.date)!!
     val alarm = card.findViewById<TextView>(R.id.alarm)
@@ -190,7 +192,9 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
     }
 
     fun updateColorTheme() {
-        separators.forEach { it.setBackgroundColorFast(ColorTheme.cardHint) }
+        val s = ColorTheme.separator
+        container.backgroundTintList = ColorStateList.valueOf(s)
+        separators.forEach { it.setBackgroundColorFast(s) }
         card.setCardBackgroundColor(ColorTheme.cardBG)
         statement.setTextColor(ColorTheme.cardTitle)
         date.setTextColor(ColorTheme.cardDescription)

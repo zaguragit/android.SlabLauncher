@@ -3,6 +3,7 @@ package io.posidon.android.slablauncher.ui.popup.home
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -77,12 +78,14 @@ class HomeLongPressPopup(
             val blurBG = content.findViewById<SeeThroughView>(R.id.blur_bg)
 
             val cardView = content.findViewById<CardView>(R.id.card)
+            val recycler = content.findViewById<RecyclerView>(R.id.recycler)
             val popupAdapter = ListPopupAdapter()
             val updateLock = ReentrantLock()
 
             val popup = HomeLongPressPopup {
-                blurBG.drawable = acrylicBlur?.insaneBlurDrawable
+                blurBG.drawable = acrylicBlur?.smoothBlurDrawable
                 cardView.setCardBackgroundColor(ColorTheme.cardBG)
+                recycler.backgroundTintList = ColorStateList.valueOf(ColorTheme.separator)
                 popupAdapter.updateItems(
                     createMainAdapter(
                         parent.context, settings,

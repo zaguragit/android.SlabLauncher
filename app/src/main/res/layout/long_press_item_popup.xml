@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/card"
-    style="@style/SlabLauncher.ItemPopup.Container">
+    style="@style/SlabLauncher.ItemPopup.Card">
+    <io.posidon.android.slablauncher.ui.view.SeeThroughView
+        android:id="@+id/blur_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.3"/>
     <LinearLayout
+        style="@style/SlabLauncher.ItemPopup.Container"
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
         <LinearLayout
             android:id="@+id/properties_item"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            style="@style/SlabLauncher.ItemPopup.Shortcut.Container">
             <ImageView
                 style="@style/SlabLauncher.ItemPopup.Shortcut.Icon"
                 android:id="@+id/properties_icon"
@@ -32,5 +36,23 @@
                 android:maxLines="1"
                 android:text="@string/properties"/>
         </LinearLayout>
+        <View
+            android:id="@+id/separator_static"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_static"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"/>
+        <View
+            android:id="@+id/separator_dynamic"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_dynamic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"/>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

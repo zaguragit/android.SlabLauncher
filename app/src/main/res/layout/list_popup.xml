@@ -9,7 +9,7 @@
         android:id="@+id/blur_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.2"/>
+        android:alpha="0.16"/>
     <androidx.recyclerview.widget.RecyclerView
         style="@style/SlabLauncher.ListPopup.Recycler"
         android:id="@+id/recycler"

@@ -28,9 +28,11 @@ class BitmapBasedPalette(
         lab.run {
             ColorUtils.colorToLAB(darkNeutral ?: 0, this)
             set(1, get(1).coerceAtMost(32.0))
+            set(2, get(2).coerceAtLeast(-50.0))
             set(0, (get(0) - (get(1) - 2.0).coerceAtLeast(0.0) * 0.8).coerceAtMost(20.0))
             neutralDark = ColorUtils.LABToColor(this[0], this[1], this[2])
             set(1, get(1).coerceAtMost(18.0))
+            set(2, get(2).coerceAtLeast(-32.0))
             set(0, (get(0) - 16.0).coerceAtMost(10.0))
             neutralVeryDark = ColorUtils.LABToColor(this[0], this[1], this[2])
         }

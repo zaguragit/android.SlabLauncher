@@ -375,9 +375,9 @@ class MainActivity : FragmentActivity() {
             searchBarContainer.setBackgroundColorFast(ColorTheme.searchBarBG)
             searchBarText.run {
                 setTextColor(ColorTheme.searchBarFG)
-                highlightColor = ColorTheme.searchBarFG and 0x00ffffff or 0x66000000
+                highlightColor = ColorTheme.accentColor and 0x00ffffff or 0x66000000
             }
-            searchBarSeparator.setBackgroundColorFast(ColorTheme.searchBarFG and 0x00ffffff or 0x33000000)
+            searchBarSeparator.setBackgroundColorFast(ColorTheme.separator)
             searchBarIcon.imageTintList =
                 ColorStateList.valueOf(ColorTheme.searchBarFG)
             HomeLongPressPopup.updateCurrent()

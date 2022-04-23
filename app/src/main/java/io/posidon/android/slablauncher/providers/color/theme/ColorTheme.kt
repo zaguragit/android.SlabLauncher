@@ -25,6 +25,8 @@ interface ColorTheme {
     val cardDescription: Int
     val cardHint: Int
 
+    val separator: Int
+
     val buttonColor: Int
     val buttonColorCallToAction: Int
 
@@ -59,6 +61,8 @@ interface ColorTheme {
             get() = colorThemeInstance.cardDescription
         override val cardHint: Int
             get() = colorThemeInstance.cardHint
+        override val separator: Int
+            get() = colorThemeInstance.separator
         override val buttonColor: Int
             get() = colorThemeInstance.buttonColor
         override val buttonColorCallToAction: Int

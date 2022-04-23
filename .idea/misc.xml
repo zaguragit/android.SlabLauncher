@@ -33,6 +33,7 @@
         <entry key="app/src/main/res/drawable/ic_track_next.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/drawable/ic_track_previous.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/drawable/input_bg.xml" value="0.37395833333333334" />
+        <entry key="app/src/main/res/drawable/item_card_border.xml" value="0.3675" />
         <entry key="app/src/main/res/drawable/launcher_adaptive_foreground.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/drawable/launcher_settings.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/drawable/loading.xml" value="0.37395833333333334" />
