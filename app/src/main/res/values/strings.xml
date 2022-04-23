@@ -24,13 +24,7 @@
         <string name="dock_row_count">Dock row count</string>
         <string name="show_app_suggestions">Show app suggestions</string>
 
-        <string name="scrollbar_controller">App sorting</string>
-
         <string name="tiles">Tiles</string>
-
-        <string name="reshape_adaptive_icons">Adaptive icon reshaping</string>
-        <string name="reshape_adaptive_icons_explanation">Uses icon backgrounds to cover app cards</string>
-
 
         <string name="monochrome_icons">Monochromatism</string>
 
@@ -63,6 +57,16 @@
             <string name="permission_usage_access">Usage access</string>
             <string name="permission_usage_access_explanation">To improve app suggestions</string>
         <!-- permissions end -->
+
+        <!-- how to use start -->
+            <string name="how_to_use">How to use</string>
+
+            <string name="pin_apps_to_home_screen">Pin apps to home screen</string>
+            <string name="pin_apps_to_home_screen_explanation">Just go to the app list/search screen (on the right of the main screen), find the app you want, long-press it, and drag it to the bottom of the main screen</string>
+
+            <string name="launcher_settings">Launcher settings</string>
+            <string name="launcher_settings_explanation">Long-press on the dash (the card at the top of the main screen)</string>
+        <!-- how to use end -->
     <!-- first time screen end -->
 
     <!-- statements start -->
