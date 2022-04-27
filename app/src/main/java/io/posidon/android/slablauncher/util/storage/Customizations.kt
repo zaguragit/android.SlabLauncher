@@ -49,6 +49,20 @@ object DockRowCount {
     const val DEFAULT = 3
 }
 
+object ColumnCount {
+
+    val Settings.dockColumnCount: Int
+        get() = get(KEY, DEFAULT)
+
+    var Settings.SettingsEditor.dockColumnCount: Int
+        get() = settings[KEY, DEFAULT]
+        set(value) = KEY set value
+
+    private const val KEY = "dock:columns"
+
+    const val DEFAULT = 4
+}
+
 object DoMonochromeIconsSetting {
 
     val Settings.doMonochrome: Boolean

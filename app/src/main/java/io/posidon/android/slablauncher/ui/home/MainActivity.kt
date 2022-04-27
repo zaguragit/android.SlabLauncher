@@ -454,7 +454,7 @@ class MainActivity : FragmentActivity() {
 
     fun updateSuggestions(pinnedItems: List<LauncherItem>) {
         suggestionsAdapter.updateItems((SuggestionsManager.get() - pinnedItems.let {
-            val s = settings.dockRowCount * HomeArea.calculateColumns(this)
+            val s = settings.dockRowCount * HomeArea.calculateColumns(this, launcherContext.settings)
             if (it.size > s) it.subList(0, s)
             else it
         }.toSet()).let {

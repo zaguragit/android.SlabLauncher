@@ -73,5 +73,6 @@
         <string name="good_morning">Good morning!</string>
         <string name="good_night">Good night!</string>
         <string name="good_day">Have a nice day!</string>
+    <string name="columns">Columns</string>
     <!-- statements end -->
 </resources>

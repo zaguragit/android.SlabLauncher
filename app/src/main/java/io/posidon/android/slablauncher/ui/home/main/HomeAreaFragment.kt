@@ -15,6 +15,8 @@ import androidx.core.view.doOnLayout
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.ui.home.MainActivity
@@ -87,10 +89,16 @@ class DashAreaFragment : Fragment() {
     }
 
     private fun updateLayout() {
+        homeArea.pinnedRecycler.layoutManager = GridLayoutManager(
+            homeArea.view.context,
+            HomeArea.calculateColumns(homeArea.view.context, launcherContext.settings),
+            RecyclerView.VERTICAL,
+            false
+        )
         homeArea.dash.view.doOnLayout {
             it.updateLayoutParams {
                 val tileMargin = it.context.resources.getDimension(R.dimen.item_card_margin)
-                val tileWidth = (Device.screenWidth(it.context) - tileMargin * 2) / HomeArea.calculateColumns(it.context) - tileMargin * 2
+                val tileWidth = (Device.screenWidth(it.context) - tileMargin * 2) / HomeArea.calculateColumns(it.context, launcherContext.settings) - tileMargin * 2
                 val tileHeight = tileWidth / HomeArea.WIDTH_TO_HEIGHT
                 val dockHeight = launcherContext.settings.dockRowCount * (tileHeight + tileMargin * 2)
                 height = requireView().height - (tileMargin + dockHeight.toInt()).toInt()

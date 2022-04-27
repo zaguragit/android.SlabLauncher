@@ -35,6 +35,7 @@ import io.posidon.android.conveniencelib.Device
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.slablauncher.BuildConfig
+import io.posidon.android.slablauncher.util.storage.ColumnCount.dockColumnCount
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.thread
 import kotlin.concurrent.withLock
@@ -201,6 +202,18 @@ class HomeLongPressPopup(
                 ),
                 ListPopupItem(context.getString(R.string.layout), isTitle = true),
                 ListPopupItem(
+                    context.getString(R.string.columns),
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_home),
+                    value = settings.dockColumnCount - 2,
+                    states = 5,
+                    onStateChange = { _, value ->
+                        settings.edit(context) {
+                            dockColumnCount = value + 2
+                            updateLayout()
+                        }
+                    }
+                ),
+                ListPopupItem(
                     context.getString(R.string.dock_row_count),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_home),
                     value = settings.dockRowCount,
@@ -214,7 +227,7 @@ class HomeLongPressPopup(
                 ),
                 ListPopupItem(
                     context.getString(R.string.show_app_suggestions),
-                    icon = ContextCompat.getDrawable(context, R.drawable.ic_home),
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_visible),
                     value = settings.doSuggestionStrip,
                     states = 2,
                     onStateChange = { _, value ->

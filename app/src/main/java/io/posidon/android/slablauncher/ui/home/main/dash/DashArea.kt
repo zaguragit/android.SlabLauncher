@@ -81,10 +81,12 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
         }
     }
 
-    private val popupHeight get() =
+    private val popupHeight get() = (
         view.height -
         view.context.getStatusBarHeight() -
         view.resources.getDimension(R.dimen.item_card_margin).toInt() * 2
+    ).coerceAtLeast(512.dp.toPixels(view))
+
     private val popupWidth get() =
         view.width - view.resources.getDimension(R.dimen.item_card_margin).toInt() * 4
 
