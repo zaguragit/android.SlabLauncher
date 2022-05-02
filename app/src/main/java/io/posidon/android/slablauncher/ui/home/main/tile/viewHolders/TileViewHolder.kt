@@ -1,6 +1,7 @@
 package io.posidon.android.slablauncher.ui.home.main.tile.viewHolders
 
 import android.app.Activity
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.ColorMatrix
 import android.graphics.ColorMatrixColorFilter
@@ -80,6 +81,8 @@ class TileViewHolder(
     ) {
         imageView.setImageDrawable(null)
         card.setCardBackgroundColor(ColorTheme.cardBG)
+
+        imageView.foregroundTintList = ColorStateList.valueOf(ColorTheme.separator)
 
         graphicsLoader.load(itemView.context, item) {
             updateBackground(item, it, settings)

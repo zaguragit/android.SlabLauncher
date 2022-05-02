@@ -195,7 +195,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
 
     fun updateColorTheme() {
         val s = ColorTheme.separator
-        container.backgroundTintList = ColorStateList.valueOf(s)
+        container.foregroundTintList = ColorStateList.valueOf(s)
         separators.forEach { it.setBackgroundColorFast(s) }
         card.setCardBackgroundColor(ColorTheme.cardBG)
         statement.setTextColor(ColorTheme.cardTitle)
