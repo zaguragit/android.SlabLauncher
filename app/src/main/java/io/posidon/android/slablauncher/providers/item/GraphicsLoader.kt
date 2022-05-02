@@ -27,7 +27,6 @@ import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.ContactItem
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.data.items.ShortcutItem
-import io.posidon.android.slablauncher.util.FastRandom
 import io.posidon.android.slablauncher.util.drawable.ContactDrawable
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import io.posidon.android.slablauncher.util.drawable.NonDrawable

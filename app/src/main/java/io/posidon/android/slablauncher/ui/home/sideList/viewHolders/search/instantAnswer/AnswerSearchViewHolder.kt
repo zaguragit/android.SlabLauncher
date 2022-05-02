@@ -26,18 +26,18 @@ class AnswerSearchViewHolder(
     val title = container.findViewById<TextView>(R.id.title)!!
     val description = container.findViewById<TextView>(R.id.description)!!
 
-    val infoBoxAdapter = InfoBoxAdapter()
-    val infoBox = itemView.findViewById<RecyclerView>(R.id.info_box)!!.apply {
+    private val infoBoxAdapter = InfoBoxAdapter()
+    private val infoBox = itemView.findViewById<RecyclerView>(R.id.info_box)!!.apply {
         layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         adapter = infoBoxAdapter
     }
 
-    val actionsContainer = itemView.findViewById<CardView>(R.id.actions_container)!!
-    val sourceAction = actionsContainer.findViewById<TextView>(R.id.source)!!
-    val searchAction = actionsContainer.findViewById<TextView>(R.id.search)!!
-    val actionSeparator = actionsContainer.findViewById<View>(R.id.separator)!!
+    private val actionsContainer = itemView.findViewById<CardView>(R.id.actions_container)!!
+    private val sourceAction = actionsContainer.findViewById<TextView>(R.id.source)!!
+    private val searchAction = actionsContainer.findViewById<TextView>(R.id.search)!!
+    private val actionSeparator = actionsContainer.findViewById<View>(R.id.separator)!!
 
-    val blurBG = itemView.findViewById<SeeThroughView>(R.id.blur_bg)!!.apply {
+    private val blurBG = itemView.findViewById<SeeThroughView>(R.id.blur_bg)!!.apply {
         viewTreeObserver.addOnPreDrawListener {
             invalidate()
             true

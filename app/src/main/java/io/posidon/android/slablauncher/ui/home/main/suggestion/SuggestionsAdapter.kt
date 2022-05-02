@@ -3,13 +3,12 @@ package io.posidon.android.slablauncher.ui.home.main.suggestion
 import android.app.Activity
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import io.posidon.android.conveniencelib.getNavigationBarHeight
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.LauncherItem
-import io.posidon.android.slablauncher.util.storage.Settings
-import io.posidon.android.conveniencelib.getNavigationBarHeight
 import io.posidon.android.slablauncher.providers.item.GraphicsLoader
+import io.posidon.android.slablauncher.util.storage.Settings
 
 class SuggestionsAdapter(
     val activity: Activity,

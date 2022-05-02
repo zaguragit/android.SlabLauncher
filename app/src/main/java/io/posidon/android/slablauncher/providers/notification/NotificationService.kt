@@ -27,7 +27,7 @@ import kotlin.concurrent.thread
 
 class NotificationService : NotificationListenerService() {
 
-    val componentName = ComponentName(BuildConfig.APPLICATION_ID, this::class.java.name)
+    private val componentName = ComponentName(BuildConfig.APPLICATION_ID, this::class.java.name)
 
     override fun onCreate() {
         StackTraceActivity.init(applicationContext)

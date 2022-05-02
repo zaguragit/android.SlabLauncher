@@ -4,7 +4,6 @@ import android.content.ClipData
 import android.content.ClipDescription
 import android.content.Context
 import android.content.pm.LauncherApps
-import android.content.pm.ShortcutInfo
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.LauncherItem
-import io.posidon.android.slablauncher.data.items.ShortcutItem
 import io.posidon.android.slablauncher.data.items.showProperties
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.item.GraphicsLoader
@@ -32,7 +30,7 @@ import io.posidon.android.slablauncher.util.drawable.setBackgroundColorFast
 object ItemLongPress {
 
     var currentPopup: PopupWindow? = null
-    fun makePopupWindow(context: Context, item: LauncherItem, backgroundColor: Int, textColor: Int, graphicsLoader: GraphicsLoader, onInfo: (View) -> Unit): PopupWindow {
+    private fun makePopupWindow(context: Context, item: LauncherItem, backgroundColor: Int, textColor: Int, graphicsLoader: GraphicsLoader, onInfo: (View) -> Unit): PopupWindow {
         val content = LayoutInflater.from(context).inflate(R.layout.long_press_item_popup, null)
         if (item is App) {
             val launcherApps = context.getSystemService(LauncherApps::class.java)

@@ -2,18 +2,10 @@ package io.posidon.android.slablauncher.data.items
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.provider.ContactsContract
 import android.util.Log
 import android.view.View
-import androidx.core.graphics.ColorUtils
-import io.posidon.android.launcherutil.IconTheming
-import io.posidon.android.slablauncher.util.drawable.ContactDrawable
-import io.posidon.android.conveniencelib.drawable.MaskedDrawable
-import kotlin.random.Random
 
 class ContactItem(
     override var label: String,

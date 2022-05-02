@@ -12,8 +12,8 @@ class InstantAnswerResult(
     override val title: String,
     val description: String,
     val sourceName: String,
-    val sourceUrl: String,
-    val searchUrl: String,
+    private val sourceUrl: String,
+    private val searchUrl: String,
     val infoTable: List<Pair<String, String>>?
 ) : SearchResult {
     override var relevance = Relevance(max(

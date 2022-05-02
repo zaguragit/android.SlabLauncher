@@ -12,15 +12,15 @@ import java.util.*
 
 class IconPackPickerAdapter(
     val settings: Settings,
-    val chosenIconPacks: LinkedList<IconPackPickerActivity.IconPack>,
-    val availableIconPacks: LinkedList<IconPackPickerActivity.IconPack>,
-    val systemPack: IconPackPickerActivity.IconPack,
+    private val chosenIconPacks: LinkedList<IconPackPickerActivity.IconPack>,
+    private val availableIconPacks: LinkedList<IconPackPickerActivity.IconPack>,
+    private val systemPack: IconPackPickerActivity.IconPack,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemViewType(i: Int): Int {
-        return when {
-            i == 0 || i == 1 + chosenIconPacks.size + 1 -> SECTION
-            i == 1 + chosenIconPacks.size -> SYSTEM_ICON_PACK
+        return when (i) {
+            0, 1 + chosenIconPacks.size + 1 -> SECTION
+            1 + chosenIconPacks.size -> SYSTEM_ICON_PACK
             else -> ICON_PACK
         }
     }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
@@ -8,7 +9,8 @@
     style="@style/SlabLauncher.TileArea.Suggestions.Item.Card">
     <ImageView
         style="@style/SlabLauncher.TileArea.Suggestions.Item.Icon"
-        android:id="@+id/icon"/>
+        android:id="@+id/icon"
+        tools:ignore="ContentDescription"/>
     <TextView
         style="@style/SlabLauncher.TileArea.Suggestions.Item.Label"
         android:id="@+id/label"

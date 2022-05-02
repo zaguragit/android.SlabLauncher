@@ -31,14 +31,15 @@ class ContextMap<T>(
         }.reduce(Float::times)
     }
     private val lengthBuffer = FloatArray(contextDataSize)
-    fun calculateDistance(a: ContextArray, b: ContextArray): Float {
+
+    private fun calculateDistance(a: ContextArray, b: ContextArray): Float {
         a.data.forEachIndexed { i, fl ->
             lengthBuffer[i] = differentiator(i, fl, b.data[i])
         }
         return lengthBuffer.sum()
     }
 
-    fun trimContextListIfTooBig(list: List<ContextArray>, maxContexts: Int): List<ContextArray> {
+    private fun trimContextListIfTooBig(list: List<ContextArray>, maxContexts: Int): List<ContextArray> {
         val s = list.size
         return if (list.size > maxContexts) {
             val matches = list.mapIndexedTo(ArrayList()) { ai, a ->

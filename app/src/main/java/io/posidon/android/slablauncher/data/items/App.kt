@@ -4,16 +4,11 @@ import android.app.ActivityOptions
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.LauncherApps
-import android.content.pm.PackageManager
-import android.content.pm.ShortcutInfo
 import android.os.Process
 import android.os.UserHandle
-import android.os.UserManager
 import android.util.Log
 import android.view.View
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
-import io.posidon.android.conveniencelib.isInstalled
-import java.util.*
 
 class App(
     val packageName: String,
@@ -74,8 +69,6 @@ class App(
         } catch (e: Exception) { emptyList() }
     }
 
-    inline fun isInstalled(packageManager: PackageManager) = packageManager.isInstalled(packageName)
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -111,6 +104,3 @@ class App(
         }
     }
 }
-
-inline fun App.isUserRunning(context: Context) =
-    context.getSystemService(UserManager::class.java).isUserRunning(userHandle)

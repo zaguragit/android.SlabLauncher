@@ -38,7 +38,7 @@ class TileViewHolder(
 
     private val imageView = itemView.findViewById<ImageView>(R.id.background_image)!!
 
-    fun updateBackground(
+    private fun updateBackground(
         item: LauncherItem,
         iconData: IconData<GraphicsLoader.Extra>,
         settings: Settings,
@@ -110,7 +110,7 @@ class TileViewHolder(
         }
     }
 
-    fun recycle(item: LauncherItem) {
+    fun recycle() {
         imageView.setImageDrawable(null)
     }
 }

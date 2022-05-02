@@ -19,7 +19,7 @@ class BackdropImageView : ImageView {
         )
     }
 
-    fun calculate(minSize: Int, measureSpec: Int): Int {
+    private fun calculate(minSize: Int, measureSpec: Int): Int {
         var result = minSize
         val mode = MeasureSpec.getMode(measureSpec)
         val specSize = MeasureSpec.getSize(measureSpec)

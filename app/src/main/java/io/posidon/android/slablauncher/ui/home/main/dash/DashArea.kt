@@ -3,7 +3,6 @@ package io.posidon.android.slablauncher.ui.home.main.dash
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.content.res.ColorStateList
-import android.graphics.PorterDuff
 import android.icu.util.Calendar
 import android.view.MotionEvent
 import android.view.View
@@ -16,6 +15,11 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.getStatusBarHeight
+import io.posidon.android.conveniencelib.pullStatusbar
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.notification.NotificationData
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
@@ -29,46 +33,41 @@ import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
 import io.posidon.android.slablauncher.util.drawable.setBackgroundColorFast
-import io.posidon.android.conveniencelib.Device
-import io.posidon.android.conveniencelib.units.dp
-import io.posidon.android.conveniencelib.getStatusBarHeight
-import io.posidon.android.conveniencelib.pullStatusbar
-import io.posidon.android.conveniencelib.units.toPixels
 
 @SuppressLint("ClickableViewAccessibility")
 class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivity) {
 
     val card = view.findViewById<CardView>(R.id.card)!!
     val container = card.findViewById<View>(R.id.container)!!
-    val statement = card.findViewById<TextView>(R.id.statement)!!
-    val date = card.findViewById<TextView>(R.id.date)!!
-    val alarm = card.findViewById<TextView>(R.id.alarm)
+    private val statement = card.findViewById<TextView>(R.id.statement)!!
+    private val date = card.findViewById<TextView>(R.id.date)!!
+    private val alarm = card.findViewById<TextView>(R.id.alarm)
 
-    val notificationArea = card.findViewById<ViewGroup>(R.id.notification_area)!!
+    private val notificationArea = card.findViewById<ViewGroup>(R.id.notification_area)!!
 
-    val separators = arrayOf<View>(
+    private val separators = arrayOf<View>(
         card.findViewById(R.id.separator),
         card.findViewById(R.id.separator1),
         card.findViewById(R.id.separator2),
     )
 
-    val notificationsAdapter = NotificationAdapter()
-    val notificationsRecycler = view.findViewById<RecyclerView>(R.id.notifications)!!.apply {
+    private val notificationsAdapter = NotificationAdapter()
+    private val notificationsRecycler = view.findViewById<RecyclerView>(R.id.notifications)!!.apply {
         layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
         adapter = notificationsAdapter
     }
 
-    val primaryNotification = notificationArea.findViewById<ViewGroup>(R.id.primary_notification)
-    val notificationIcon = primaryNotification.findViewById<ImageView>(R.id.icon)
-    val notificationSource = primaryNotification.findViewById<TextView>(R.id.source)
-    val notificationTitle = primaryNotification.findViewById<TextView>(R.id.title)
-    val notificationText = primaryNotification.findViewById<TextView>(R.id.text)
-    val notificationImageCard = primaryNotification.findViewById<CardView>(R.id.notification_image_card)
-    val notificationImage = notificationImageCard.findViewById<ImageView>(R.id.notification_image)
+    private val primaryNotification = notificationArea.findViewById<ViewGroup>(R.id.primary_notification)
+    private val notificationIcon = primaryNotification.findViewById<ImageView>(R.id.icon)
+    private val notificationSource = primaryNotification.findViewById<TextView>(R.id.source)
+    private val notificationTitle = primaryNotification.findViewById<TextView>(R.id.title)
+    private val notificationText = primaryNotification.findViewById<TextView>(R.id.text)
+    private val notificationImageCard = primaryNotification.findViewById<CardView>(R.id.notification_image_card)
+    private val notificationImage = notificationImageCard.findViewById<ImageView>(R.id.notification_image)
 
-    val mediaPlayer = MediaPlayer(view.findViewById(R.id.media_player), separators[2])
+    private val mediaPlayer = MediaPlayer(view.findViewById(R.id.media_player), separators[2])
 
-    val notificationMoreText = view.findViewById<TextView>(R.id.x_more)!!.apply {
+    private val notificationMoreText = view.findViewById<TextView>(R.id.x_more)!!.apply {
         setOnClickListener {
             it.context.pullStatusbar()
         }
@@ -221,7 +220,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
         } else {
             val c = Calendar.getInstance()
             c.timeInMillis = nextAlarm.triggerTime
-            alarm.text = "${c[Calendar.HOUR_OF_DAY]}:${c[Calendar.MINUTE]}"
+            alarm.text = alarm.resources.getString(R.string.next_alarm_time_format, c[Calendar.HOUR_OF_DAY], c[Calendar.MINUTE])
             alarm.isVisible = true
         }
         updateNotifications(NotificationService.notifications)

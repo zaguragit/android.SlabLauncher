@@ -15,7 +15,7 @@ import java.util.*
 
 class IntroActivity : FragmentActivity() {
 
-    val stack = LinkedList<FragmentWithNext>().apply {
+    private val stack = LinkedList<FragmentWithNext>().apply {
         push(SplashFragment())
     }
 

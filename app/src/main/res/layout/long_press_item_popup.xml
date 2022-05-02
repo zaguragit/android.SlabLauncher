@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/card"
@@ -25,7 +26,8 @@
             <ImageView
                 style="@style/SlabLauncher.ItemPopup.Shortcut.Icon"
                 android:id="@+id/properties_icon"
-                android:src="@drawable/ic_info"/>
+                android:src="@drawable/ic_info"
+                tools:ignore="ContentDescription"/>
             <TextView
                 style="@style/SlabLauncher.ItemPopup.Shortcut.Label"
                 android:id="@+id/properties_text"

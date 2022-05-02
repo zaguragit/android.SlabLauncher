@@ -14,7 +14,7 @@ class ContactProvider(
     searcher: Searcher
 ) : SearchProvider {
 
-    var contacts = emptyList<ContactResult>()
+    private var contacts = emptyList<ContactResult>()
 
     override fun Activity.onCreate() {
         if (ActivityCompat.checkSelfPermission(

@@ -7,7 +7,6 @@ import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.search.CompactResult
 import io.posidon.android.slablauncher.data.search.SearchResult
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
-import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.hideIfNullOr
 

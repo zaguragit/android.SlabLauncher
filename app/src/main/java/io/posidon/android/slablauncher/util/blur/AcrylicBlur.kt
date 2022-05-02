@@ -7,12 +7,11 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import androidx.core.graphics.drawable.toBitmap
-import io.posidon.android.slablauncher.util.drawable.NonDrawable
 import io.posidon.android.conveniencelib.Device
-import io.posidon.android.conveniencelib.Graphics
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toFloatPixels
 import io.posidon.android.conveniencelib.units.toPixels
+import io.posidon.android.slablauncher.util.drawable.NonDrawable
 import kotlin.concurrent.thread
 import kotlin.math.abs
 import kotlin.math.max

@@ -9,9 +9,9 @@ class Parser(val text: String) {
         return parseExpression() to format(tokens)
     }
 
-    fun parseExpression() = parseBinaryExpression()
+    private fun parseExpression() = parseBinaryExpression()
 
-    fun format(tokens: Array<Token>): String {
+    private fun format(tokens: Array<Token>): String {
         val builder = StringBuilder()
         var i = 0
         while (i < tokens.size) {

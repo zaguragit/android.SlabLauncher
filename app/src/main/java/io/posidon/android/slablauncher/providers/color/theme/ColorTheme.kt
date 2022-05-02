@@ -1,6 +1,5 @@
 package io.posidon.android.slablauncher.providers.color.theme
 
-import android.content.Context
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.luminance
 import io.posidon.android.slablauncher.providers.color.pallete.DefaultPalette
@@ -151,9 +150,7 @@ interface ColorTheme {
             ColorUtils.colorToLAB(ColorUtils.HSLToColor(tmp), lab)
             lab[0] = (iconBackground[0] + 10).coerceAtLeast(20.0)
 
-            val tile = ColorUtils.LABToColor(lab[0], lab[1], lab[2])
-
-            return tile
+            return ColorUtils.LABToColor(lab[0], lab[1], lab[2])
         }
 
         fun labClosestVibrant(baseColor: Int, palette: Array<Int>): Int {

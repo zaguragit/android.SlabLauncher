@@ -1,7 +1,6 @@
 package io.posidon.android.slablauncher.ui.intro
 
 import android.Manifest
-import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -16,8 +15,6 @@ import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
-import io.posidon.android.slablauncher.ui.home.MainActivity
-import io.posidon.android.slablauncher.util.FakeLauncherActivity
 
 class PermissionsFragment : FragmentWithNext(R.layout.intro_permissions) {
 

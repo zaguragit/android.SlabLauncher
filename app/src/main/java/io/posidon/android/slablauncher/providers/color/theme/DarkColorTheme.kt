@@ -1,14 +1,11 @@
 package io.posidon.android.slablauncher.providers.color.theme
 
-import android.content.Context
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.alpha
 import androidx.core.graphics.luminance
-import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme.Companion.hueTintClosest
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme.Companion.labClosestVibrant
-import io.posidon.android.slablauncher.providers.color.theme.ColorTheme.Companion.tintWithColor
 
 class DarkColorTheme(
     val palette: ColorPalette,

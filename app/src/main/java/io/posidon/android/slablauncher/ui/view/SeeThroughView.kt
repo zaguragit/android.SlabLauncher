@@ -9,10 +9,8 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
-import io.posidon.android.slablauncher.R
 import io.posidon.android.conveniencelib.Device
 import io.posidon.android.conveniencelib.getNavigationBarHeight
-import io.posidon.android.conveniencelib.getStatusBarHeight
 import io.posidon.ksugar.delegates.observable
 import kotlin.properties.Delegates
 
@@ -42,7 +40,7 @@ class SeeThroughView : View {
         invalidate()
     }
 
-    fun updateBounds() {
+    private fun updateBounds() {
         val d = drawable
         if (d != null) {
             val dw = Device.screenWidth(context)

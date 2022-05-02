@@ -2,7 +2,6 @@ package io.posidon.android.slablauncher.providers.notification
 
 import android.app.Notification
 import android.app.NotificationManager
-import android.content.ContentResolver
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -11,19 +10,16 @@ import android.os.Bundle
 import android.service.notification.StatusBarNotification
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.net.toFile
 import io.posidon.android.slablauncher.data.notification.NotificationData
 import io.posidon.android.slablauncher.data.notification.TempNotificationData
-import java.io.File
-import java.net.URI
 
 object NotificationCreator {
 
-    inline fun getSource(context: Context, n: StatusBarNotification): String {
+    private inline fun getSource(context: Context, n: StatusBarNotification): String {
         return context.packageManager.getApplicationLabel(context.packageManager.getApplicationInfo(n.packageName, 0)).toString()
     }
 
-    inline fun getTitle(extras: Bundle): CharSequence? {
+    private inline fun getTitle(extras: Bundle): CharSequence? {
         val title = extras.getCharSequence(Notification.EXTRA_TITLE)
         if (title == null || title.toString().replace(" ", "").isEmpty()) {
             return null
@@ -31,7 +27,7 @@ object NotificationCreator {
         return title
     }
 
-    inline fun getText(extras: Bundle): CharSequence? {
+    private inline fun getText(extras: Bundle): CharSequence? {
         val messages = extras.getParcelableArray(Notification.EXTRA_MESSAGES)
         return if (messages == null) {
             extras.getCharSequence(Notification.EXTRA_BIG_TEXT)
@@ -45,15 +41,15 @@ object NotificationCreator {
         }
     }
 
-    inline fun getSmallIcon(context: Context, n: StatusBarNotification): Drawable? {
+    private inline fun getSmallIcon(context: Context, n: StatusBarNotification): Drawable? {
         return n.notification.smallIcon?.loadDrawable(context)
     }
 
-    inline fun getLargeIcon(context: Context, n: StatusBarNotification): Drawable? {
+    private inline fun getLargeIcon(context: Context, n: StatusBarNotification): Drawable? {
         return n.notification.getLargeIcon()?.loadDrawable(context)
     }
 
-    inline fun getBigImage(context: Context, extras: Bundle): Drawable? {
+    private inline fun getBigImage(context: Context, extras: Bundle): Drawable? {
         val b = extras[Notification.EXTRA_PICTURE] as Bitmap?
         if (b != null) {
             try {
@@ -68,7 +64,7 @@ object NotificationCreator {
         return null
     }
 
-    inline fun getBigImageFromMessages(context: Context, messagingStyle: NotificationCompat.MessagingStyle): Drawable? {
+    private inline fun getBigImageFromMessages(context: Context, messagingStyle: NotificationCompat.MessagingStyle): Drawable? {
         messagingStyle.messages.asReversed().forEach {
             it.dataUri?.let { uri ->
                 runCatching {
@@ -86,7 +82,7 @@ object NotificationCreator {
         return null
     }
 
-    inline fun getImportance(importance: Int): Int {
+    private inline fun getImportance(importance: Int): Int {
         return when (importance) {
             NotificationManager.IMPORTANCE_NONE,
             NotificationManager.IMPORTANCE_MIN -> -1

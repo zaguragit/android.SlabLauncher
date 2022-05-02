@@ -3,10 +3,10 @@ package io.posidon.android.slablauncher.providers.search
 import io.posidon.android.slablauncher.data.search.SearchResult
 
 abstract class AsyncSearchProvider(
-    val searcher: Searcher
+    private val searcher: Searcher
 ) : SearchProvider {
 
-    val lastResults = HashMap<SearchQuery, List<SearchResult>>()
+    private val lastResults = HashMap<SearchQuery, List<SearchResult>>()
     private var lastQuery: SearchQuery? = null
 
     override fun getResults(query: SearchQuery): List<SearchResult> {

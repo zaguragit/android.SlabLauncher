@@ -104,7 +104,7 @@ class Lexer(val text: String) {
         return Token(Token.Type.Bad, 0.0)
     }
 
-    fun readIdentifierOrKeyword(): Token {
+    private fun readIdentifierOrKeyword(): Token {
         val start = position++
         while (current.isLetterOrDigit() || current == '_') {
             position++

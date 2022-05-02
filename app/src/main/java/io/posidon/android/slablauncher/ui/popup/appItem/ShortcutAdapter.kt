@@ -1,8 +1,5 @@
 package io.posidon.android.slablauncher.ui.popup.appItem
 
-import android.content.Context
-import android.content.pm.LauncherApps
-import android.content.pm.ShortcutInfo
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -11,8 +8,8 @@ import io.posidon.android.slablauncher.data.items.ShortcutItem
 import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 
 class ShortcutAdapter(
-    val shortcuts: List<ShortcutItem>,
-    val txtColor: Int,
+    private val shortcuts: List<ShortcutItem>,
+    private val txtColor: Int,
     val graphicsLoader: GraphicsLoader,
 ) : RecyclerView.Adapter<ShortcutViewHolder>() {
 

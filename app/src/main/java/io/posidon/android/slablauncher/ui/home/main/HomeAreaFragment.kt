@@ -32,9 +32,7 @@ var acrylicBlur: AcrylicBlur? = null
 
 class DashAreaFragment : Fragment() {
 
-    lateinit var homeArea: HomeArea
-        private set
-
+    private lateinit var homeArea: HomeArea
     private lateinit var launcherContext: LauncherContext
 
     override fun onCreate(savedInstanceState: Bundle?) {

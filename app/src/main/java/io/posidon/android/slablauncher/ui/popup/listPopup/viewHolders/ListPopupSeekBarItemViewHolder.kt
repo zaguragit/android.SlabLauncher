@@ -18,14 +18,14 @@ import io.posidon.android.conveniencelib.units.toPixels
 
 class ListPopupSeekBarItemViewHolder(itemView: View) : ListPopupViewHolder(itemView) {
 
-    val icon = itemView.findViewById<ImageView>(R.id.icon)
+    private val icon = itemView.findViewById<ImageView>(R.id.icon)
 
-    val text = itemView.findViewById<TextView>(R.id.text)
-    val description = itemView.findViewById<TextView>(R.id.description)
+    private val text = itemView.findViewById<TextView>(R.id.text)
+    private val description = itemView.findViewById<TextView>(R.id.description)
 
-    val seekBar = itemView.findViewById<SeekBar>(R.id.seekbar)
+    private val seekBar = itemView.findViewById<SeekBar>(R.id.seekbar)
 
-    val ripple = RippleDrawable(ColorStateList.valueOf(0), null, FastColorDrawable(0xffffffff.toInt()))
+    private val ripple = RippleDrawable(ColorStateList.valueOf(0), null, FastColorDrawable(0xffffffff.toInt()))
 
     init {
         itemView.background = ripple
@@ -64,7 +64,7 @@ class ListPopupSeekBarItemViewHolder(itemView: View) : ListPopupViewHolder(itemV
     private fun generateDrawable(): Drawable {
         val out = LayerDrawable(arrayOf(
             generateBG(0xff08090a.toInt()),
-            ClipDrawable(generateBG(ColorTheme.accentColor and 0x00ffffff or 0x88000000.toInt()), Gravity.LEFT, GradientDrawable.Orientation.BL_TR.ordinal)
+            ClipDrawable(generateBG(ColorTheme.accentColor and 0x00ffffff or 0x88000000.toInt()), Gravity.START, GradientDrawable.Orientation.BL_TR.ordinal)
         ))
         out.setId(0, android.R.id.background)
         out.setId(1, android.R.id.progress)

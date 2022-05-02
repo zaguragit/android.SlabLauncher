@@ -32,25 +32,28 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import io.posidon.android.conveniencelib.Graphics
+import io.posidon.android.conveniencelib.getNavigationBarHeight
 import io.posidon.android.launcherutil.liveWallpaper.LiveWallpaper
 import io.posidon.android.slablauncher.BuildConfig
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
+import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.LauncherItem
-import io.posidon.android.slablauncher.providers.item.AppCallback
 import io.posidon.android.slablauncher.providers.color.ColorThemeOptions
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
+import io.posidon.android.slablauncher.providers.item.AppCallback
+import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
-import io.posidon.android.slablauncher.ui.home.main.HomeArea
 import io.posidon.android.slablauncher.ui.home.main.DashAreaFragment
+import io.posidon.android.slablauncher.ui.home.main.HomeArea
 import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.home.main.loadBlur
 import io.posidon.android.slablauncher.ui.home.main.suggestion.SuggestionsAdapter
 import io.posidon.android.slablauncher.ui.home.sideList.SideListFragment
 import io.posidon.android.slablauncher.ui.popup.PopupUtils
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
+import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.util.StackTraceActivity
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import io.posidon.android.slablauncher.util.drawable.setBackgroundColorFast
@@ -58,12 +61,8 @@ import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorT
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
 import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
 import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScreenOpenedSetting.doAutoKeyboardInAllApps
-import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
 import io.posidon.android.slablauncher.util.storage.DockRowCount.dockRowCount
-import io.posidon.android.conveniencelib.getNavigationBarHeight
-import io.posidon.android.slablauncher.data.items.App
-import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 import kotlin.concurrent.thread
 import kotlin.math.max
 import kotlin.math.min
@@ -83,7 +82,7 @@ class MainActivity : FragmentActivity() {
 
     private lateinit var wallpaperManager: WallpaperManager
 
-    var colorThemeOptions = ColorThemeOptions(settings.colorThemeDayNight)
+    private var colorThemeOptions = ColorThemeOptions(settings.colorThemeDayNight)
 
     private lateinit var blurBG: SeeThroughView
     private lateinit var searchBarContainer: View
@@ -333,7 +332,7 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    fun loadBlur(updateBlur: () -> Unit) = loadBlur(settings, wallpaperManager, updateBlur)
+    private fun loadBlur(updateBlur: () -> Unit) = loadBlur(settings, wallpaperManager, updateBlur)
 
     fun reloadBlur(block: () -> Unit) = loadBlur(settings, wallpaperManager) {
         updateBlur()
@@ -410,7 +409,7 @@ class MainActivity : FragmentActivity() {
 
     }
 
-    fun onTouch(v: View, event: MotionEvent): Boolean {
+    private fun onTouch(v: View, event: MotionEvent): Boolean {
         if (event.action == MotionEvent.ACTION_UP)
             LiveWallpaper.tap(v, event.rawX.toInt(), event.rawY.toInt())
         return false
@@ -452,7 +451,7 @@ class MainActivity : FragmentActivity() {
     private val onGraphicsLoaderChangedListeners = HashMap<String, (GraphicsLoader) -> Unit>()
     private val onSearchQueryListeners = HashMap<String, (String?) -> Unit>()
 
-    fun updateSuggestions(pinnedItems: List<LauncherItem>) {
+    private fun updateSuggestions(pinnedItems: List<LauncherItem>) {
         suggestionsAdapter.updateItems((SuggestionsManager.get() - pinnedItems.let {
             val s = settings.dockRowCount * HomeArea.calculateColumns(this, launcherContext.settings)
             if (it.size > s) it.subList(0, s)

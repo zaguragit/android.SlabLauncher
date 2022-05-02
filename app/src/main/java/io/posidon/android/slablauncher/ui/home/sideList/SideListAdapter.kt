@@ -32,7 +32,7 @@ class SideListAdapter(
             }
         }
 
-    inline fun setTitle(@StringRes resId: Int) { title = if (resId == 0) null else activity.getString(resId) }
+    private inline fun setTitle(@StringRes resId: Int) { title = if (resId == 0) null else activity.getString(resId) }
 
     private var items = emptyList<Any>()
 

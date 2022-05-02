@@ -64,25 +64,14 @@
         <item name="android:background">@drawable/item_card_border</item>
     </style>
 
-    <style name="SlabLauncher.SearchResult.InstantAnswer.Source" parent="SlabLauncher">
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/feed_card_text_dark_description</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:includeFontPadding">false</item>
-    </style>
-
     <style name="SlabLauncher.SearchResult.InstantAnswer.Title" parent="SlabLauncher">
         <item name="android:textSize">24sp</item>
-        <item name="android:textColor">@color/feed_card_text_dark_title</item>
         <item name="android:textStyle">bold</item>
         <item name="android:paddingHorizontal">@dimen/feed_card_spacing</item>
     </style>
 
     <style name="SlabLauncher.SearchResult.InstantAnswer.Description" parent="SlabLauncher">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/feed_card_text_dark_description</item>
         <item name="android:paddingHorizontal">@dimen/feed_card_spacing</item>
         <item name="android:paddingTop">@dimen/feed_card_spacing</item>
     </style>
@@ -110,20 +99,17 @@
 
     <style name="SlabLauncher.SearchResult.InstantAnswer.Infobox.Label" parent="SlabLauncher">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/feed_card_text_dark_title</item>
         <item name="android:textStyle">bold</item>
         <item name="android:padding">@dimen/feed_card_spacing</item>
     </style>
 
     <style name="SlabLauncher.SearchResult.InstantAnswer.Infobox.Value" parent="SlabLauncher">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/feed_card_text_dark_title</item>
         <item name="android:padding">@dimen/feed_card_spacing</item>
     </style>
 
     <style name="SlabLauncher.SearchResult.SimpleBox.Text" parent="SlabLauncher">
         <item name="android:textSize">20sp</item>
-        <item name="android:textColor">@color/feed_card_text_dark_title</item>
         <item name="android:textStyle">bold</item>
         <item name="android:paddingHorizontal">@dimen/feed_card_spacing</item>
         <item name="android:paddingVertical">@dimen/feed_card_spacing</item>

@@ -18,22 +18,22 @@ import io.posidon.android.slablauncher.ui.view.BackdropImageView
 
 class MediaPlayer(val view: ViewGroup, val separator: View) {
 
-    val image = view.findViewById<BackdropImageView>(R.id.image)
+    private val image = view.findViewById<BackdropImageView>(R.id.image)
 
-    val title = view.findViewById<TextView>(R.id.title)
-    val subtitle = view.findViewById<TextView>(R.id.subtitle)
+    private val title = view.findViewById<TextView>(R.id.title)
+    private val subtitle = view.findViewById<TextView>(R.id.subtitle)
 
-    val buttonPrev = view.findViewById<ImageView>(R.id.button_prev).apply {
+    private val buttonPrev = view.findViewById<ImageView>(R.id.button_prev).apply {
         setOnClickListener {
             NotificationService.mediaItem?.previous?.invoke(it)
         }
     }
-    val buttonPlay = view.findViewById<ImageView>(R.id.button_play).apply {
+    private val buttonPlay = view.findViewById<ImageView>(R.id.button_play).apply {
         setOnClickListener {
             NotificationService.mediaItem?.togglePause?.invoke(this)
         }
     }
-    val buttonNext = view.findViewById<ImageView>(R.id.button_next).apply {
+    private val buttonNext = view.findViewById<ImageView>(R.id.button_next).apply {
         setOnClickListener {
             NotificationService.mediaItem?.next?.invoke(it)
         }

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     style="@style/SlabLauncher.ItemPopup.Shortcut.Container">
     <ImageView
         style="@style/SlabLauncher.ItemPopup.Shortcut.Icon"
-        android:id="@+id/icon"/>
+        android:id="@+id/icon"
+        tools:ignore="ContentDescription"/>
     <TextView
         style="@style/SlabLauncher.ItemPopup.Shortcut.Label"
         android:id="@+id/text"

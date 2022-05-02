@@ -1,9 +1,7 @@
 package io.posidon.android.slablauncher.providers.item
 
 import android.content.Context
-import android.graphics.Paint
 import android.provider.ContactsContract
-import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.ContactItem
 
 object ContactLoader {

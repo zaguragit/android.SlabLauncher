@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.LauncherItem
-import io.posidon.android.slablauncher.providers.notification.NotificationService
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.main.DashAreaFragment
 import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.DropTargetViewHolder
@@ -23,7 +22,7 @@ import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.bindDropTar
 
 class PinnedTilesAdapter(
     val activity: MainActivity,
-    val launcherContext: LauncherContext,
+    private val launcherContext: LauncherContext,
     val fragment: DashAreaFragment,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -41,7 +40,7 @@ class PinnedTilesAdapter(
         }
     }
 
-    fun adapterPositionToI(position: Int): Int {
+    private fun adapterPositionToI(position: Int): Int {
         return when {
             dropTargetIndex == -1 -> position
             dropTargetIndex < position -> position - 1
@@ -86,9 +85,8 @@ class PinnedTilesAdapter(
     }
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-        val i = adapterPositionToI(holder.bindingAdapterPosition)
-        if (i >= 0 && holder is TileViewHolder)
-            holder.recycle(items[i])
+        if (holder is TileViewHolder)
+            holder.recycle()
     }
 
     fun updateItems(

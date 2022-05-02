@@ -5,29 +5,10 @@
         <item name="android:layout_margin">@dimen/item_card_margin</item>
         <item name="cardElevation">@dimen/item_card_elevation</item>
     </style>
+
     <style name="SlabLauncher.TileArea.Item.Container" parent="SlabLauncher">
         <item name="android:foreground">@drawable/item_card_border</item>
     </style>
-
-    <style name="SlabLauncher.TileArea.Item.Icon" parent="SlabLauncher">
-        <item name="android:padding">8dp</item>
-        <item name="android:layout_marginBottom">8dp</item>
-        <item name="android:layout_width">56dp</item>
-        <item name="android:layout_height">56dp</item>
-    </style>
-
-    <style name="SlabLauncher.TileArea.Item.Mark" parent="SlabLauncher">
-        <item name="android:textSize">56sp</item>
-    </style>
-
-    <style name="SlabLauncher.TileArea.Item.LabelContainer" parent="SlabLauncher">
-        <item name="android:padding">8dp</item>
-    </style>
-
-    <style name="SlabLauncher.TileArea.Item.LabelText" parent="SlabLauncher">
-        <item name="android:textSize">12sp</item>
-    </style>
-
 
     <style name="SlabLauncher.TileArea.Suggestions.Item.Card" parent="SlabLauncher">
         <item name="android:background">@drawable/round_bg</item>

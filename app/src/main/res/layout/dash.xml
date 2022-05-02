@@ -101,7 +101,8 @@
                             style="@style/SlabLauncher.Notification.PrimaryItem.Image"
                             android:id="@+id/notification_image"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            tools:ignore="ContentDescription"/>
                     </androidx.cardview.widget.CardView>
                     <TextView
                         style="@style/SlabLauncher.Notification.PrimaryItem.Text"

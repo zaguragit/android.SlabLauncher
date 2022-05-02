@@ -9,7 +9,8 @@
         style="@style/SlabLauncher.Intro.Slash.Icon"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@mipmap/ic_launcher"
+        android:contentDescription="@string/app_name"/>
     <TextView
         android:id="@+id/title"
         style="@style/SlabLauncher.Intro.Slash.Message"

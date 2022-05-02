@@ -159,7 +159,7 @@ class SideListFragment : Fragment() {
         adapter.updateSearchResults(query, list)
     }
 
-    fun setAppsList() {
+    private fun setAppsList() {
         adapter.updateApps(appList)
     }
 

@@ -3,11 +3,13 @@ package io.posidon.android.slablauncher.ui.home.main
 import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.Context
-import android.view.*
+import android.view.DragEvent
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.posidon.android.conveniencelib.Device
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.ui.home.MainActivity
@@ -16,9 +18,6 @@ import io.posidon.android.slablauncher.ui.home.main.tile.PinnedTilesAdapter
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
-import io.posidon.android.conveniencelib.Device
-import io.posidon.android.conveniencelib.units.dp
-import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.slablauncher.util.storage.ColumnCount.dockColumnCount
 import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.ksugar.delegates.observable
@@ -26,7 +25,11 @@ import kotlin.math.abs
 import kotlin.math.min
 import kotlin.properties.Delegates
 
-class HomeArea(val view: NestedScrollView, val fragment: DashAreaFragment, val launcherContext: LauncherContext) {
+class HomeArea(
+    val view: NestedScrollView,
+    private val fragment: DashAreaFragment,
+    private val launcherContext: LauncherContext
+) {
 
     companion object {
         const val WIDTH_TO_HEIGHT = 6f / 5f

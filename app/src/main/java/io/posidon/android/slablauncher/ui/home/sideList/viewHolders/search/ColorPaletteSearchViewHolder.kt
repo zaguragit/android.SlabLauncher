@@ -18,14 +18,14 @@ class ColorPaletteSearchViewHolder(
     itemView: View
 ) : SearchViewHolder(itemView) {
 
-    val paletteViews = arrayOf<ColorPaletteTestView>(
+    private val paletteViews = arrayOf<ColorPaletteTestView>(
         itemView.findViewById(R.id.palette_view_0)!!,
         itemView.findViewById(R.id.palette_view_1)!!,
         itemView.findViewById(R.id.palette_view_2)!!,
         itemView.findViewById(R.id.palette_view_3)!!,
     )
 
-    val blurBG = itemView.findViewById<SeeThroughView>(R.id.blur_bg)!!.apply {
+    private val blurBG = itemView.findViewById<SeeThroughView>(R.id.blur_bg)!!.apply {
         viewTreeObserver.addOnPreDrawListener {
             invalidate()
             true

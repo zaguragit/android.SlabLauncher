@@ -17,7 +17,7 @@ import kotlin.concurrent.withLock
 private val settingsFileLock = ReentrantLock()
 
 class Settings(
-    val saveFile: String = "settings"
+    private val saveFile: String = "settings"
 ) {
 
     private abstract class Single <V> (

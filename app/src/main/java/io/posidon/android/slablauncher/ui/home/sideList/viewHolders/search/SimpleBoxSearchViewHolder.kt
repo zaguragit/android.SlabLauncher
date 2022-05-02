@@ -18,11 +18,11 @@ class SimpleBoxSearchViewHolder(
     itemView: View
 ) : SearchViewHolder(itemView) {
 
-    val card = itemView.findViewById<CardView>(R.id.card)!!
-    val container = card.findViewById<View>(R.id.container)!!
-    val text = container.findViewById<TextView>(R.id.text)!!
+    private val card = itemView.findViewById<CardView>(R.id.card)!!
+    private val container = card.findViewById<View>(R.id.container)!!
+    private val text = container.findViewById<TextView>(R.id.text)!!
 
-    val blurBG = itemView.findViewById<SeeThroughView>(R.id.blur_bg)!!.apply {
+    private val blurBG = itemView.findViewById<SeeThroughView>(R.id.blur_bg)!!.apply {
         viewTreeObserver.addOnPreDrawListener {
             invalidate()
             true

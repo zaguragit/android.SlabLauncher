@@ -75,7 +75,7 @@ class ListPopupSwitchItemViewHolder(itemView: View) : ListPopupViewHolder(itemVi
         return out
     }
 
-    fun generateCircle(context: Context, color: Int): Drawable {
+    private fun generateCircle(context: Context, color: Int): Drawable {
         val r = 18.dp.toPixels(context)
         val inset = 4.dp.toPixels(context)
         return LayerDrawable(arrayOf(
@@ -90,7 +90,7 @@ class ListPopupSwitchItemViewHolder(itemView: View) : ListPopupViewHolder(itemVi
         }
     }
 
-    fun generateBG(color: Int): Drawable {
+    private fun generateBG(color: Int): Drawable {
         return GradientDrawable().apply {
             cornerRadius = Float.MAX_VALUE
             setColor(color)

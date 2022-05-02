@@ -1,15 +1,13 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="slab_launcher_crashed">Slab launcher crashed</string>
     <string name="send_bug_report">Send bug report</string>
 
     <string name="read_more_at_source">More at %s</string>
     <string name="search_in_duckduckgo">Search on DuckDuckGo</string>
 
-    <string name="now">now</string>
-
     <string name="properties">Properties</string>
 
-    <string name="x_more">+%1$d more</string>
+    <string name="x_more" tools:ignore="PluralsCandidate">+%1$d more</string>
 
     <string name="results_for_x">Results for \"%s\"</string>
     <string name="all_apps">All apps</string>
@@ -21,6 +19,7 @@
         <string name="color_theme_day_night">Theme</string>
 
         <string name="layout">Layout</string>
+        <string name="columns">Columns</string>
         <string name="dock_row_count">Dock row count</string>
         <string name="show_app_suggestions">Show app suggestions</string>
 
@@ -69,10 +68,10 @@
         <!-- how to use end -->
     <!-- first time screen end -->
 
+    <string name="next_alarm_time_format">%1$d:%2$d</string>
     <!-- statements start -->
         <string name="good_morning">Good morning!</string>
         <string name="good_night">Good night!</string>
         <string name="good_day">Have a nice day!</string>
-    <string name="columns">Columns</string>
     <!-- statements end -->
 </resources>

@@ -2,12 +2,11 @@ package io.posidon.android.slablauncher.data.search
 
 import android.app.Activity
 import android.view.View
+import io.posidon.android.conveniencelib.getNavigationBarHeight
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
-import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
-import io.posidon.android.conveniencelib.getNavigationBarHeight
-import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.providers.item.GraphicsLoader
+import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 
 class AppResult(
     val app: App

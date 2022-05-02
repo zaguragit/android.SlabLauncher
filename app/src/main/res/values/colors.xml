@@ -1,14 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="button_bg">#363636</color>
-
-    <color name="feed_card_text_dark_title">#ff000000</color>
-    <color name="feed_card_text_dark_description">#d2000000</color>
-    <color name="feed_card_text_dark_hint">#55000000</color>
-
-    <color name="feed_card_text_light_title">#ffe2e2e2</color>
-    <color name="feed_card_text_light_description">#d2e2e2e2</color>
-    <color name="feed_card_text_light_hint">#55e2e2e2</color>
-
     <color name="accent">#0ee463</color>
 </resources>

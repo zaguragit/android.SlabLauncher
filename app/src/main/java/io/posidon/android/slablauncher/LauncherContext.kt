@@ -1,12 +1,11 @@
 package io.posidon.android.slablauncher
 
 import android.content.Context
+import io.posidon.android.launcherutil.Launcher
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.util.storage.Settings
-import io.posidon.android.launcherutil.Launcher
-import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 
 class LauncherContext {
 

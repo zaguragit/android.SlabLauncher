@@ -6,6 +6,7 @@
         <entry key="../../../../../../../layout/custom_preview.xml" value="0.2838541666666667" />
         <entry key="../../../../../../layout/custom_preview.xml" value="0.3729166666666667" />
         <entry key="app/src/main/res/drawable/bottom_sheet.xml" value="0.2203125" />
+        <entry key="app/src/main/res/drawable/button_bg_invisible.xml" value="0.1615" />
         <entry key="app/src/main/res/drawable/button_bg_round.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/drawable/card.xml" value="0.37395833333333334" />
         <entry key="app/src/main/res/drawable/gradient_clock_bg.xml" value="0.37395833333333334" />
@@ -54,6 +55,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.26145833333333335" />
         <entry key="app/src/main/res/layout/activity_search.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_search_search_bar.xml" value="0.302536231884058" />
+        <entry key="app/src/main/res/layout/activity_settings.xml" value="0.121875" />
         <entry key="app/src/main/res/layout/activity_settings_feed_chooser.xml" value="0.5" />
         <entry key="app/src/main/res/layout/activity_stack_trace.xml" value="0.2210144927536232" />
         <entry key="app/src/main/res/layout/app_card.xml" value="0.3578125" />
@@ -63,6 +65,7 @@
         <entry key="app/src/main/res/layout/app_drawer_item.xml" value="0.21041666666666667" />
         <entry key="app/src/main/res/layout/at_a_glance.xml" value="0.26222826086956524" />
         <entry key="app/src/main/res/layout/dash.xml" value="0.2115036231884058" />
+        <entry key="app/src/main/res/layout/dash_media_player.xml" value="0.15208333333333332" />
         <entry key="app/src/main/res/layout/dock.xml" value="0.3578125" />
         <entry key="app/src/main/res/layout/feed_chooser_option_edit_dialog.xml" value="0.20416666666666666" />
         <entry key="app/src/main/res/layout/feed_filter.xml" value="0.26721014492753625" />

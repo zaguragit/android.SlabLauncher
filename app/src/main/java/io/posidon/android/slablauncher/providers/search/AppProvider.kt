@@ -3,27 +3,24 @@ package io.posidon.android.slablauncher.providers.search
 import android.app.Activity
 import android.content.Context
 import android.content.pm.LauncherApps
-import android.content.res.Resources
 import com.willowtreeapps.fuzzywuzzy.diffutils.FuzzySearch
 import io.posidon.android.slablauncher.data.items.App
-import io.posidon.android.slablauncher.data.items.ShortcutItem
 import io.posidon.android.slablauncher.data.search.AppResult
 import io.posidon.android.slablauncher.data.search.Relevance
 import io.posidon.android.slablauncher.data.search.SearchResult
 import io.posidon.android.slablauncher.data.search.ShortcutResult
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
-import io.posidon.android.slablauncher.util.drawable.NonDrawable
 import java.util.*
 import kotlin.concurrent.thread
 import kotlin.math.pow
 
 class AppProvider(
-    val searcher: Searcher
+    private val searcher: Searcher
 ) : SearchProvider {
 
-    var appList = emptyList<App>()
-    var staticShortcuts = emptyList<ShortcutResult>()
-    var dynamicShortcuts = emptyList<ShortcutResult>()
+    private var appList = emptyList<App>()
+    private var staticShortcuts = emptyList<ShortcutResult>()
+    private var dynamicShortcuts = emptyList<ShortcutResult>()
 
     private lateinit var launcherApps: LauncherApps
 
