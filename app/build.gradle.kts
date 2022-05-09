@@ -14,7 +14,7 @@ android {
         versionName = "22.0.0"
 
         val plainName = "SlabLauncher"
-        setProperty("archivesBaseName", "$plainName-v$versionName($versionCode)")
+        setProperty("archivesBaseName", "$plainName-v$versionName-c$versionCode")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

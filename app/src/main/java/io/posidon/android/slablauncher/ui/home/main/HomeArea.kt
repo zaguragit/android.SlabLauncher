@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.conveniencelib.Device
 import io.posidon.android.slablauncher.LauncherContext
@@ -114,6 +115,7 @@ class HomeArea(
         pinnedRecycler.background.alpha = if (new) 255 else 0
     }
 
+    private var canAutoScroll = true
     fun onDrag(view: View, event: DragEvent): Boolean {
         when (event.action) {
             DragEvent.ACTION_DRAG_ENTERED,
@@ -146,6 +148,18 @@ class HomeArea(
                     }
                 }
                 showDropTarget(i, state)
+                val rowHeight = pinnedRecycler.width /
+                    (pinnedRecycler.layoutManager as GridLayoutManager).spanCount /
+                    WIDTH_TO_HEIGHT
+                if (event.y > view.height - rowHeight / 2) {
+                    val r = (view.height - event.y) / rowHeight * 2
+                    val t = (690 + 640 * r).toInt()
+                    if (canAutoScroll) {
+                        canAutoScroll = false
+                        view.handler.postDelayed({ canAutoScroll = true }, 256L)
+                        this.view.smoothScrollBy(0, rowHeight.toInt(), t)
+                    }
+                }
             }
             DragEvent.ACTION_DRAG_ENDED -> {
                 val state = event.localState as? ItemLongPress.State?
