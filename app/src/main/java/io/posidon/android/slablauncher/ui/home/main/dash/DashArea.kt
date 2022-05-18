@@ -229,4 +229,8 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
     fun updateBlur() {
         blurBG.drawable = acrylicBlur?.smoothBlurDrawable
     }
+
+    fun onWindowFocusChanged(hasFocus: Boolean) {
+        mediaPlayer.onWindowFocusChanged(hasFocus)
+    }
 }

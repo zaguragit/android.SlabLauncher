@@ -192,4 +192,8 @@ class HomeArea(
         pinnedAdapter.notifyItemRangeChanged(0, pinnedAdapter.itemCount)
         dash.updateBlur()
     }
+
+    fun onWindowFocusChanged(hasFocus: Boolean) {
+        dash.onWindowFocusChanged(hasFocus)
+    }
 }

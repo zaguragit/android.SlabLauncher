@@ -65,15 +65,24 @@ class MediaPlayer(val view: ViewGroup, val separator: View) {
         buttonPlay.imageTintList = ColorStateList.valueOf(buttonFGColor)
     }
 
+    fun onWindowFocusChanged(hasFocus: Boolean) {
+        if (hasFocus)
+            NotificationService.mediaItem?.let { updatePlayPauseButton(it) }
+    }
+
+    private fun updatePlayPauseButton(mediaItem: MediaPlayerData) {
+        buttonPlay.setImageResource(
+            if (mediaItem.isPlaying()) R.drawable.ic_pause
+            else R.drawable.ic_play
+        )
+    }
+
     private fun updateTrack() {
         val mediaItem = NotificationService.mediaItem
         if (mediaItem != null) {
             view.isVisible = true
             separator.isVisible = true
-            buttonPlay.setImageResource(
-                if (mediaItem.isPlaying.invoke()) R.drawable.ic_play
-                else R.drawable.ic_pause
-            )
+            updatePlayPauseButton(mediaItem)
             title.text = mediaItem.title
             subtitle.text = mediaItem.subtitle
 

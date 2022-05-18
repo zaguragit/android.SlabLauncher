@@ -67,6 +67,11 @@ class DashAreaFragment : Fragment() {
         updateBlur()
         updateColorTheme()
         configureWindow()
+        view.viewTreeObserver?.addOnWindowFocusChangeListener(::onWindowFocusChanged)
+    }
+
+    fun onWindowFocusChanged(hasFocus: Boolean) {
+        homeArea.onWindowFocusChanged(hasFocus)
     }
 
     override fun onResume() {

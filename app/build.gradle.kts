@@ -26,6 +26,7 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
+    namespace = "io.posidon.android.slablauncher"
 }
 
 dependencies {
