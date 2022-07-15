@@ -32,7 +32,9 @@ class ListPopupSeekBarItemViewHolder(itemView: View) : ListPopupViewHolder(itemV
         seekBar.splitTrack = false
     }
 
-    override fun onBind(item: ListPopupItem) {
+    override fun onBind(item: ListPopupItem<*>) {
+        item as ListPopupItem<Int>
+
         text.text = item.text
         description.text = item.description
 
@@ -50,13 +52,13 @@ class ListPopupSeekBarItemViewHolder(itemView: View) : ListPopupViewHolder(itemV
             setImageDrawable(it)
             imageTintList = ColorStateList.valueOf(ColorTheme.cardDescription)
         }
-        seekBar.progress = item.value as? Int ?: 0
+        seekBar.progress = item.value ?: 0
         seekBar.max = item.states
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onStartTrackingTouch(v: SeekBar) {}
             override fun onStopTrackingTouch(v: SeekBar) {}
             override fun onProgressChanged(v: SeekBar, progress: Int, fromUser: Boolean) {
-                item.onStateChange!!(v, progress)
+                item.onValueChange!!(v, progress)
             }
         })
     }

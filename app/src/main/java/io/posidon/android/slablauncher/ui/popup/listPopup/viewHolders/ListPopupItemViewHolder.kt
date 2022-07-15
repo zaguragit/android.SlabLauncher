@@ -24,7 +24,7 @@ class ListPopupItemViewHolder(itemView: View) : ListPopupViewHolder(itemView) {
         itemView.background = ripple
     }
 
-    override fun onBind(item: ListPopupItem) {
+    override fun onBind(item: ListPopupItem<*>) {
         text.text = item.text
         description.text = item.description
 

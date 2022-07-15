@@ -13,7 +13,7 @@ class ListPopupTitleViewHolder(itemView: View) : ListPopupViewHolder(itemView) {
     val description = itemView.findViewById<TextView>(R.id.description)
     val separator = itemView.findViewById<View>(R.id.separator)
 
-    override fun onBind(item: ListPopupItem) {
+    override fun onBind(item: ListPopupItem<*>) {
         text.text = item.text
         description.text = item.description
 

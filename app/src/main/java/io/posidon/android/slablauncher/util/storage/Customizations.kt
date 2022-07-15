@@ -1,5 +1,7 @@
 package io.posidon.android.slablauncher.util.storage
 
+import android.content.Context
+import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.ColorThemeOptions
 
 object ColorExtractorSetting {
@@ -81,6 +83,21 @@ object DoMonochromeIconsSetting {
     const val MONOCHROME = 1
 
     const val DEFAULT = NONE
+}
+
+object GreetingSetting {
+    fun Settings.getDefaultGreeting(context: Context): String =
+        getStringOr(KEY) { default(context) }
+
+    inline fun Settings.SettingsEditor.getDefaultGreeting(context: Context): String =
+        settings.getDefaultGreeting(context)
+
+    fun Settings.SettingsEditor.setDefaultGreeting(value: String) = KEY set value
+
+    private const val KEY = "personality:default_greeting"
+
+    private inline fun default(context: Context) =
+        context.getString(R.string.default_greeting)
 }
 
 object DoBlurSetting {

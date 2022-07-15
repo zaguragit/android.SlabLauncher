@@ -33,7 +33,9 @@ class ListPopupSwitchItemViewHolder(itemView: View) : ListPopupViewHolder(itemVi
         itemView.background = ripple
     }
 
-    override fun onBind(item: ListPopupItem) {
+    override fun onBind(item: ListPopupItem<*>) {
+        item as ListPopupItem<Boolean>
+
         text.text = item.text
         description.text = item.description
 
@@ -55,9 +57,9 @@ class ListPopupSwitchItemViewHolder(itemView: View) : ListPopupViewHolder(itemVi
             setImageDrawable(it)
             imageTintList = ColorStateList.valueOf(ColorTheme.cardDescription)
         }
-        switch.isChecked = (item.value as? Boolean) ?: (item.value as? Int)?.equals(0)?.not() ?: false
+        switch.isChecked = item.value == true
         switch.setOnCheckedChangeListener { v, value ->
-            item.onStateChange!!(v, if (value) 1 else 0)
+            item.onValueChange!!(v, value)
         }
     }
 

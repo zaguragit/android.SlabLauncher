@@ -116,6 +116,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
                 mainActivity::invalidateItemGraphics,
                 mainActivity::reloadBlur,
                 mainActivity::updateLayout,
+                ::updateGreeting,
                 if (homeArea.scrollY == 0) popupWidth else ViewGroup.LayoutParams.WRAP_CONTENT,
                 if (homeArea.scrollY == 0) popupHeight else HomeLongPressPopup.calculateHeight(it.context),
             )
@@ -133,6 +134,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
                 mainActivity::invalidateItemGraphics,
                 mainActivity::reloadBlur,
                 mainActivity::updateLayout,
+                ::updateGreeting,
                 if (homeArea.scrollY == 0) popupWidth else ViewGroup.LayoutParams.WRAP_CONTENT,
                 if (homeArea.scrollY == 0) popupHeight else HomeLongPressPopup.calculateHeight(v.context),
             )
@@ -213,7 +215,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
     }
 
     fun onResume() {
-        statement.text = Statement.get(view.context, Calendar.getInstance())
+        updateGreeting()
         val nextAlarm = view.context.getSystemService(AlarmManager::class.java).nextAlarmClock
         if (nextAlarm == null) {
             alarm.isVisible = false
@@ -224,6 +226,10 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
             alarm.isVisible = true
         }
         updateNotifications(NotificationService.notifications)
+    }
+
+    fun updateGreeting() {
+        statement.text = Statement.get(view.context, Calendar.getInstance(), mainActivity.settings)
     }
 
     fun updateBlur() {

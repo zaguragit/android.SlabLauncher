@@ -81,6 +81,7 @@ class HomeArea(
                 activity::invalidateItemGraphics,
                 activity::reloadBlur,
                 activity::updateLayout,
+                dash::updateGreeting,
             )
         }
     }

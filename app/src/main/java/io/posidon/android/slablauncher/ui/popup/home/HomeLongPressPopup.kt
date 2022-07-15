@@ -36,6 +36,8 @@ import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.slablauncher.BuildConfig
 import io.posidon.android.slablauncher.util.storage.ColumnCount.dockColumnCount
+import io.posidon.android.slablauncher.util.storage.GreetingSetting.getDefaultGreeting
+import io.posidon.android.slablauncher.util.storage.GreetingSetting.setDefaultGreeting
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.thread
 import kotlin.concurrent.withLock
@@ -64,6 +66,7 @@ class HomeLongPressPopup(
             reloadItemGraphics: () -> Unit,
             reloadBlur: (() -> Unit) -> Unit,
             updateLayout: () -> Unit,
+            updateGreeting: () -> Unit,
             popupWidth: Int = ViewGroup.LayoutParams.WRAP_CONTENT,
             popupHeight: Int = calculateHeight(parent.context),
         ) {
@@ -110,7 +113,10 @@ class HomeLongPressPopup(
                         },
                         updateLayout = {
                             parent.post(updateLayout)
-                        }
+                        },
+                        updateGreeting = {
+                            parent.post(updateGreeting)
+                        },
                     )
                 )
             }
@@ -142,7 +148,8 @@ class HomeLongPressPopup(
             reloadItemGraphics: () -> Unit,
             reloadBlur: () -> Unit,
             updateLayout: () -> Unit,
-        ): List<ListPopupItem> {
+            updateGreeting: () -> Unit,
+        ): List<ListPopupItem<*>> {
             return listOf(
                 ListPopupItem(
                     context.getString(R.string.app_name),
@@ -189,13 +196,24 @@ class HomeLongPressPopup(
                         .show()
                 },
                 ListPopupItem(
+                    context.getString(R.string.greeting),
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_home),
+                    value = settings.getDefaultGreeting(context),
+                    onValueChange = { _, value ->
+                        settings.edit(context) {
+                            setDefaultGreeting(value)
+                            updateGreeting()
+                        }
+                    }
+                ),
+                ListPopupItem(
                     context.getString(R.string.blur),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),
                     value = settings.doBlur,
                     states = 2,
-                    onStateChange = { _, value ->
+                    onValueChange = { _, value ->
                         settings.edit(context) {
-                            doBlur = value == 1
+                            doBlur = value
                             reloadBlur()
                         }
                     }
@@ -206,7 +224,7 @@ class HomeLongPressPopup(
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_home),
                     value = settings.dockColumnCount - 2,
                     states = 5,
-                    onStateChange = { _, value ->
+                    onValueChange = { _, value ->
                         settings.edit(context) {
                             dockColumnCount = value + 2
                             updateLayout()
@@ -218,7 +236,7 @@ class HomeLongPressPopup(
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_home),
                     value = settings.dockRowCount,
                     states = 5,
-                    onStateChange = { _, value ->
+                    onValueChange = { _, value ->
                         settings.edit(context) {
                             dockRowCount = value
                             updateLayout()
@@ -230,9 +248,9 @@ class HomeLongPressPopup(
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_visible),
                     value = settings.doSuggestionStrip,
                     states = 2,
-                    onStateChange = { _, value ->
+                    onValueChange = { _, value ->
                         settings.edit(context) {
-                            doSuggestionStrip = value == 1
+                            doSuggestionStrip = value
                             updateLayout()
                         }
                     }
@@ -249,7 +267,7 @@ class HomeLongPressPopup(
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_color_dropper),
                     value = settings.monochromatism,
                     states = 2,
-                    onStateChange = { _, value ->
+                    onValueChange = { _, value ->
                         settings.edit(context) {
                             monochromatism = value
                             reloadItemGraphics()
@@ -263,9 +281,9 @@ class HomeLongPressPopup(
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_keyboard),
                     value = settings.doAutoKeyboardInAllApps,
                     states = 2,
-                    onStateChange = { _, value ->
+                    onValueChange = { _, value ->
                         settings.edit(context) {
-                            doAutoKeyboardInAllApps = value == 1
+                            doAutoKeyboardInAllApps = value
                         }
                     }
                 ),

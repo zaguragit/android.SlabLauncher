@@ -1,29 +1,31 @@
 package io.posidon.android.slablauncher.ui.popup.listPopup.viewHolders
 
-import android.annotation.SuppressLint
+import android.content.Context
 import android.content.res.ColorStateList
-import android.graphics.drawable.RippleDrawable
+import android.graphics.drawable.*
+import android.os.Build
+import android.util.StateSet
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.widget.addTextChangedListener
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.hideIfNullOr
 import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupItem
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
-import io.posidon.android.slablauncher.ui.view.multiswitch.MultiSwitch
 import io.posidon.android.conveniencelib.units.dp
-import io.posidon.android.conveniencelib.units.toFloatPixels
+import io.posidon.android.conveniencelib.units.toPixels
 
-class ListPopupMultistateItemViewHolder(itemView: View) : ListPopupViewHolder(itemView) {
+class ListPopupEntryItemViewHolder(itemView: View) : ListPopupViewHolder(itemView) {
 
     val icon = itemView.findViewById<ImageView>(R.id.icon)
 
     val text = itemView.findViewById<TextView>(R.id.text)
     val description = itemView.findViewById<TextView>(R.id.description)
 
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
-    val switch = itemView.findViewById<MultiSwitch>(R.id.toggle)
+    val entry = itemView.findViewById<EditText>(R.id.entry)
 
     val ripple = RippleDrawable(ColorStateList.valueOf(0), null, FastColorDrawable(0xffffffff.toInt()))
 
@@ -32,23 +34,21 @@ class ListPopupMultistateItemViewHolder(itemView: View) : ListPopupViewHolder(it
     }
 
     override fun onBind(item: ListPopupItem<*>) {
-        item as ListPopupItem<Int>
+        item as ListPopupItem<String>
 
         text.text = item.text
         description.text = item.description
-        switch.setOnStateChangeListener(null)
+
+        itemView.setOnClickListener {
+            entry.requestFocus()
+        }
 
         text.setTextColor(ColorTheme.cardTitle)
-        switch.setBackgroundColor(ColorTheme.cardHint and 0x00ffffff or 0x55000000)
-        switch.onColor = ColorTheme.accentColor
-        switch.unsafeOnColor = ColorTheme.tintWithColor(ColorTheme.accentColor, 0xdd3333)
-        switch.offColor = ColorTheme.cardHint
-        switch.unsafeOffColor = ColorTheme.tintWithColor(ColorTheme.cardHint, 0xdd3333)
-        switch.borderColor = 0x88000000.toInt()
-        switch.borderWidth = 1f
-        switch.radius = 32.dp.toFloatPixels(itemView)
-        switch.smallRadius = 2.dp.toFloatPixels(itemView)
-        switch.cellMargin = 4.dp.toFloatPixels(itemView)
+        entry.setTextColor(ColorTheme.cardTitle)
+        entry.highlightColor = ColorTheme.accentColor and 0xffffff or 0x33000000
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            entry.textCursorDrawable?.setTint(ColorTheme.accentColor)
+        }
 
         ripple.setColor(ColorStateList.valueOf(ColorTheme.accentColor and 0xffffff or 0x33000000))
 
@@ -60,13 +60,9 @@ class ListPopupMultistateItemViewHolder(itemView: View) : ListPopupViewHolder(it
             setImageDrawable(it)
             imageTintList = ColorStateList.valueOf(ColorTheme.cardDescription)
         }
-        switch.state = item.value ?: 0
-        switch.states = item.states
-        switch.setOnStateChangeListener(item.onValueChange!!)
-        switch.unsafeLevel = item.unsafeLevel
-
-        itemView.setOnClickListener {
-            switch.state = (switch.state + 1) % switch.states
+        entry.setText(item.value)
+        entry.addTextChangedListener { e ->
+            item.onValueChange!!(entry, e.toString())
         }
     }
 }

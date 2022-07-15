@@ -17,6 +17,7 @@
 
         <string name="color_theme_gen">Color extraction</string>
         <string name="color_theme_day_night">Theme</string>
+        <string name="greeting">Greeting</string>
 
         <string name="layout">Layout</string>
         <string name="columns">Columns</string>
@@ -72,6 +73,7 @@
     <!-- statements start -->
         <string name="good_morning">Good morning!</string>
         <string name="good_night">Good night!</string>
-        <string name="good_day">Have a nice day!</string>
+        <string name="new_year">Happy new year!</string>
+        <string name="default_greeting">Do your best</string>
     <!-- statements end -->
 </resources>

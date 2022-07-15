@@ -14,7 +14,7 @@ class ListPopupPrimaryTitleViewHolder(itemView: View) : ListPopupViewHolder(item
     val description = itemView.findViewById<TextView>(R.id.description)
     val icon = itemView.findViewById<ImageView>(R.id.icon)
 
-    override fun onBind(item: ListPopupItem) {
+    override fun onBind(item: ListPopupItem<*>) {
         text.text = item.text
         description.text = item.description
 
