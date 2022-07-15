@@ -28,7 +28,7 @@ import kotlin.properties.Delegates
 
 class HomeArea(
     val view: NestedScrollView,
-    private val fragment: DashAreaFragment,
+    private val fragment: HomeAreaFragment,
     private val launcherContext: LauncherContext
 ) {
 

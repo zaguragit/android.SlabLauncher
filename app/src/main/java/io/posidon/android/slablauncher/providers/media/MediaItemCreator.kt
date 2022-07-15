@@ -32,7 +32,7 @@ object MediaItemCreator {
 
         val color = coverBmp?.let {
             Palette.from(it).generate().run {
-                getDominantColor(getVibrantColor(0xff000000.toInt()))
+                getVibrantColor(getDarkVibrantColor(getDominantColor(0xff000000.toInt())))
             }
         } ?: 0
 

@@ -15,7 +15,7 @@ import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.ui.home.MainActivity
-import io.posidon.android.slablauncher.ui.home.main.DashAreaFragment
+import io.posidon.android.slablauncher.ui.home.main.HomeAreaFragment
 import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.DropTargetViewHolder
 import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.TileViewHolder
 import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.bindDropTargetViewHolder
@@ -23,7 +23,7 @@ import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.bindDropTar
 class PinnedTilesAdapter(
     val activity: MainActivity,
     private val launcherContext: LauncherContext,
-    val fragment: DashAreaFragment,
+    val fragment: HomeAreaFragment,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var dropTargetIndex = -1

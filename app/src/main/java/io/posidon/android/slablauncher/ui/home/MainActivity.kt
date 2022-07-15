@@ -8,7 +8,9 @@ import android.content.*
 import android.content.pm.LauncherApps
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
@@ -23,6 +25,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
+import androidx.core.graphics.applyCanvas
+import androidx.core.graphics.toXfermode
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
@@ -32,7 +36,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import io.posidon.android.conveniencelib.Device
 import io.posidon.android.conveniencelib.getNavigationBarHeight
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toFloatPixels
 import io.posidon.android.launcherutil.liveWallpaper.LiveWallpaper
 import io.posidon.android.slablauncher.BuildConfig
 import io.posidon.android.slablauncher.LauncherContext
@@ -45,7 +52,7 @@ import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.item.AppCallback
 import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
-import io.posidon.android.slablauncher.ui.home.main.DashAreaFragment
+import io.posidon.android.slablauncher.ui.home.main.HomeAreaFragment
 import io.posidon.android.slablauncher.ui.home.main.HomeArea
 import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.home.main.loadBlur
@@ -128,7 +135,7 @@ class MainActivity : FragmentActivity() {
             override fun getItemCount() = 2
 
             override fun createFragment(i: Int): Fragment = when (i) {
-                0 -> DashAreaFragment()
+                0 -> HomeAreaFragment()
                 1 -> SideListFragment()
                 else -> throw IndexOutOfBoundsException("Fragment [$i] doesn't exist")
             }
@@ -288,11 +295,6 @@ class MainActivity : FragmentActivity() {
         inSearchBarContainer.setPadding(0, 0, 0, bottomInset)
     }
 
-    fun updateLayout() {
-        suggestionsRecycler.isVisible = settings.doSuggestionStrip
-        onLayoutChangeListeners.forEach { (_, l) -> l() }
-    }
-
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         val isActionMain = Intent.ACTION_MAIN == intent.action
@@ -332,17 +334,24 @@ class MainActivity : FragmentActivity() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        PopupUtils.dismissCurrent()
+        SuggestionsManager.onPause(launcherContext.suggestionData, this)
+    }
+
+    override fun onDestroy() {
+        runCatching {
+            unregisterReceiver(appReloader)
+        }
+        super.onDestroy()
+    }
+
     private fun loadBlur(updateBlur: () -> Unit) = loadBlur(settings, wallpaperManager, updateBlur)
 
     fun reloadBlur(block: () -> Unit) = loadBlur(settings, wallpaperManager) {
         updateBlur()
         block()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        PopupUtils.dismissCurrent()
-        SuggestionsManager.onPause(launcherContext.suggestionData, this)
     }
 
     @RequiresApi(Build.VERSION_CODES.O_MR1)
@@ -415,33 +424,13 @@ class MainActivity : FragmentActivity() {
         return false
     }
 
-    fun setOnColorThemeUpdateListener(key: String, listener: () -> Unit) {
-        onColorThemeUpdateListeners[key] = listener
-    }
-
-    fun setOnBlurUpdateListener(key: String, listener: () -> Unit) {
-        onBlurUpdateListeners[key] = listener
-    }
-
-    fun setOnLayoutChangeListener(key: String, listener: () -> Unit) {
-        onLayoutChangeListeners[key] = listener
-    }
-
-    fun setOnPageScrollListener(key: String, listener: (Float) -> Unit) {
-        onPageScrollListeners[key] = listener
-    }
-
-    fun setOnAppsLoadedListener(key: String, listener: (List<App>) -> Unit) {
-        onAppsLoadedListeners[key] = listener
-    }
-
-    fun setOnGraphicsLoaderChangeListener(key: String, listener: (GraphicsLoader) -> Unit) {
-        onGraphicsLoaderChangedListeners[key] = listener
-    }
-
-    fun setOnSearchQueryListener(key: String, listener: (String?) -> Unit) {
-        onSearchQueryListeners[key] = listener
-    }
+    fun setOnColorThemeUpdateListener       (key: String, listener: () -> Unit) { onColorThemeUpdateListeners[key] = listener }
+    fun setOnBlurUpdateListener             (key: String, listener: () -> Unit) { onBlurUpdateListeners[key] = listener }
+    fun setOnLayoutChangeListener           (key: String, listener: () -> Unit) { onLayoutChangeListeners[key] = listener }
+    fun setOnPageScrollListener             (key: String, listener: (Float) -> Unit) { onPageScrollListeners[key] = listener }
+    fun setOnAppsLoadedListener             (key: String, listener: (List<App>) -> Unit) { onAppsLoadedListeners[key] = listener }
+    fun setOnGraphicsLoaderChangeListener   (key: String, listener: (GraphicsLoader) -> Unit) { onGraphicsLoaderChangedListeners[key] = listener }
+    fun setOnSearchQueryListener            (key: String, listener: (String?) -> Unit) { onSearchQueryListeners[key] = listener }
 
     private val onColorThemeUpdateListeners = HashMap<String, () -> Unit>()
     private val onBlurUpdateListeners = HashMap<String, () -> Unit>()
@@ -472,6 +461,34 @@ class MainActivity : FragmentActivity() {
         }
     }
 
+    private fun createTileAreaBackdropDrawable(blur: Bitmap): Drawable {
+        val paint = Paint().apply {
+            val r = blur.height / Device.screenHeight(this@MainActivity).toFloat()
+            val a = blur.height.toFloat() - searchBarContainer.height * r
+            shader = LinearGradient(
+                0f,
+                a - (HomeAreaFragment.calculateDockHeight(this@MainActivity, settings) + 32.dp.toFloatPixels(this@MainActivity)) * r,
+                0f,
+                a,
+                intArrayOf(
+                    0,
+                    0xdd000000.toInt()
+                ),
+                floatArrayOf(
+                    0f, .8f
+                ),
+                Shader.TileMode.CLAMP
+            )
+            xfermode = PorterDuff.Mode.DST_IN.toXfermode()
+        }
+        val bitmap = Bitmap.createBitmap(blur.width, blur.height, blur.config).applyCanvas {
+            val y = (height - blur.height).toFloat()
+            drawBitmap(blur, y, 0f, Paint())
+            drawRect(0f, y, width.toFloat(), blur.height.toFloat(), paint)
+        }
+        return BitmapDrawable(resources, bitmap)
+    }
+
     private fun updateCurrentBlurBackground() {
         blurBG.drawable = acrylicBlur?.let { b ->
             LayerDrawable(
@@ -480,6 +497,7 @@ class MainActivity : FragmentActivity() {
                     BitmapDrawable(resources, b.partialBlurMedium),
                     BitmapDrawable(resources, b.fullBlur),
                     BitmapDrawable(resources, b.insaneBlur),
+                    createTileAreaBackdropDrawable(b.smoothBlur),
                 )
             )
         }
@@ -514,16 +532,21 @@ class MainActivity : FragmentActivity() {
         l.getDrawable(1).alpha = if (x < 1f) 0 else (255 * (x - 1f).coerceAtMost(1f)).toInt()
         l.getDrawable(2).alpha = if (x < 2f) 0 else (255 * (x - 2f)).toInt()
         l.getDrawable(3).alpha = (200 * overlayOpacity * invF + 100 * f).toInt()
+        l.getDrawable(4).alpha = (255 * (1f - overlayOpacity) * invF).toInt()
         viewPager.background?.alpha = (127 * overlayOpacity * invF + (191) * f).toInt()
         val sl = searchBarBlurBG.drawable as? LayerDrawable ?: return
         sl.getDrawable(0).alpha = ((35 + 220 * min(invF, 1 - overlayOpacity)) * 0.36f).toInt()
         sl.getDrawable(1).alpha = (25 + 230 * max(f, overlayOpacity) * 0.16f).toInt()
     }
 
-    override fun onDestroy() {
-        runCatching {
-            unregisterReceiver(appReloader)
+    fun updateLayout() {
+        suggestionsRecycler.isVisible = settings.doSuggestionStrip
+        onLayoutChangeListeners.forEach { (_, l) -> l() }
+        (blurBG.drawable as? LayerDrawable)?.run {
+            acrylicBlur?.let {
+                setDrawable(4, createTileAreaBackdropDrawable(it.smoothBlur))
+                blurBG.invalidate()
+            }
         }
-        super.onDestroy()
     }
 }

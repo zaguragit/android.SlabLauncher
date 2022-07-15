@@ -96,12 +96,15 @@ interface ColorTheme {
 
 
         fun tintWithColor(base: Int, color: Int): Int {
-            val tintHSL = FloatArray(3)
-            val baseHSL = FloatArray(3)
-            ColorUtils.colorToHSL(color, tintHSL)
-            ColorUtils.colorToHSL(base, baseHSL)
-            tintHSL[2] = baseHSL[2]
-            return ColorUtils.HSLToColor(tintHSL) and 0xffffff or (base and 0xff000000.toInt())
+            val tintLAB = DoubleArray(3)
+            val baseLAB = DoubleArray(3)
+            ColorUtils.colorToLAB(color, tintLAB)
+            ColorUtils.colorToLAB(base, baseLAB)
+            if (baseLAB[0] <= tintLAB[0]) {
+                tintLAB[1] *= 1.5
+                tintLAB[2] *= 1.5
+            }
+            return ColorUtils.LABToColor(baseLAB[0], tintLAB[1], tintLAB[2]) and 0xffffff or (base and 0xff000000.toInt())
         }
 
         fun hueTintClosest(baseColor: Int, palette: Array<Int>): Int {

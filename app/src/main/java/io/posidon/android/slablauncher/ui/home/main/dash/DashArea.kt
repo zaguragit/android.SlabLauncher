@@ -33,7 +33,6 @@ import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
 import io.posidon.android.slablauncher.util.drawable.setBackgroundColorFast
-import java.text.DateFormat
 
 @SuppressLint("ClickableViewAccessibility")
 class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivity) {

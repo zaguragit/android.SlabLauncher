@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.WallpaperManager
+import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.*
@@ -30,7 +31,17 @@ import kotlin.concurrent.thread
 var acrylicBlur: AcrylicBlur? = null
     private set
 
-class DashAreaFragment : Fragment() {
+class HomeAreaFragment : Fragment() {
+
+    companion object {
+        fun calculateDockHeight(context: Context, settings: Settings): Int {
+            val tileMargin = context.resources.getDimension(R.dimen.item_card_margin)
+            val tileWidth = (Device.screenWidth(context) - tileMargin * 2) / HomeArea.calculateColumns(context, settings) - tileMargin * 2
+            val tileHeight = tileWidth / HomeArea.WIDTH_TO_HEIGHT
+            val dockHeight = settings.dockRowCount * (tileHeight + tileMargin * 2)
+            return (tileMargin + dockHeight.toInt()).toInt()
+        }
+    }
 
     private lateinit var homeArea: HomeArea
     private lateinit var launcherContext: LauncherContext
@@ -47,19 +58,19 @@ class DashAreaFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = inflater.inflate(R.layout.activity_launcher, container, false).apply {
-        homeArea = HomeArea(this as NestedScrollView, this@DashAreaFragment, launcherContext)
+        homeArea = HomeArea(this as NestedScrollView, this@HomeAreaFragment, launcherContext)
 
         val a = requireActivity() as MainActivity
-        a.setOnColorThemeUpdateListener(DashAreaFragment::class.simpleName!!, ::updateColorTheme)
-        a.setOnBlurUpdateListener(DashAreaFragment::class.simpleName!!, ::updateBlur)
-        a.setOnAppsLoadedListener(DashAreaFragment::class.simpleName!!) {
+        a.setOnColorThemeUpdateListener(HomeAreaFragment::class.simpleName!!, ::updateColorTheme)
+        a.setOnBlurUpdateListener(HomeAreaFragment::class.simpleName!!, ::updateBlur)
+        a.setOnAppsLoadedListener(HomeAreaFragment::class.simpleName!!) {
             a.runOnUiThread(homeArea::updatePinned)
         }
-        a.setOnGraphicsLoaderChangeListener(DashAreaFragment::class.simpleName!!) {
+        a.setOnGraphicsLoaderChangeListener(HomeAreaFragment::class.simpleName!!) {
             a.runOnUiThread(homeArea::forceUpdatePinned)
         }
-        a.setOnPageScrollListener(DashAreaFragment::class.simpleName!!, ::onOffsetUpdate)
-        a.setOnLayoutChangeListener(DashAreaFragment::class.simpleName!!, ::updateLayout)
+        a.setOnPageScrollListener(HomeAreaFragment::class.simpleName!!, ::onOffsetUpdate)
+        a.setOnLayoutChangeListener(HomeAreaFragment::class.simpleName!!, ::updateLayout)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -100,11 +111,7 @@ class DashAreaFragment : Fragment() {
         )
         homeArea.dash.view.doOnLayout {
             it.updateLayoutParams {
-                val tileMargin = it.context.resources.getDimension(R.dimen.item_card_margin)
-                val tileWidth = (Device.screenWidth(it.context) - tileMargin * 2) / HomeArea.calculateColumns(it.context, launcherContext.settings) - tileMargin * 2
-                val tileHeight = tileWidth / HomeArea.WIDTH_TO_HEIGHT
-                val dockHeight = launcherContext.settings.dockRowCount * (tileHeight + tileMargin * 2)
-                height = requireView().height - (tileMargin + dockHeight.toInt()).toInt()
+                height = requireView().height - calculateDockHeight(it.context, launcherContext.settings)
             }
         }
     }
