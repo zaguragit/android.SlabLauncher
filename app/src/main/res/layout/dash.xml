@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dash"
@@ -10,8 +10,7 @@
         style="@style/SlabLauncher.TileArea.Item.Card"
         android:id="@+id/card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top">
+        android:layout_height="wrap_content">
         <io.posidon.android.slablauncher.ui.view.SeeThroughView
             android:id="@+id/dash_blur_bg"
             android:layout_width="match_parent"
@@ -131,11 +130,11 @@
                         android:layout_height="wrap_content"/>
                 </LinearLayout>
             </LinearLayout>
-            <View
-                android:id="@+id/separator2"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"/>
-            <include layout="@layout/dash_media_player"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-</RelativeLayout>
+    <View
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:layout_weight="1"/>
+    <include layout="@layout/dash_media_player"/>
+</LinearLayout>

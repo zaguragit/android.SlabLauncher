@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/SlabLauncher.TileArea.Item.Card"
     android:id="@+id/media_player"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -9,53 +10,62 @@
         android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop"
+        android:alpha=".5"/>
+    <io.posidon.android.slablauncher.ui.view.SeeThroughView
+        android:id="@+id/blur_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha=".5"/>
     <LinearLayout
-        style="@style/SlabLauncher.MediaPlayer.Container"
+        style="@style/SlabLauncher.TileArea.Item.Container"
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <TextView
-            style="@style/SlabLauncher.MediaPlayer.Title"
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <TextView
-            style="@style/SlabLauncher.MediaPlayer.Subtitle"
-            android:id="@+id/subtitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
         <LinearLayout
-            android:layout_width="match_parent"
+            style="@style/SlabLauncher.MediaPlayer.Container"
+            android:layout_width="0px"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:translationY="@dimen/feed_card_spacing">
-            <ImageView
-                android:id="@+id/button_prev"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="10dp"
-                android:layout_marginEnd="16dp"
-                android:src="@drawable/ic_track_previous"
-                tools:ignore="ContentDescription"/>
-            <ImageView
-                android:id="@+id/button_next"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:padding="10dp"
-                android:src="@drawable/ic_track_next"
-                tools:ignore="ContentDescription"/>
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                style="@style/SlabLauncher.MediaPlayer.Title"
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <TextView
+                style="@style/SlabLauncher.MediaPlayer.Subtitle"
+                android:id="@+id/subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
+        <ImageView
+            android:id="@+id/button_prev"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="10dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_track_previous"
+            android:background="@drawable/round_bg"
+            tools:ignore="ContentDescription"/>
+        <ImageView
+            android:id="@+id/button_next"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_track_next"
+            android:background="@drawable/round_bg"
+            tools:ignore="ContentDescription"/>
+        <ImageView
+            android:id="@+id/button_play"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_margin="8dp"
+            android:padding="10dp"
+            android:src="@drawable/ic_play"
+            android:background="@drawable/button_bg_round"
+            tools:ignore="ContentDescription"/>
     </LinearLayout>
-    <ImageView
-        android:id="@+id/button_play"
-        android:layout_width="69dp"
-        android:layout_height="48dp"
-        android:layout_margin="18dp"
-        android:layout_gravity="center_vertical|end"
-        android:padding="10dp"
-        android:src="@drawable/ic_play"
-        android:background="@drawable/round_bg"
-        tools:ignore="ContentDescription"/>
-</FrameLayout>
+</androidx.cardview.widget.CardView>

@@ -41,14 +41,13 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
     val container = card.findViewById<View>(R.id.container)!!
     private val statement = card.findViewById<TextView>(R.id.statement)!!
     private val date = card.findViewById<TextView>(R.id.date)!!
-    private val alarm = card.findViewById<TextView>(R.id.alarm)
+    private val alarm = card.findViewById<TextView>(R.id.alarm)!!
 
     private val notificationArea = card.findViewById<ViewGroup>(R.id.notification_area)!!
 
     private val separators = arrayOf<View>(
         card.findViewById(R.id.separator),
         card.findViewById(R.id.separator1),
-        card.findViewById(R.id.separator2),
     )
 
     private val notificationsAdapter = NotificationAdapter()
@@ -65,7 +64,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
     private val notificationImageCard = primaryNotification.findViewById<CardView>(R.id.notification_image_card)
     private val notificationImage = notificationImageCard.findViewById<ImageView>(R.id.notification_image)
 
-    private val mediaPlayer = MediaPlayer(view.findViewById(R.id.media_player), separators[2])
+    val mediaPlayer = MediaPlayer(view.findViewById(R.id.media_player), mainActivity::updateLayout)
 
     private val notificationMoreText = view.findViewById<TextView>(R.id.x_more)!!.apply {
         setOnClickListener {
@@ -210,7 +209,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
         notificationText.setTextColor(ColorTheme.cardDescription)
         notificationMoreText.setTextColor(ColorTheme.cardDescription)
         notificationsAdapter.notifyItemRangeChanged(0, notificationsAdapter.itemCount)
-        
+
         mediaPlayer.updateColorTheme()
     }
 
@@ -235,6 +234,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
 
     fun updateBlur() {
         blurBG.drawable = acrylicBlur?.smoothBlurDrawable
+        mediaPlayer.updateBlur()
     }
 
     fun onWindowFocusChanged(hasFocus: Boolean) {
