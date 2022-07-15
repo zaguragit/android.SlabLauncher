@@ -33,6 +33,7 @@ import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
 import io.posidon.android.slablauncher.util.drawable.setBackgroundColorFast
+import java.text.DateFormat
 
 @SuppressLint("ClickableViewAccessibility")
 class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivity) {
@@ -214,6 +215,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
         mediaPlayer.updateColorTheme()
     }
 
+    @SuppressLint("SetTextI18n")
     fun onResume() {
         updateGreeting()
         val nextAlarm = view.context.getSystemService(AlarmManager::class.java).nextAlarmClock
@@ -222,7 +224,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
         } else {
             val c = Calendar.getInstance()
             c.timeInMillis = nextAlarm.triggerTime
-            alarm.text = alarm.resources.getString(R.string.next_alarm_time_format, c[Calendar.HOUR_OF_DAY], c[Calendar.MINUTE])
+            alarm.text = "${c[Calendar.HOUR_OF_DAY]}:${c[Calendar.MINUTE].toString().padStart(2, '0')}"
             alarm.isVisible = true
         }
         updateNotifications(NotificationService.notifications)

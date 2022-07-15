@@ -69,7 +69,6 @@
         <!-- how to use end -->
     <!-- first time screen end -->
 
-    <string name="next_alarm_time_format">%1$d:%2$d</string>
     <!-- statements start -->
         <string name="good_morning">Good morning!</string>
         <string name="good_night">Good night!</string>
