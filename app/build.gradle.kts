@@ -38,7 +38,7 @@ dependencies {
     implementation("io.posidon:android.conveniencelib:22.0")
     implementation("com.github.zaguragit:ksugar:fb31214198")
 
-    implementation("androidx.core:core-ktx:1.7.0")
+    implementation("androidx.core:core-ktx:1.8.0")
     implementation("androidx.palette:palette-ktx:1.0.0")
     implementation("androidx.cardview:cardview:1.0.0")
     implementation("androidx.fragment:fragment-ktx:1.5.0")
