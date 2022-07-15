@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -14,6 +15,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.toXfermode
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
+import io.posidon.android.conveniencelib.vibrate
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.notification.MediaPlayerData
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
@@ -40,16 +42,19 @@ class MediaPlayer(val view: CardView, val updateLayout: () -> Unit) {
 
     private val buttonPrev = view.findViewById<ImageView>(R.id.button_prev)!!.apply {
         setOnClickListener {
+            it.context.vibrate(1)
             NotificationService.mediaItem?.previous?.invoke(it)
         }
     }
     private val buttonPlay = view.findViewById<ImageView>(R.id.button_play)!!.apply {
         setOnClickListener {
+            it.context.vibrate(1)
             NotificationService.mediaItem?.togglePause?.invoke(this)
         }
     }
     private val buttonNext = view.findViewById<ImageView>(R.id.button_next)!!.apply {
         setOnClickListener {
+            it.context.vibrate(1)
             NotificationService.mediaItem?.next?.invoke(it)
         }
     }
