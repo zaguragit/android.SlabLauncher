@@ -82,7 +82,7 @@ object NotificationCreator {
         return null
     }
 
-    private inline fun getImportance(importance: Int): Int {
+    inline fun getImportance(importance: Int): Int {
         return when (importance) {
             NotificationManager.IMPORTANCE_NONE,
             NotificationManager.IMPORTANCE_MIN -> -1

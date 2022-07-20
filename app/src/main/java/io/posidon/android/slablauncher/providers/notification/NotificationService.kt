@@ -14,6 +14,7 @@ import android.os.Build
 import android.os.UserHandle
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
+import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import io.posidon.android.slablauncher.BuildConfig
 import io.posidon.android.slablauncher.data.notification.MediaPlayerData
@@ -79,6 +80,19 @@ class NotificationService : NotificationListenerService() {
                             val isMusic = notification.notification.extras
                                 .getCharSequence(Notification.EXTRA_TEMPLATE) == Notification.MediaStyle::class.java.name
                             if (isMusic) {
+                                i++
+                                continue
+                            }
+                            val isAnnoying = !notification.isClearable && run {
+                                val messagingStyle = NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(
+                                    notification.notification)
+                                val isConversation = messagingStyle != null
+                                !isConversation
+                            } && run {
+                                val channel = NotificationManagerCompat.from(applicationContext).getNotificationChannel(notification.notification.channelId)
+                                (channel?.importance?.let { NotificationCreator.getImportance(it) } ?: 0) <= 0
+                            }
+                            if (isAnnoying) {
                                 i++
                                 continue
                             }
