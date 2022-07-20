@@ -66,6 +66,8 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
 
     val mediaPlayer = MediaPlayer(view.findViewById(R.id.media_player), mainActivity::updateLayout)
 
+    val playerSpacer = view.findViewById<View>(R.id.player_spacer)
+
     private val notificationMoreText = view.findViewById<TextView>(R.id.x_more)!!.apply {
         setOnClickListener {
             it.context.pullStatusbar()

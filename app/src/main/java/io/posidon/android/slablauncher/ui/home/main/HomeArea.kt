@@ -6,7 +6,9 @@ import android.content.Context
 import android.view.DragEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +22,7 @@ import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
 import io.posidon.android.slablauncher.util.storage.ColumnCount.dockColumnCount
+import io.posidon.android.slablauncher.util.storage.DoAlignMediaPlayerToTop.alignMediaPlayerToTop
 import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.ksugar.delegates.observable
 import kotlin.math.abs
@@ -192,6 +195,24 @@ class HomeArea(
     fun updateBlur() {
         pinnedAdapter.notifyItemRangeChanged(0, pinnedAdapter.itemCount)
         dash.updateBlur()
+    }
+
+    fun updateLayout() {
+        dash.playerSpacer.isVisible = !launcherContext.settings.alignMediaPlayerToTop
+        pinnedRecycler.layoutManager = GridLayoutManager(
+            view.context,
+            calculateColumns(view.context, launcherContext.settings),
+            RecyclerView.VERTICAL,
+            false
+        )
+        dash.view.doOnLayout {
+            it.updateLayoutParams {
+                height = fragment.requireView().height - HomeAreaFragment.calculateDockHeight(
+                    it.context,
+                    launcherContext.settings
+                )
+            }
+        }
     }
 
     fun onWindowFocusChanged(hasFocus: Boolean) {

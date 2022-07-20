@@ -70,7 +70,7 @@ class HomeAreaFragment : Fragment() {
             a.runOnUiThread(homeArea::forceUpdatePinned)
         }
         a.setOnPageScrollListener(HomeAreaFragment::class.simpleName!!, ::onOffsetUpdate)
-        a.setOnLayoutChangeListener(HomeAreaFragment::class.simpleName!!, ::updateLayout)
+        a.setOnLayoutChangeListener(HomeAreaFragment::class.simpleName!!, homeArea::updateLayout)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -99,21 +99,7 @@ class HomeAreaFragment : Fragment() {
         val t = resources.getDimension(R.dimen.item_card_margin).toInt()
         homeArea.pinnedRecycler.setPadding(t, 0, t, t)
         homeArea.dash.view.setPadding(t, requireContext().getStatusBarHeight(), t, 0)
-        updateLayout()
-    }
-
-    private fun updateLayout() {
-        homeArea.pinnedRecycler.layoutManager = GridLayoutManager(
-            homeArea.view.context,
-            HomeArea.calculateColumns(homeArea.view.context, launcherContext.settings),
-            RecyclerView.VERTICAL,
-            false
-        )
-        homeArea.dash.view.doOnLayout {
-            it.updateLayoutParams {
-                height = requireView().height - calculateDockHeight(it.context, launcherContext.settings)
-            }
-        }
+        homeArea.updateLayout()
     }
 
     private fun updateBlur() {

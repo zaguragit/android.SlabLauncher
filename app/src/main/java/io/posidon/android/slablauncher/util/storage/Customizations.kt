@@ -138,3 +138,16 @@ object DoSuggestionStripSetting {
 
     const val DEFAULT = true
 }
+
+object DoAlignMediaPlayerToTop {
+    val Settings.alignMediaPlayerToTop: Boolean
+        get() = get(KEY, DEFAULT)
+
+    var Settings.SettingsEditor.alignMediaPlayerToTop: Boolean
+        get() = settings[KEY, DEFAULT]
+        set(value) = KEY set value
+
+    private const val KEY = "media_player:align_top"
+
+    const val DEFAULT = false
+}

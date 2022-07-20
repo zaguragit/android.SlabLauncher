@@ -36,6 +36,7 @@ import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.slablauncher.BuildConfig
 import io.posidon.android.slablauncher.util.storage.ColumnCount.dockColumnCount
+import io.posidon.android.slablauncher.util.storage.DoAlignMediaPlayerToTop.alignMediaPlayerToTop
 import io.posidon.android.slablauncher.util.storage.GreetingSetting.getDefaultGreeting
 import io.posidon.android.slablauncher.util.storage.GreetingSetting.setDefaultGreeting
 import java.util.concurrent.locks.ReentrantLock
@@ -251,6 +252,18 @@ class HomeLongPressPopup(
                     onValueChange = { _, value ->
                         settings.edit(context) {
                             doSuggestionStrip = value
+                            updateLayout()
+                        }
+                    }
+                ),
+                ListPopupItem(
+                    context.getString(R.string.align_media_player_top_top),
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_play),
+                    value = settings.alignMediaPlayerToTop,
+                    states = 2,
+                    onValueChange = { _, value ->
+                        settings.edit(context) {
+                            alignMediaPlayerToTop = value
                             updateLayout()
                         }
                     }

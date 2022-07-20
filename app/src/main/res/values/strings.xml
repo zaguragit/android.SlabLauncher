@@ -23,6 +23,7 @@
         <string name="columns">Columns</string>
         <string name="dock_row_count">Dock row count</string>
         <string name="show_app_suggestions">Show app suggestions</string>
+        <string name="align_media_player_top_top">Align media player to top</string>
 
         <string name="tiles">Tiles</string>
 
