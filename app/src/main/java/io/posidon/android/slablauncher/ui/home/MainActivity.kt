@@ -427,6 +427,7 @@ class MainActivity : FragmentActivity() {
     fun invalidateItemGraphics() {
         graphicsLoader.setupNewAppIconLoader(this, settings)
         onGraphicsLoaderChangedListeners.forEach { (_, l) -> l(graphicsLoader) }
+        runOnUiThread(suggestionsAdapter::updateItems)
     }
 
     @RequiresApi(Build.VERSION_CODES.S)

@@ -1,5 +1,7 @@
 package io.posidon.android.slablauncher.ui.home.sideList.viewHolders.search
 
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -9,6 +11,8 @@ import io.posidon.android.slablauncher.data.search.SearchResult
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.hideIfNullOr
+import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.doMonochrome
+import io.posidon.android.slablauncher.util.storage.Settings
 
 class CompactSearchViewHolder(
     itemView: View
@@ -28,6 +32,11 @@ class CompactSearchViewHolder(
         activity.graphicsLoader.load(itemView.context, result.launcherItem) {
             icon.post {
                 icon.setImageDrawable(it.icon)
+                icon.colorFilter = if (activity.settings.doMonochrome) {
+                    ColorMatrixColorFilter(ColorMatrix().apply {
+                        setSaturation(0f)
+                    })
+                } else null
             }
         }
 

@@ -31,6 +31,7 @@ class SuggestionsAdapter(
             item,
             activity.getNavigationBarHeight(),
             graphicsLoader,
+            settings,
         )
     }
 
@@ -40,7 +41,7 @@ class SuggestionsAdapter(
             holder.recycle(items[i])
     }
 
-    fun updateItems(items: List<LauncherItem>) {
+    fun updateItems(items: List<LauncherItem> = this.items) {
         this.items = items
         notifyDataSetChanged()
     }

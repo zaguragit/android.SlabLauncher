@@ -74,6 +74,9 @@ class SideListFragment : Fragment() {
                 searcher.query(it)
             }
         }
+        a.setOnGraphicsLoaderChangeListener(SideListFragment::class.simpleName!!) {
+            adapter.notifyDataSetChanged()
+        }
         adapter = SideListAdapter(a, this@SideListFragment)
         recyclerView.run {
             layoutManager = LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false)

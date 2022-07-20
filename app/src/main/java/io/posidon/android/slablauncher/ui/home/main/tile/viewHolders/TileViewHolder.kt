@@ -54,6 +54,10 @@ class TileViewHolder(
         }
         val backgroundColor = ColorTheme.tileColor(itemColor)
         imageView.post {
+            val borderTint = if (item is App) {
+                ColorTheme.tintWithColor(0xcdcdcd, itemColor)
+            } else 0xffffff
+            imageView.foregroundTintList = ColorStateList.valueOf(borderTint or 0x55000000)
             card.setCardBackgroundColor(backgroundColor)
             imageView.setImageDrawable(iconData.extra.tile)
             imageView.alpha = 1f
@@ -81,12 +85,6 @@ class TileViewHolder(
     ) {
         imageView.setImageDrawable(null)
         card.setCardBackgroundColor(ColorTheme.cardBG)
-
-        val borderTint = if (item is App) {
-            val color = graphicsLoader.load(itemView.context, item).extra.color
-            ColorTheme.tintWithColor(0xcdcdcd, color)
-        } else 0xffffff
-        imageView.foregroundTintList = ColorStateList.valueOf(borderTint or 0x55000000.toInt())
 
         graphicsLoader.load(itemView.context, item) {
             updateBackground(item, it, settings)
