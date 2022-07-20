@@ -52,8 +52,8 @@ import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.item.AppCallback
 import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
-import io.posidon.android.slablauncher.ui.home.main.HomeAreaFragment
 import io.posidon.android.slablauncher.ui.home.main.HomeArea
+import io.posidon.android.slablauncher.ui.home.main.HomeAreaFragment
 import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.home.main.loadBlur
 import io.posidon.android.slablauncher.ui.home.main.suggestion.SuggestionsAdapter
@@ -89,8 +89,6 @@ class MainActivity : FragmentActivity() {
 
     private lateinit var wallpaperManager: WallpaperManager
 
-    private var colorThemeOptions = ColorThemeOptions(settings.colorThemeDayNight)
-
     private lateinit var blurBG: SeeThroughView
     private lateinit var searchBarContainer: View
     private lateinit var inSearchBarContainer: View
@@ -117,7 +115,7 @@ class MainActivity : FragmentActivity() {
         settings.init(applicationContext)
 
         wallpaperManager = WallpaperManager.getInstance(this)
-        colorThemeOptions = ColorThemeOptions(settings.colorThemeDayNight)
+        currentIsDark = checkDarkMode()
 
         setContentView(R.layout.activity_main)
 
@@ -271,9 +269,31 @@ class MainActivity : FragmentActivity() {
         updateLayout()
     }
 
+
+    private fun checkDarkMode(): Boolean {
+        return when (settings.colorThemeDayNight) {
+            ColorThemeOptions.DayNight.AUTO -> {
+                val f = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+                f != Configuration.UI_MODE_NIGHT_NO
+            }
+            ColorThemeOptions.DayNight.DARK -> true
+            ColorThemeOptions.DayNight.LIGHT -> false
+        }
+    }
+
+    private var currentIsDark = true
+
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         configureWindow()
+        if (settings.colorThemeDayNight == ColorThemeOptions.DayNight.AUTO) {
+            val f = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+            val newIsDark = f != Configuration.UI_MODE_NIGHT_NO
+            if (newIsDark != currentIsDark) {
+                currentIsDark = newIsDark
+                updateColorTheme(ColorPalette.getCurrent())
+            }
+        }
     }
 
     private fun configureWindow() {
@@ -374,8 +394,8 @@ class MainActivity : FragmentActivity() {
     }
 
     fun updateColorTheme(colorPalette: ColorPalette) {
-        colorThemeOptions = ColorThemeOptions(settings.colorThemeDayNight)
-        ColorTheme.updateColorTheme(colorThemeOptions.createColorTheme(colorPalette))
+        currentIsDark = checkDarkMode()
+        ColorTheme.updateColorTheme(ColorTheme.create(colorPalette, isDark = currentIsDark))
         runOnUiThread {
             viewPager.background = FastColorDrawable(ColorTheme.uiBG).apply {
                 viewPager.background?.alpha?.let { alpha = it }

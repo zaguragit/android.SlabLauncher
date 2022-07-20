@@ -2,6 +2,8 @@ package io.posidon.android.slablauncher.providers.color.theme
 
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.luminance
+import io.posidon.android.slablauncher.providers.color.ColorThemeOptions
+import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.pallete.DefaultPalette
 import kotlin.math.abs
 import kotlin.math.max
@@ -37,6 +39,11 @@ interface ColorTheme {
     fun tileColor(iconBackgroundColor: Int): Int
 
     companion object : ColorTheme {
+
+        fun create(palette: ColorPalette, isDark: Boolean): ColorTheme {
+            return if (isDark) DarkColorTheme(palette)
+            else LightColorTheme(palette)
+        }
 
         fun updateColorTheme(colorTheme: ColorTheme) {
             colorThemeInstance = colorTheme
