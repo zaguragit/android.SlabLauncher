@@ -13,6 +13,7 @@ internal class FastColorDrawable(
 
     override fun draw(canvas: Canvas) = canvas.drawPaint(paint)
 
+    @Deprecated("Deprecated in Java")
     override fun getOpacity() = PixelFormat.TRANSLUCENT
 
     override fun setAlpha(alpha: Int) {

@@ -75,7 +75,9 @@ class SideListFragment : Fragment() {
             }
         }
         a.setOnGraphicsLoaderChangeListener(SideListFragment::class.simpleName!!) {
-            adapter.notifyDataSetChanged()
+            runOnUiThread {
+                adapter.notifyDataSetChanged()
+            }
         }
         adapter = SideListAdapter(a, this@SideListFragment)
         recyclerView.run {

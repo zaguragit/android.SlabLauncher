@@ -21,6 +21,7 @@ internal class ContactDrawable(
         canvas.drawText(charArrayOf(character), 0, 1, x, y, textPaint)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun getOpacity() = PixelFormat.OPAQUE
 
     override fun setAlpha(alpha: Int) {}
