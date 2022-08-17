@@ -210,7 +210,7 @@ class HomeArea(
                 height = fragment.requireView().height - HomeAreaFragment.calculateDockHeight(
                     it.context,
                     launcherContext.settings
-                )
+                ) - (fragment.requireActivity() as MainActivity).getSearchBarInset()
             }
         }
     }

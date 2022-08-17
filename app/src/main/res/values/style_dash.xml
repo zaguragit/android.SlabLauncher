@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <style name="SlabLauncher.Dash.Card" parent="SlabLauncher">
+        <item name="cardCornerRadius">@dimen/large_card_radius</item>
+        <item name="android:layout_margin">@dimen/item_card_margin</item>
+        <item name="cardElevation">@dimen/item_card_elevation</item>
+    </style>
+
     <style name="SlabLauncher.Dash.Top" parent="SlabLauncher">
         <item name="android:layout_marginTop">24dp</item>
         <item name="android:layout_marginBottom">24dp</item>

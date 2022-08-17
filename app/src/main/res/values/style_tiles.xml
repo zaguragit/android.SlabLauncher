@@ -6,10 +6,6 @@
         <item name="cardElevation">@dimen/item_card_elevation</item>
     </style>
 
-    <style name="SlabLauncher.TileArea.Item.Container" parent="SlabLauncher">
-        <item name="android:foreground">@drawable/item_card_border</item>
-    </style>
-
     <style name="SlabLauncher.TileArea.Suggestions.Item.Card" parent="SlabLauncher">
         <item name="android:background">@drawable/round_bg</item>
         <item name="android:layout_marginVertical">@dimen/suggestion_margin</item>

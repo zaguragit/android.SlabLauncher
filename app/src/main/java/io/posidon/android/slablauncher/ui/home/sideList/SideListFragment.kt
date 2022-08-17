@@ -7,11 +7,15 @@ import android.graphics.Shader
 import android.os.Build
 import android.os.Bundle
 import android.view.*
+import android.widget.FrameLayout
 import androidx.activity.addCallback
+import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.posidon.android.conveniencelib.getNavigationBarHeight
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.search.SearchResult
@@ -141,6 +145,10 @@ class SideListFragment : Fragment() {
                 }
             }
         }
+        view.setOnApplyWindowInsetsListener { _, insets ->
+            configureWindow()
+            insets
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -150,12 +158,25 @@ class SideListFragment : Fragment() {
 
     private fun configureWindow() {
         val tileMargin = resources.getDimension(R.dimen.item_card_margin).toInt()
+        val b = (tileMargin + (requireActivity() as MainActivity).getSearchBarInset()) / 2
+        val bottomInset = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val i = requireActivity().window?.decorView?.rootWindowInsets
+            i?.getInsets(WindowInsets.Type.ime())?.bottom?.coerceAtLeast(
+                i.getInsets(WindowInsets.Type.systemBars()).bottom
+            ) ?: 0
+        } else requireActivity().getNavigationBarHeight()
         recyclerView.setPadding(
             tileMargin,
             tileMargin + requireContext().getStatusBarHeight(),
             tileMargin,
-            tileMargin,
+            b,
         )
+        recyclerView.layoutParams = FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        ).apply {
+            bottomMargin = b + bottomInset
+        }
     }
 
     private var lastQuery = SearchQuery.EMPTY

@@ -83,14 +83,12 @@ class HomeLongPressPopup(
             val blurBG = content.findViewById<SeeThroughView>(R.id.blur_bg)
 
             val cardView = content.findViewById<CardView>(R.id.card)
-            val recycler = content.findViewById<RecyclerView>(R.id.recycler)
             val popupAdapter = ListPopupAdapter()
             val updateLock = ReentrantLock()
 
             val popup = HomeLongPressPopup {
                 blurBG.drawable = acrylicBlur?.smoothBlurDrawable
                 cardView.setCardBackgroundColor(ColorTheme.cardBG)
-                recycler.backgroundTintList = ColorStateList.valueOf(ColorTheme.separator)
                 popupAdapter.updateItems(
                     createMainAdapter(
                         parent.context, settings,

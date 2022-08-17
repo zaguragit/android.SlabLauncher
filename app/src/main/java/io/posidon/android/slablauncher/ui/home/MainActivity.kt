@@ -16,19 +16,16 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.UserHandle
-import android.view.MotionEvent
-import android.view.View
-import android.view.WindowInsets
-import android.view.WindowManager
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
+import androidx.cardview.widget.CardView
 import androidx.core.graphics.applyCanvas
 import androidx.core.graphics.toXfermode
-import androidx.core.view.doOnPreDraw
-import androidx.core.view.isVisible
+import androidx.core.view.*
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -90,8 +87,7 @@ class MainActivity : FragmentActivity() {
     private lateinit var wallpaperManager: WallpaperManager
 
     private lateinit var blurBG: SeeThroughView
-    private lateinit var searchBarContainer: View
-    private lateinit var inSearchBarContainer: View
+    private lateinit var searchBarContainer: CardView
     private lateinit var searchBarText: EditText
     private lateinit var searchBarIcon: ImageView
     private lateinit var searchBarSeparator: View
@@ -105,7 +101,6 @@ class MainActivity : FragmentActivity() {
             loadApps()
         }
     }
-
 
     @SuppressLint("ClickableViewAccessibility", "WrongConstant", "NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -122,9 +117,8 @@ class MainActivity : FragmentActivity() {
         blurBG = findViewById(R.id.blur_bg)
         searchBarContainer = findViewById(R.id.search_bar_container)!!
         searchBarBlurBG = searchBarContainer.findViewById(R.id.search_bar_blur_bg)!!
-        inSearchBarContainer = searchBarContainer.findViewById(R.id.in_search_bar_container)!!
-        searchBarText = inSearchBarContainer.findViewById(R.id.search_bar_text)!!
-        searchBarIcon = inSearchBarContainer.findViewById(R.id.search_bar_icon)!!
+        searchBarText = searchBarContainer.findViewById(R.id.search_bar_text)!!
+        searchBarIcon = searchBarContainer.findViewById(R.id.search_bar_icon)!!
         searchBarSeparator = findViewById(R.id.search_bar_separator)!!
 
         viewPager = findViewById(R.id.view_pager)
@@ -269,7 +263,6 @@ class MainActivity : FragmentActivity() {
         updateLayout()
     }
 
-
     private fun checkDarkMode(): Boolean {
         return when (settings.colorThemeDayNight) {
             ColorThemeOptions.DayNight.AUTO -> {
@@ -312,20 +305,9 @@ class MainActivity : FragmentActivity() {
                 i.getInsets(WindowInsets.Type.systemBars()).bottom
             ) ?: 0
         } else getNavigationBarHeight()
-        inSearchBarContainer.setPadding(0, 0, 0, bottomInset)
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        val isActionMain = Intent.ACTION_MAIN == intent.action
-        if (isActionMain) {
-            handleGestureContract(intent)
+        searchBarContainer.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            bottomMargin = bottomInset + (resources.getDimension(R.dimen.item_card_margin) * 2).toInt()
         }
-    }
-
-    private fun handleGestureContract(intent: Intent) {
-        //val gnc = GestureNavContract.fromIntent(intent)
-        //gnc?.sendEndPosition(scrollBar.clipBounds.toRectF(), null)
     }
 
     override fun onResume() {
@@ -400,7 +382,7 @@ class MainActivity : FragmentActivity() {
             viewPager.background = FastColorDrawable(ColorTheme.uiBG).apply {
                 viewPager.background?.alpha?.let { alpha = it }
             }
-            searchBarContainer.setBackgroundColorFast(ColorTheme.searchBarBG)
+            searchBarContainer.setCardBackgroundColor(ColorTheme.searchBarBG)
             searchBarText.run {
                 setTextColor(ColorTheme.searchBarFG)
                 highlightColor = ColorTheme.accentColor and 0x00ffffff or 0x66000000
@@ -488,7 +470,7 @@ class MainActivity : FragmentActivity() {
             val a = blur.height.toFloat() - searchBarContainer.height * r
             shader = LinearGradient(
                 0f,
-                a - (HomeAreaFragment.calculateDockHeight(this@MainActivity, settings) + 32.dp.toFloatPixels(this@MainActivity)) * r,
+                a - (HomeAreaFragment.calculateDockHeight(this@MainActivity, settings) + 32.dp.toFloatPixels(this@MainActivity) + getSearchBarInset()) * r,
                 0f,
                 a,
                 intArrayOf(
@@ -533,6 +515,9 @@ class MainActivity : FragmentActivity() {
         updateBlurLevel()
     }
 
+    fun getSearchBarInset(): Int =
+        (resources.getDimension(R.dimen.search_bar_height) + resources.getDimension(R.dimen.item_card_margin) * 2).toInt()
+
     var overlayOpacity = 0f
     var blurLevel = 0f
         private set
@@ -556,8 +541,8 @@ class MainActivity : FragmentActivity() {
         l.getDrawable(4).alpha = (255 * (1f - overlayOpacity) * invF).toInt()
         viewPager.background?.alpha = (127 * overlayOpacity * invF + (191) * f).toInt()
         val sl = searchBarBlurBG.drawable as? LayerDrawable ?: return
-        sl.getDrawable(0).alpha = ((35 + 220 * min(invF, 1 - overlayOpacity)) * 0.36f).toInt()
-        sl.getDrawable(1).alpha = (25 + 230 * max(f, overlayOpacity) * 0.16f).toInt()
+        sl.getDrawable(0).alpha = ((36 + 200 * min(invF, 1 - overlayOpacity)) * 0.36f).toInt()
+        sl.getDrawable(1).alpha = (32 + 210 * max(f, overlayOpacity) * 0.16f).toInt()
     }
 
     fun updateLayout() {

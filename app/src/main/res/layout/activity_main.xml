@@ -1,35 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
-    <FrameLayout
+    android:layout_weight="1">
+    <io.posidon.android.slablauncher.ui.view.SeeThroughView
+        android:id="@+id/blur_bg"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <io.posidon.android.slablauncher.ui.view.SeeThroughView
-            android:id="@+id/blur_bg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/view_pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </FrameLayout>
-    <FrameLayout
+        android:layout_height="match_parent"/>
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <androidx.cardview.widget.CardView
+        style="@style/SlabLauncher.SearchBar.Card"
         android:id="@+id/search_bar_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/search_bar_height"
+        android:layout_gravity="bottom">
         <io.posidon.android.slablauncher.ui.view.SeeThroughView
             android:id="@+id/search_bar_blur_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
         <LinearLayout
-            android:id="@+id/in_search_bar_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/search_bar_height"
             android:orientation="horizontal"
             android:layout_marginHorizontal="8dp">
             <ImageView
@@ -61,6 +57,7 @@
         <View
             android:id="@+id/search_bar_separator"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
-    </FrameLayout>
-</LinearLayout>
+            android:layout_height="1dp"
+            android:visibility="gone"/>
+    </androidx.cardview.widget.CardView>
+</FrameLayout>

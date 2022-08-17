@@ -8,8 +8,16 @@
         <item name="android:paddingBottom">18dp</item>
         <item name="android:textSize">42sp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:fontWeight">700</item>
         <item name="android:maxLines">2</item>
         <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="SlabLauncher.SearchBar.Card" parent="SlabLauncher">
+        <item name="cardCornerRadius">@dimen/item_card_radius</item>
+        <item name="android:layout_marginVertical">@dimen/item_card_margin</item>
+        <item name="android:layout_marginHorizontal">9.9dp</item>
+        <item name="cardElevation">@dimen/item_card_elevation</item>
     </style>
 
     <style name="SlabLauncher.SearchBar.Text" parent="SlabLauncher">
@@ -28,8 +36,8 @@
 
 
     <style name="SlabLauncher.SearchResult.Container" parent="SlabLauncher">
-        <item name="android:paddingHorizontal">6dp</item>
-        <item name="android:paddingVertical">4dp</item>
+        <item name="android:layout_marginHorizontal">6dp</item>
+        <item name="android:layout_marginVertical">4dp</item>
     </style>
 
 
@@ -53,7 +61,7 @@
 
 
     <style name="SlabLauncher.SearchResult.InstantAnswer.Card" parent="SlabLauncher">
-        <item name="cardCornerRadius">@dimen/item_card_radius</item>
+        <item name="cardCornerRadius">@dimen/large_card_radius</item>
 
         <item name="android:layout_margin">@dimen/item_card_margin</item>
         <item name="android:elevation">@dimen/item_card_elevation</item>
@@ -61,7 +69,6 @@
 
     <style name="SlabLauncher.SearchResult.InstantAnswer.Container" parent="SlabLauncher">
         <item name="android:padding">@dimen/feed_card_padding</item>
-        <item name="android:background">@drawable/item_card_border</item>
     </style>
 
     <style name="SlabLauncher.SearchResult.InstantAnswer.Title" parent="SlabLauncher">

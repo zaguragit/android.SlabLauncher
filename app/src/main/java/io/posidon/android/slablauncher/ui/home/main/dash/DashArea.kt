@@ -47,7 +47,6 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
 
     private val separators = arrayOf<View>(
         card.findViewById(R.id.separator),
-        card.findViewById(R.id.separator1),
     )
 
     private val notificationsAdapter = NotificationAdapter()
@@ -55,14 +54,6 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
         layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
         adapter = notificationsAdapter
     }
-
-    private val primaryNotification = notificationArea.findViewById<ViewGroup>(R.id.primary_notification)
-    private val notificationIcon = primaryNotification.findViewById<ImageView>(R.id.icon)
-    private val notificationSource = primaryNotification.findViewById<TextView>(R.id.source)
-    private val notificationTitle = primaryNotification.findViewById<TextView>(R.id.title)
-    private val notificationText = primaryNotification.findViewById<TextView>(R.id.text)
-    private val notificationImageCard = primaryNotification.findViewById<CardView>(R.id.notification_image_card)
-    private val notificationImage = notificationImageCard.findViewById<ImageView>(R.id.notification_image)
 
     val mediaPlayer = MediaPlayer(view.findViewById(R.id.media_player), mainActivity::updateLayout)
 
@@ -151,40 +142,8 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
             }
             notificationArea.isVisible = true
             separators[0].isVisible = true
-            val shownCount: Int
-            val m = NotificationService.mediaItem != null
-            if (new.size >= 3) {
-                shownCount = new.size.coerceAtMost(if (m) 3 else 4)
-                val list = new.subList(0, shownCount).toMutableList()
-                val notification = list.firstOrNull { it.image != null } ?: list[0]
-                list.remove(notification)
-                notificationsAdapter.updateItems(list)
-                primaryNotification.setOnClickListener { notification.open() }
-                notificationIcon.setImageDrawable(notification.icon)
-                notificationSource.text = notification.source
-                notificationTitle.text = notification.title
-                notificationText.text = notification.description
-                if (notification.image != null) {
-                    notificationImage.setImageDrawable(notification.image)
-                    notificationImageCard.isVisible = true
-                    notificationImageCard.doOnLayout {
-                        it.updateLayoutParams {
-                            height = (
-                                it.width * notification.image.intrinsicHeight / notification.image.intrinsicWidth
-                            ).coerceAtMost(256.dp.toPixels(view))
-                        }
-                    }
-                } else {
-                    notificationImageCard.isVisible = false
-                }
-                primaryNotification.isVisible = true
-                separators[1].isVisible = true
-            } else {
-                shownCount = new.size.coerceAtMost(if (m) 2 else 3)
-                notificationsAdapter.updateItems(new.subList(0, shownCount))
-                primaryNotification.isVisible = false
-                separators[1].isVisible = false
-            }
+            val shownCount = new.size.coerceAtMost(4)
+            notificationsAdapter.updateItems(new.subList(0, shownCount))
             val more = new.size - shownCount
             if (more != 0) {
                 notificationMoreText.text = view.context.getString(R.string.x_more, more)
@@ -197,7 +156,6 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
 
     fun updateColorTheme() {
         val s = ColorTheme.separator
-        container.foregroundTintList = ColorStateList.valueOf(s)
         separators.forEach { it.setBackgroundColorFast(s) }
         card.setCardBackgroundColor(ColorTheme.cardBG)
         statement.setTextColor(ColorTheme.cardTitle)
@@ -205,10 +163,6 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
         alarm.setTextColor(ColorTheme.cardDescription)
         alarm.compoundDrawableTintList = ColorStateList.valueOf(ColorTheme.cardDescription)
 
-        notificationIcon.imageTintList = ColorStateList.valueOf(ColorTheme.cardDescription)
-        notificationSource.setTextColor(ColorTheme.cardDescription)
-        notificationTitle.setTextColor(ColorTheme.cardTitle)
-        notificationText.setTextColor(ColorTheme.cardDescription)
         notificationMoreText.setTextColor(ColorTheme.cardDescription)
         notificationsAdapter.notifyItemRangeChanged(0, notificationsAdapter.itemCount)
 

@@ -1,33 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     style="@style/SlabLauncher.Notification.Item.Container">
     <LinearLayout
-        style="@style/SlabLauncher.Notification.Item.Source.Container"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-        <ImageView
-            style="@style/SlabLauncher.Notification.Item.Source.Icon"
-            android:id="@+id/icon"/>
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <LinearLayout
+            style="@style/SlabLauncher.Notification.Item.Source.Container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <TextView
+                style="@style/SlabLauncher.Notification.Item.Title"
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                style="@style/SlabLauncher.Notification.Item.Source.Text"
+                android:id="@+id/source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
         <TextView
-            style="@style/SlabLauncher.Notification.Item.Title"
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <TextView
-            style="@style/SlabLauncher.Notification.Item.Source.Text"
-            android:id="@+id/source"
+            style="@style/SlabLauncher.Notification.Item.Text"
+            android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
-    <TextView
-        style="@style/SlabLauncher.Notification.Item.Text"
-        android:id="@+id/text"
+    <androidx.cardview.widget.CardView
+        style="@style/SlabLauncher.Notification.Item.ImageCard"
+        android:id="@+id/notification_image_card"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent">
+        <ImageView
+            style="@style/SlabLauncher.Notification.Item.Image"
+            android:id="@+id/notification_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:ignore="ContentDescription" />
+    </androidx.cardview.widget.CardView>
 </LinearLayout>

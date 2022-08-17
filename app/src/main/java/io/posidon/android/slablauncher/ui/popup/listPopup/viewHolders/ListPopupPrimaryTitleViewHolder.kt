@@ -18,7 +18,7 @@ class ListPopupPrimaryTitleViewHolder(itemView: View) : ListPopupViewHolder(item
         text.text = item.text
         description.text = item.description
 
-        text.setTextColor(ColorTheme.adjustColorForContrast(ColorTheme.cardBG, ColorTheme.accentColor))
+        text.setTextColor(ColorTheme.adjustColorForContrast(ColorTheme.cardBG, ColorTheme.secondaryAccentColor))
         icon.setImageDrawable(item.icon)
 
         itemView.setOnClickListener(item.onClick)

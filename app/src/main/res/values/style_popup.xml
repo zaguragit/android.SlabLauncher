@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="SlabLauncher.ListPopup.Container" parent="SlabLauncher">
-        <item name="cardCornerRadius">@dimen/item_card_radius</item>
+        <item name="cardCornerRadius">@dimen/large_card_radius</item>
 
         <item name="android:layout_margin">@dimen/item_card_margin</item>
         <item name="android:elevation">@dimen/item_card_elevation</item>
@@ -9,7 +9,6 @@
 
     <style name="SlabLauncher.ListPopup.Recycler" parent="SlabLauncher">
         <item name="android:paddingVertical">8dp</item>
-        <item name="android:background">@drawable/item_card_border</item>
     </style>
 
     <style name="SlabLauncher.ListPopup.Item.Container" parent="SlabLauncher">
@@ -102,12 +101,11 @@
 
 
     <style name="SlabLauncher.ItemPopup.Card" parent="SlabLauncher">
-        <item name="cardCornerRadius">@dimen/item_card_radius</item>
+        <item name="cardCornerRadius">@dimen/large_card_radius</item>
         <item name="android:elevation">@dimen/item_card_elevation</item>
     </style>
 
     <style name="SlabLauncher.ItemPopup.Container" parent="SlabLauncher">
-        <item name="android:background">@drawable/item_card_border</item>
     </style>
 
     <style name="SlabLauncher.ItemPopup.Shortcut.Container" parent="SlabLauncher">

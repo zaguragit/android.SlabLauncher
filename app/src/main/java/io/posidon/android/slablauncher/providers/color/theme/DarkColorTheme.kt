@@ -12,6 +12,7 @@ class DarkColorTheme(
 ) : ColorTheme {
 
     override val accentColor = palette.primary
+    override val secondaryAccentColor = palette.secondary
 
     override val uiBG = palette.neutralVeryDark
     override val uiTitle = palette.neutralVeryLight
@@ -23,12 +24,12 @@ class DarkColorTheme(
     override val cardDescription = palette.neutralLight
     override val cardHint = palette.neutralMedium
 
-    override val separator = palette.neutralVeryLight and 0xffffff or 0x55000000
+    override val separator = palette.neutralVeryLight and 0xffffff or 0x33000000
 
     override val buttonColor = palette.neutralMedium
     override val buttonColorCallToAction = palette.secondary
 
-    override val searchBarBG = palette.neutralDark
+    override val searchBarBG = ColorUtils.blendARGB(cardBG, accentColor, 0.3f)
     override val searchBarFG = palette.neutralLight
 
     override fun adjustColorForContrast(base: Int, tint: Int): Int {

@@ -97,7 +97,10 @@ class HomeAreaFragment : Fragment() {
 
     private fun configureWindow() {
         val t = resources.getDimension(R.dimen.item_card_margin).toInt()
-        homeArea.pinnedRecycler.setPadding(t, 0, t, t)
+        val r = resources.getDimension(R.dimen.item_card_radius).toInt()
+        homeArea.pinnedRecycler.doOnLayout {
+            homeArea.pinnedRecycler.setPadding(t, 0, t, (requireActivity() as MainActivity).getSearchBarInset() - t - r)
+        }
         homeArea.dash.view.setPadding(t, requireContext().getStatusBarHeight(), t, 0)
         homeArea.updateLayout()
     }

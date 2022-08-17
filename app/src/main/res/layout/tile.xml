@@ -6,7 +6,6 @@
     android:id="@+id/card"
     style="@style/SlabLauncher.TileArea.Item.Card">
     <io.posidon.android.slablauncher.ui.view.BackdropImageView
-        style="@style/SlabLauncher.TileArea.Item.Container"
         android:id="@+id/background_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

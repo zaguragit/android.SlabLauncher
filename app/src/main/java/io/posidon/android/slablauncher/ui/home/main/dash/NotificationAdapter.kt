@@ -3,7 +3,13 @@ package io.posidon.android.slablauncher.ui.home.main.dash
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.doOnLayout
+import androidx.core.view.doOnNextLayout
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.notification.NotificationData
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
@@ -24,15 +30,27 @@ class NotificationAdapter : RecyclerView.Adapter<NotificationViewHolder>() {
 
     override fun onBindViewHolder(holder: NotificationViewHolder, i: Int) {
         val notification = data[i]
-        holder.icon.setImageDrawable(notification.icon)
         holder.source.text = notification.source
         holder.title.text = notification.title
         holder.text.text = notification.description
 
-        holder.icon.imageTintList = ColorStateList.valueOf(ColorTheme.cardDescription)
         holder.source.setTextColor(ColorTheme.cardDescription)
         holder.title.setTextColor(ColorTheme.cardTitle)
         holder.text.setTextColor(ColorTheme.cardDescription)
+        val img = notification.image
+        if (img == null) {
+            holder.imageCard.isVisible = false
+        } else {
+            holder.image.setImageDrawable(img)
+            holder.itemView.doOnLayout {
+                holder.imageCard.updateLayoutParams {
+                    width = (
+                        it.height * img.intrinsicWidth / img.intrinsicHeight
+                    ).coerceAtMost(256.dp.toPixels(it))
+                }
+            }
+            holder.imageCard.isVisible = true
+        }
     }
 
     override fun getItemCount() = data.size

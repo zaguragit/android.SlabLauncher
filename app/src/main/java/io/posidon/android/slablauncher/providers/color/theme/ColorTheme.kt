@@ -15,6 +15,7 @@ private var colorThemeInstance: ColorTheme = DarkColorTheme(DefaultPalette)
 interface ColorTheme {
 
     val accentColor: Int
+    val secondaryAccentColor: Int
 
     val uiBG: Int
     val uiTitle: Int
@@ -51,6 +52,8 @@ interface ColorTheme {
 
         override val accentColor: Int
             get() = colorThemeInstance.accentColor
+        override val secondaryAccentColor: Int
+            get() = colorThemeInstance.secondaryAccentColor
         override val uiBG: Int
             get() = colorThemeInstance.uiBG
         override val uiTitle: Int

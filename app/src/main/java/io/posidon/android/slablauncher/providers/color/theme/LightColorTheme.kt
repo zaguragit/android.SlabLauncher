@@ -11,13 +11,14 @@ class LightColorTheme(
 ) : ColorTheme {
 
     override val accentColor = palette.primary
+    override val secondaryAccentColor = palette.secondary
 
-    override val uiBG = palette.neutralLight
+    override val uiBG = palette.neutralVeryLight
     override val uiTitle = palette.neutralVeryDark
     override val uiDescription = palette.neutralDark
     override val uiHint = palette.neutralMedium
 
-    override val cardBG = palette.neutralVeryLight
+    override val cardBG = 0xffffffff.toInt()
     override val cardTitle = palette.neutralVeryDark
     override val cardDescription = palette.neutralDark
     override val cardHint = palette.neutralMedium
@@ -27,8 +28,8 @@ class LightColorTheme(
     override val buttonColor = palette.neutralVeryLight
     override val buttonColorCallToAction = palette.secondary
 
-    override val searchBarBG = palette.neutralVeryLight
-    override val searchBarFG = palette.neutralDark
+    override val searchBarBG = ColorUtils.blendARGB(cardBG, accentColor, 0.6f)
+    override val searchBarFG = ColorTheme.titleColorForBG(searchBarBG)
 
     override fun adjustColorForContrast(base: Int, tint: Int): Int {
         return if (base.luminance > .6f) {
