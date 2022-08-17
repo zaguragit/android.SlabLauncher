@@ -11,18 +11,24 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.conveniencelib.Device
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
+import io.posidon.android.slablauncher.data.items.LauncherItem
+import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.main.dash.DashArea
+import io.posidon.android.slablauncher.ui.home.main.suggestion.SuggestionsAdapter
 import io.posidon.android.slablauncher.ui.home.main.tile.PinnedTilesAdapter
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
 import io.posidon.android.slablauncher.util.storage.ColumnCount.dockColumnCount
 import io.posidon.android.slablauncher.util.storage.DoAlignMediaPlayerToTop.alignMediaPlayerToTop
+import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
+import io.posidon.android.slablauncher.util.storage.DockRowCount.dockRowCount
 import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.ksugar.delegates.observable
 import kotlin.math.abs
@@ -37,6 +43,7 @@ class HomeArea(
 
     companion object {
         const val WIDTH_TO_HEIGHT = 6f / 5f
+        const val SUGGESTION_WIDTH_TO_HEIGHT = 5f / 3f
 
         fun calculateColumns(context: Context, settings: Settings): Int =
             Device.screenWidth(context) / (
@@ -52,6 +59,11 @@ class HomeArea(
         get() = view.scrollY
 
     val dash = DashArea(view.findViewById<ViewGroup>(R.id.dash), this, fragment.requireActivity() as MainActivity)
+
+    val suggestionsAdapter = SuggestionsAdapter(fragment.requireActivity() as MainActivity, launcherContext.settings, (fragment.requireActivity() as MainActivity).graphicsLoader)
+    private var suggestionsRecycler = view.findViewById<RecyclerView>(R.id.suggestions_recycler)!!.apply {
+        adapter = suggestionsAdapter
+    }
 
     init {
         val activity = fragment.requireActivity() as MainActivity
@@ -84,7 +96,7 @@ class HomeArea(
                 activity::invalidateItemGraphics,
                 activity::reloadBlur,
                 activity::updateLayout,
-                dash::updateGreeting,
+                activity::updateGreeting,
             )
         }
     }
@@ -109,10 +121,12 @@ class HomeArea(
 
     fun updatePinned() {
         pinnedAdapter.updateItems(launcherContext.appManager.pinnedItems)
+        updateSuggestions(launcherContext.appManager.pinnedItems)
     }
 
     fun forceUpdatePinned() {
         pinnedAdapter.forceUpdateItems(launcherContext.appManager.pinnedItems)
+        suggestionsAdapter.updateItems ()
     }
 
     var highlightDropArea by Delegates.observable(false) { new ->
@@ -198,24 +212,48 @@ class HomeArea(
     }
 
     fun updateLayout() {
+        suggestionsRecycler.isVisible = launcherContext.settings.doSuggestionStrip
         dash.playerSpacer.isVisible = !launcherContext.settings.alignMediaPlayerToTop
+        dash.suggestionsSpacer.isVisible = launcherContext.settings.alignMediaPlayerToTop
+        val columns = calculateColumns(view.context, launcherContext.settings)
         pinnedRecycler.layoutManager = GridLayoutManager(
             view.context,
-            calculateColumns(view.context, launcherContext.settings),
+            columns,
             RecyclerView.VERTICAL,
             false
         )
+        suggestionsRecycler.layoutManager = GridLayoutManager(view.context, columns, RecyclerView.VERTICAL, false)
+        if (launcherContext.appManager.apps.isNotEmpty())
+            updateSuggestions(launcherContext.appManager.pinnedItems)
         dash.view.doOnLayout {
             it.updateLayoutParams {
                 height = fragment.requireView().height - HomeAreaFragment.calculateDockHeight(
                     it.context,
                     launcherContext.settings
-                ) - (fragment.requireActivity() as MainActivity).getSearchBarInset()
+                ) - ((fragment.requireActivity() as MainActivity).getSearchBarInset() - it.resources.getDimension(R.dimen.item_card_margin).toInt()) / 2
             }
         }
     }
 
+    fun updateColorTheme() {
+        dash.updateColorTheme()
+        pinnedAdapter.notifyItemRangeChanged(0, pinnedAdapter.itemCount)
+        suggestionsAdapter.notifyItemRangeChanged(0, suggestionsAdapter.itemCount)
+    }
+
     fun onWindowFocusChanged(hasFocus: Boolean) {
         dash.onWindowFocusChanged(hasFocus)
+    }
+
+    fun updateSuggestions(pinnedItems: List<LauncherItem>) {
+        val columns = calculateColumns(view.context, launcherContext.settings)
+        suggestionsAdapter.updateItems((SuggestionsManager.get() - pinnedItems.let {
+            val s = launcherContext.settings.dockRowCount * columns
+            if (it.size > s) it.subList(0, s)
+            else it
+        }.toSet()).let {
+            if (it.size > columns) it.subList(0, columns)
+            else it
+        })
     }
 }

@@ -23,11 +23,16 @@
             android:id="@+id/search_bar_blur_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
+        <TextView
+            style="@style/SlabLauncher.SearchBar.Statement"
+            android:id="@+id/statement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/search_bar_height"
-            android:orientation="horizontal"
-            android:layout_marginHorizontal="8dp">
+            android:orientation="horizontal">
             <ImageView
                 style="@style/SlabLauncher.SearchBar.Icon"
                 android:id="@+id/search_bar_icon"
@@ -48,16 +53,6 @@
                 android:inputType="number|text|phone|datetime"
                 android:imeOptions="actionSearch"
                 android:importantForAutofill="no"/>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/suggestions_recycler"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"/>
         </LinearLayout>
-        <View
-            android:id="@+id/search_bar_separator"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:visibility="gone"/>
     </androidx.cardview.widget.CardView>
 </FrameLayout>

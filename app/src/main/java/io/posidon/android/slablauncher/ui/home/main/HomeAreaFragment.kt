@@ -11,6 +11,8 @@ import android.graphics.*
 import android.os.Build
 import android.os.Bundle
 import android.view.*
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.updateLayoutParams
@@ -26,6 +28,7 @@ import io.posidon.android.slablauncher.util.storage.*
 import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
 import io.posidon.android.slablauncher.util.storage.DockRowCount.dockRowCount
 import io.posidon.android.conveniencelib.*
+import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import kotlin.concurrent.thread
 
 var acrylicBlur: AcrylicBlur? = null
@@ -88,6 +91,12 @@ class HomeAreaFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         homeArea.dash.onResume()
+        val a = requireActivity() as MainActivity
+        SuggestionsManager.onResume(a) {
+            a.runOnUiThread {
+                homeArea.updateSuggestions(launcherContext.appManager.pinnedItems)
+            }
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -97,25 +106,26 @@ class HomeAreaFragment : Fragment() {
 
     private fun configureWindow() {
         val t = resources.getDimension(R.dimen.item_card_margin).toInt()
-        val r = resources.getDimension(R.dimen.item_card_radius).toInt()
         homeArea.pinnedRecycler.doOnLayout {
-            homeArea.pinnedRecycler.setPadding(t, 0, t, (requireActivity() as MainActivity).getSearchBarInset() - t - r)
+            val b = (t + (requireActivity() as MainActivity).getSearchBarInset()) / 2
+            homeArea.pinnedRecycler.setPadding(t, 0, t, b)
+            homeArea.view.layoutParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            ).apply {
+                bottomMargin = b
+            }
         }
         homeArea.dash.view.setPadding(t, requireContext().getStatusBarHeight(), t, 0)
         homeArea.updateLayout()
     }
 
     private fun updateBlur() {
-        activity?.runOnUiThread {
-            homeArea.updateBlur()
-        }
+        activity?.runOnUiThread(homeArea::updateBlur)
     }
 
     private fun updateColorTheme() {
-        activity?.runOnUiThread {
-            homeArea.dash.updateColorTheme()
-            homeArea.pinnedAdapter.notifyItemRangeChanged(0, homeArea.pinnedAdapter.itemCount)
-        }
+        activity?.runOnUiThread(homeArea::updateColorTheme)
     }
 
     private fun onOffsetUpdate(offset: Float) {

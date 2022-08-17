@@ -12,6 +12,7 @@ import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
+import android.icu.util.Calendar
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -21,6 +22,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 import androidx.core.graphics.applyCanvas
@@ -48,6 +50,7 @@ import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.item.AppCallback
 import io.posidon.android.slablauncher.providers.item.GraphicsLoader
+import io.posidon.android.slablauncher.providers.personality.Statement
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import io.posidon.android.slablauncher.ui.home.main.HomeArea
 import io.posidon.android.slablauncher.ui.home.main.HomeAreaFragment
@@ -74,10 +77,6 @@ import kotlin.math.min
 
 class MainActivity : FragmentActivity() {
 
-    companion object {
-        const val SUGGESTION_COUNT = 2
-    }
-
     lateinit var viewPager: ViewPager2
 
     val launcherContext = LauncherContext()
@@ -90,11 +89,8 @@ class MainActivity : FragmentActivity() {
     private lateinit var searchBarContainer: CardView
     private lateinit var searchBarText: EditText
     private lateinit var searchBarIcon: ImageView
-    private lateinit var searchBarSeparator: View
     private lateinit var searchBarBlurBG: SeeThroughView
-    private lateinit var suggestionsRecycler: RecyclerView
-
-    private val suggestionsAdapter = SuggestionsAdapter(this, settings, graphicsLoader)
+    private lateinit var statementView: TextView
 
     private val appReloader = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -119,7 +115,7 @@ class MainActivity : FragmentActivity() {
         searchBarBlurBG = searchBarContainer.findViewById(R.id.search_bar_blur_bg)!!
         searchBarText = searchBarContainer.findViewById(R.id.search_bar_text)!!
         searchBarIcon = searchBarContainer.findViewById(R.id.search_bar_icon)!!
-        searchBarSeparator = findViewById(R.id.search_bar_separator)!!
+        statementView = searchBarContainer.findViewById(R.id.statement)!!
 
         viewPager = findViewById(R.id.view_pager)
 
@@ -172,11 +168,9 @@ class MainActivity : FragmentActivity() {
                     blurBG.offset = wallpaperOffset
                     searchBarBlurBG.offset = wallpaperOffset
                 }
-                if (settings.doSuggestionStrip) {
-                    suggestionsRecycler.alpha = 1 - wallpaperOffset
-                    suggestionsRecycler.isVisible = wallpaperOffset != 1f
-                }
                 onPageScrollListeners.forEach { (_, l) -> l(wallpaperOffset) }
+                statementView.alpha = 1 - wallpaperOffset
+                statementView.isVisible = wallpaperOffset != 1f
             }
 
             override fun onPageSelected(position: Int) {
@@ -254,11 +248,6 @@ class MainActivity : FragmentActivity() {
             insets
         }
 
-        suggestionsRecycler = findViewById<RecyclerView>(R.id.suggestions_recycler)!!.apply {
-            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-            adapter = suggestionsAdapter
-        }
-
         configureWindow()
         updateLayout()
     }
@@ -315,11 +304,8 @@ class MainActivity : FragmentActivity() {
         val shouldUpdate = settings.reload(applicationContext)
         if (shouldUpdate) {
             loadApps()
-        } else SuggestionsManager.onResume(this) {
-            runOnUiThread {
-                updateSuggestions(launcherContext.appManager.pinnedItems)
-            }
         }
+        updateGreeting()
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
             thread(isDaemon = true) {
                 ColorPalette.onResumePreOMR1(
@@ -387,21 +373,21 @@ class MainActivity : FragmentActivity() {
                 setTextColor(ColorTheme.searchBarFG)
                 highlightColor = ColorTheme.accentColor and 0x00ffffff or 0x66000000
             }
-            searchBarSeparator.setBackgroundColorFast(ColorTheme.separator)
+            statementView.setTextColor(ColorTheme.searchBarFG)
             searchBarIcon.imageTintList =
                 ColorStateList.valueOf(ColorTheme.searchBarFG)
             HomeLongPressPopup.updateCurrent()
-            suggestionsAdapter.notifyItemRangeChanged(0, suggestionsAdapter.itemCount)
         }
         onColorThemeUpdateListeners.forEach { (_, l) -> l() }
+    }
+
+    fun updateGreeting() {
+        statementView.text = Statement.get(this, Calendar.getInstance(), settings)
     }
 
     fun loadApps() {
         launcherContext.appManager.loadApps(this) { list ->
             invalidateItemGraphics()
-            runOnUiThread {
-                updateSuggestions(launcherContext.appManager.pinnedItems)
-            }
             onAppsLoadedListeners.forEach { (_, l) -> l(list) }
         }
     }
@@ -409,7 +395,6 @@ class MainActivity : FragmentActivity() {
     fun invalidateItemGraphics() {
         graphicsLoader.setupNewAppIconLoader(this, settings)
         onGraphicsLoaderChangedListeners.forEach { (_, l) -> l(graphicsLoader) }
-        runOnUiThread(suggestionsAdapter::updateItems)
     }
 
     @RequiresApi(Build.VERSION_CODES.S)
@@ -442,19 +427,6 @@ class MainActivity : FragmentActivity() {
     private val onAppsLoadedListeners = HashMap<String, (List<App>) -> Unit>()
     private val onGraphicsLoaderChangedListeners = HashMap<String, (GraphicsLoader) -> Unit>()
     private val onSearchQueryListeners = HashMap<String, (String?) -> Unit>()
-
-    private fun updateSuggestions(pinnedItems: List<LauncherItem>) {
-        suggestionsAdapter.updateItems((SuggestionsManager.get() - pinnedItems.let {
-            val s = settings.dockRowCount * HomeArea.calculateColumns(this, launcherContext.settings)
-            if (it.size > s) it.subList(0, s)
-            else it
-        }.toSet()).let {
-            if (it.size > SUGGESTION_COUNT) it.subList(0,
-                SUGGESTION_COUNT
-            )
-            else it
-        })
-    }
 
     private fun updateBlur() {
         onBlurUpdateListeners.forEach { (_, l) -> l() }
@@ -546,7 +518,6 @@ class MainActivity : FragmentActivity() {
     }
 
     fun updateLayout() {
-        suggestionsRecycler.isVisible = settings.doSuggestionStrip
         onLayoutChangeListeners.forEach { (_, l) -> l() }
         (blurBG.drawable as? LayerDrawable)?.run {
             acrylicBlur?.let {

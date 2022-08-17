@@ -7,18 +7,12 @@
     </style>
 
     <style name="SlabLauncher.Dash.Top" parent="SlabLauncher">
-        <item name="android:layout_marginTop">24dp</item>
-        <item name="android:layout_marginBottom">24dp</item>
-    </style>
-
-    <style name="SlabLauncher.Dash.Statement" parent="SlabLauncher">
-        <item name="android:textSize">36sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:includeFontPadding">false</item>
+        <item name="android:layout_marginTop">22dp</item>
+        <item name="android:layout_marginBottom">22dp</item>
     </style>
 
     <style name="SlabLauncher.Dash.Date" parent="SlabLauncher">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">21sp</item>
         <item name="android:includeFontPadding">false</item>
     </style>
 

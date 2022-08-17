@@ -7,9 +7,9 @@
     </style>
 
     <style name="SlabLauncher.TileArea.Suggestions.Item.Card" parent="SlabLauncher">
-        <item name="android:background">@drawable/round_bg</item>
-        <item name="android:layout_marginVertical">@dimen/suggestion_margin</item>
-        <item name="android:layout_marginEnd">@dimen/suggestion_margin</item>
+        <item name="cardCornerRadius">99dp</item>
+        <item name="android:layout_margin">@dimen/item_card_margin</item>
+        <item name="cardElevation">@dimen/item_card_elevation</item>
     </style>
 
     <style name="SlabLauncher.TileArea.Suggestions.Item.Icon" parent="SlabLauncher">

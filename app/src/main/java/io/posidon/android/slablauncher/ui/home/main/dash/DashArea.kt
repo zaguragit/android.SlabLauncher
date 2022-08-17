@@ -39,7 +39,6 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
 
     val card = view.findViewById<CardView>(R.id.card)!!
     val container = card.findViewById<View>(R.id.container)!!
-    private val statement = card.findViewById<TextView>(R.id.statement)!!
     private val date = card.findViewById<TextView>(R.id.date)!!
     private val alarm = card.findViewById<TextView>(R.id.alarm)!!
 
@@ -58,6 +57,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
     val mediaPlayer = MediaPlayer(view.findViewById(R.id.media_player), mainActivity::updateLayout)
 
     val playerSpacer = view.findViewById<View>(R.id.player_spacer)
+    val suggestionsSpacer = view.findViewById<View>(R.id.suggestions_spacer)
 
     private val notificationMoreText = view.findViewById<TextView>(R.id.x_more)!!.apply {
         setOnClickListener {
@@ -108,7 +108,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
                 mainActivity::invalidateItemGraphics,
                 mainActivity::reloadBlur,
                 mainActivity::updateLayout,
-                ::updateGreeting,
+                mainActivity::updateGreeting,
                 if (homeArea.scrollY == 0) popupWidth else ViewGroup.LayoutParams.WRAP_CONTENT,
                 if (homeArea.scrollY == 0) popupHeight else HomeLongPressPopup.calculateHeight(it.context),
             )
@@ -126,7 +126,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
                 mainActivity::invalidateItemGraphics,
                 mainActivity::reloadBlur,
                 mainActivity::updateLayout,
-                ::updateGreeting,
+                mainActivity::updateGreeting,
                 if (homeArea.scrollY == 0) popupWidth else ViewGroup.LayoutParams.WRAP_CONTENT,
                 if (homeArea.scrollY == 0) popupHeight else HomeLongPressPopup.calculateHeight(v.context),
             )
@@ -158,8 +158,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
         val s = ColorTheme.separator
         separators.forEach { it.setBackgroundColorFast(s) }
         card.setCardBackgroundColor(ColorTheme.cardBG)
-        statement.setTextColor(ColorTheme.cardTitle)
-        date.setTextColor(ColorTheme.cardDescription)
+        date.setTextColor(ColorTheme.cardTitle)
         alarm.setTextColor(ColorTheme.cardDescription)
         alarm.compoundDrawableTintList = ColorStateList.valueOf(ColorTheme.cardDescription)
 
@@ -171,7 +170,6 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
 
     @SuppressLint("SetTextI18n")
     fun onResume() {
-        updateGreeting()
         val nextAlarm = view.context.getSystemService(AlarmManager::class.java).nextAlarmClock
         if (nextAlarm == null) {
             alarm.isVisible = false
@@ -182,10 +180,6 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
             alarm.isVisible = true
         }
         updateNotifications(NotificationService.notifications)
-    }
-
-    fun updateGreeting() {
-        statement.text = Statement.get(view.context, Calendar.getInstance(), mainActivity.settings)
     }
 
     fun updateBlur() {
