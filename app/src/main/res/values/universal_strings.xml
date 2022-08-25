@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Slab launcher</string>
+    <string name="app_name">Slab Launcher</string>
 
     <string name="dev_email">it@posidon.io</string>
-    <string name="crash_email_subject">Slab launcher: crash log</string>
+    <string name="crash_email_subject">Slab Launcher: crash log</string>
 </resources>

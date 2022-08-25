@@ -43,7 +43,7 @@
             android:name=".ui.home.MainActivity"
             android:excludeFromRecents="true"
             android:allowEmbedded="false"
-            android:configChanges="navigation|density|screenSize|smallestScreenSize"
+            android:configChanges="navigation|density|screenSize|smallestScreenSize|orientation"
             android:enabled="false"
             android:exported="true">
             <intent-filter>
@@ -67,6 +67,7 @@
         </activity>
 
         <activity android:name=".ui.settings.iconPackPicker.IconPackPickerActivity"/>
+        <activity android:name=".ui.settings.flag.FlagSettingsActivity"/>
 
         <activity android:name=".util.StackTraceActivity"
             android:configChanges="keyboardHidden|screenSize|orientation"/>

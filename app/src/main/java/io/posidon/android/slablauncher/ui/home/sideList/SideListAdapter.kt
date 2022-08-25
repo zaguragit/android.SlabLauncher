@@ -86,7 +86,7 @@ class SideListAdapter(
 
     fun updateSearchResults(query: SearchQuery, results: List<SearchResult>) {
         currentScreen = SCREEN_SEARCH
-        this.title = activity.getString(R.string.results_for_x, query.text.toString())
+        this.title = activity.getString(R.string.results_for_x, query.text)
         this.items = results
         notifyDataSetChanged()
     }

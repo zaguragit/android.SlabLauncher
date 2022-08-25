@@ -3,7 +3,6 @@ package io.posidon.android.slablauncher.ui.popup.home
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -18,8 +17,8 @@ import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.popup.PopupUtils
-import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupAdapter
-import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupItem
+import io.posidon.android.slablauncher.ui.settings.SettingsAdapter
+import io.posidon.android.slablauncher.ui.settings.SettingsItem
 import io.posidon.android.slablauncher.ui.settings.iconPackPicker.IconPackPickerActivity
 import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorTheme
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
@@ -35,10 +34,12 @@ import io.posidon.android.conveniencelib.Device
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.slablauncher.BuildConfig
+import io.posidon.android.slablauncher.util.chooseDefaultLauncher
 import io.posidon.android.slablauncher.util.storage.ColumnCount.dockColumnCount
 import io.posidon.android.slablauncher.util.storage.DoAlignMediaPlayerToTop.alignMediaPlayerToTop
 import io.posidon.android.slablauncher.util.storage.GreetingSetting.getDefaultGreeting
 import io.posidon.android.slablauncher.util.storage.GreetingSetting.setDefaultGreeting
+import io.posidon.android.slablauncher.util.storage.SuggestionColumnCount.suggestionColumnCount
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.thread
 import kotlin.concurrent.withLock
@@ -83,7 +84,7 @@ class HomeLongPressPopup(
             val blurBG = content.findViewById<SeeThroughView>(R.id.blur_bg)
 
             val cardView = content.findViewById<CardView>(R.id.card)
-            val popupAdapter = ListPopupAdapter()
+            val popupAdapter = SettingsAdapter()
             val updateLock = ReentrantLock()
 
             val popup = HomeLongPressPopup {
@@ -148,16 +149,16 @@ class HomeLongPressPopup(
             reloadBlur: () -> Unit,
             updateLayout: () -> Unit,
             updateGreeting: () -> Unit,
-        ): List<ListPopupItem<*>> {
-            return listOf(
-                ListPopupItem(
+        ): List<SettingsItem<*>> {
+            return listOfNotNull(
+                SettingsItem(
                     context.getString(R.string.app_name),
                     BuildConfig.VERSION_NAME,
                     icon = context.getDrawable(R.mipmap.ic_launcher),
                     isTitle = true,
                 ),
-                ListPopupItem(context.getString(R.string.general), isTitle = true),
-                ListPopupItem(
+                SettingsItem(context.getString(R.string.general), isTitle = true),
+                SettingsItem(
                     context.getString(R.string.color_theme_gen),
                     description = context.resources.getStringArray(R.array.color_theme_gens)[settings.colorTheme],
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_color_dropper),
@@ -176,7 +177,7 @@ class HomeLongPressPopup(
                         }
                         .show()
                 },
-                ListPopupItem(
+                SettingsItem(
                     context.getString(R.string.color_theme_day_night),
                     description = context.resources.getStringArray(R.array.color_theme_day_night)[settings.colorThemeDayNight.ordinal],
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_lightness),
@@ -194,7 +195,7 @@ class HomeLongPressPopup(
                         }
                         .show()
                 },
-                ListPopupItem(
+                SettingsItem(
                     context.getString(R.string.greeting),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_home),
                     value = settings.getDefaultGreeting(context),
@@ -205,7 +206,7 @@ class HomeLongPressPopup(
                         }
                     }
                 ),
-                ListPopupItem(
+                SettingsItem(
                     context.getString(R.string.blur),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),
                     value = settings.doBlur,
@@ -217,10 +218,10 @@ class HomeLongPressPopup(
                         }
                     }
                 ),
-                ListPopupItem(context.getString(R.string.layout), isTitle = true),
-                ListPopupItem(
+                SettingsItem(context.getString(R.string.layout), isTitle = true),
+                SettingsItem(
                     context.getString(R.string.columns),
-                    icon = ContextCompat.getDrawable(context, R.drawable.ic_home),
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_slab),
                     value = settings.dockColumnCount - 2,
                     states = 5,
                     onValueChange = { _, value ->
@@ -230,9 +231,9 @@ class HomeLongPressPopup(
                         }
                     }
                 ),
-                ListPopupItem(
-                    context.getString(R.string.dock_row_count),
-                    icon = ContextCompat.getDrawable(context, R.drawable.ic_home),
+                SettingsItem(
+                    context.getString(R.string.dock_rows),
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_slab),
                     value = settings.dockRowCount,
                     states = 5,
                     onValueChange = { _, value ->
@@ -242,7 +243,7 @@ class HomeLongPressPopup(
                         }
                     }
                 ),
-                ListPopupItem(
+                SettingsItem(
                     context.getString(R.string.show_app_suggestions),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_visible),
                     value = settings.doSuggestionStrip,
@@ -254,7 +255,19 @@ class HomeLongPressPopup(
                         }
                     }
                 ),
-                ListPopupItem(
+                SettingsItem(
+                    context.getString(R.string.suggestion_count),
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_slab),
+                    value = settings.suggestionColumnCount - 2,
+                    states = 5,
+                    onValueChange = { _, value ->
+                        settings.edit(context) {
+                            suggestionColumnCount = value + 2
+                            updateLayout()
+                        }
+                    }
+                ),
+                SettingsItem(
                     context.getString(R.string.align_media_player_top_top),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_play),
                     value = settings.alignMediaPlayerToTop,
@@ -266,14 +279,14 @@ class HomeLongPressPopup(
                         }
                     }
                 ),
-                ListPopupItem(context.getString(R.string.tiles), isTitle = true),
-                ListPopupItem(
+                SettingsItem(context.getString(R.string.tiles), isTitle = true),
+                SettingsItem(
                     context.getString(R.string.icon_packs),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_shapes),
                 ) {
                     context.startActivity(Intent(context, IconPackPickerActivity::class.java))
                 },
-                ListPopupItem(
+                SettingsItem(
                     context.getString(R.string.monochrome_icons),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_color_dropper),
                     value = settings.monochromatism,
@@ -285,8 +298,8 @@ class HomeLongPressPopup(
                         }
                     }
                 ),
-                ListPopupItem(context.getString(R.string.all_apps), isTitle = true),
-                ListPopupItem(
+                SettingsItem(context.getString(R.string.all_apps), isTitle = true),
+                SettingsItem(
                     context.getString(R.string.auto_show_keyboard),
                     description = context.getString(R.string.auto_show_keyboard_explanation),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_keyboard),
@@ -298,6 +311,13 @@ class HomeLongPressPopup(
                         }
                     }
                 ),
+                SettingsItem(context.getString(R.string.other), isTitle = true),
+                SettingsItem(
+                    context.getString(R.string.choose_default_launcher),
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_home),
+                ) {
+                    context.chooseDefaultLauncher()
+                }
             )
         }
     }

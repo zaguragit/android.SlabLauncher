@@ -62,7 +62,21 @@ object ColumnCount {
 
     private const val KEY = "dock:columns"
 
-    const val DEFAULT = 4
+    const val DEFAULT = 5
+}
+
+object SuggestionColumnCount {
+
+    val Settings.suggestionColumnCount: Int
+        get() = get(KEY, DEFAULT)
+
+    var Settings.SettingsEditor.suggestionColumnCount: Int
+        get() = settings[KEY, DEFAULT]
+        set(value) = KEY set value
+
+    private const val KEY = "suggestions:columns"
+
+    const val DEFAULT = 5
 }
 
 object DoMonochromeIconsSetting {

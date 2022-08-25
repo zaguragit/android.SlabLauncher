@@ -30,6 +30,7 @@ import io.posidon.android.slablauncher.util.storage.DoAlignMediaPlayerToTop.alig
 import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
 import io.posidon.android.slablauncher.util.storage.DockRowCount.dockRowCount
 import io.posidon.android.slablauncher.util.storage.Settings
+import io.posidon.android.slablauncher.util.storage.SuggestionColumnCount.suggestionColumnCount
 import io.posidon.ksugar.delegates.observable
 import kotlin.math.abs
 import kotlin.math.min
@@ -216,13 +217,14 @@ class HomeArea(
         dash.playerSpacer.isVisible = !launcherContext.settings.alignMediaPlayerToTop
         dash.suggestionsSpacer.isVisible = launcherContext.settings.alignMediaPlayerToTop
         val columns = calculateColumns(view.context, launcherContext.settings)
+        val suggestionColumns = launcherContext.settings.suggestionColumnCount
         pinnedRecycler.layoutManager = GridLayoutManager(
             view.context,
             columns,
             RecyclerView.VERTICAL,
             false
         )
-        suggestionsRecycler.layoutManager = GridLayoutManager(view.context, columns, RecyclerView.VERTICAL, false)
+        suggestionsRecycler.layoutManager = GridLayoutManager(view.context, suggestionColumns, RecyclerView.VERTICAL, false)
         if (launcherContext.appManager.apps.isNotEmpty())
             updateSuggestions(launcherContext.appManager.pinnedItems)
         dash.view.doOnLayout {
@@ -246,7 +248,7 @@ class HomeArea(
     }
 
     fun updateSuggestions(pinnedItems: List<LauncherItem>) {
-        val columns = calculateColumns(view.context, launcherContext.settings)
+        val columns = launcherContext.settings.suggestionColumnCount
         suggestionsAdapter.updateItems((SuggestionsManager.get() - pinnedItems.let {
             val s = launcherContext.settings.dockRowCount * columns
             if (it.size > s) it.subList(0, s)

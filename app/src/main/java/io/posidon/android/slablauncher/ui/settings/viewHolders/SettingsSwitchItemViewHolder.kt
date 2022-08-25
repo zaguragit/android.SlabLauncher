@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.popup.listPopup.viewHolders
+package io.posidon.android.slablauncher.ui.settings.viewHolders
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -12,12 +12,12 @@ import android.widget.TextView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.hideIfNullOr
-import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupItem
+import io.posidon.android.slablauncher.ui.settings.SettingsItem
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toPixels
 
-class ListPopupSwitchItemViewHolder(itemView: View) : ListPopupViewHolder(itemView) {
+class SettingsSwitchItemViewHolder(itemView: View) : SettingsViewHolder(itemView) {
 
     val icon = itemView.findViewById<ImageView>(R.id.icon)
 
@@ -33,8 +33,8 @@ class ListPopupSwitchItemViewHolder(itemView: View) : ListPopupViewHolder(itemVi
         itemView.background = ripple
     }
 
-    override fun onBind(item: ListPopupItem<*>) {
-        item as ListPopupItem<Any>
+    override fun onBind(item: SettingsItem<*>) {
+        item as SettingsItem<Any>
 
         text.text = item.text
         description.text = item.description

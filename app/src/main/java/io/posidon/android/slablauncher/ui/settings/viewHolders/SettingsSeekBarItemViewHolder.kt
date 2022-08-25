@@ -1,4 +1,4 @@
-package io.posidon.android.slablauncher.ui.popup.listPopup.viewHolders
+package io.posidon.android.slablauncher.ui.settings.viewHolders
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -11,12 +11,12 @@ import android.widget.TextView
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.hideIfNullOr
-import io.posidon.android.slablauncher.ui.popup.listPopup.ListPopupItem
+import io.posidon.android.slablauncher.ui.settings.SettingsItem
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toPixels
 
-class ListPopupSeekBarItemViewHolder(itemView: View) : ListPopupViewHolder(itemView) {
+class SettingsSeekBarItemViewHolder(itemView: View) : SettingsViewHolder(itemView) {
 
     private val icon = itemView.findViewById<ImageView>(R.id.icon)
 
@@ -32,8 +32,8 @@ class ListPopupSeekBarItemViewHolder(itemView: View) : ListPopupViewHolder(itemV
         seekBar.splitTrack = false
     }
 
-    override fun onBind(item: ListPopupItem<*>) {
-        item as ListPopupItem<Int>
+    override fun onBind(item: SettingsItem<*>) {
+        item as SettingsItem<Int>
 
         text.text = item.text
         description.text = item.description

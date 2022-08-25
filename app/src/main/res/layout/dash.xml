@@ -25,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center_vertical"
+                android:gravity="bottom"
                 android:layout_gravity="center_horizontal">
                 <TextClock
                     style="@style/SlabLauncher.Dash.Date"
