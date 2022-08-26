@@ -165,3 +165,40 @@ object DoAlignMediaPlayerToTop {
 
     const val DEFAULT = false
 }
+
+object DoFlag {
+    val Settings.doFlag: Boolean
+        get() = get(KEY, DEFAULT)
+
+    var Settings.SettingsEditor.doFlag: Boolean
+        get() = settings[KEY, DEFAULT]
+        set(value) = KEY set value
+
+    private const val KEY = "flag:show"
+
+    const val DEFAULT = false
+}
+
+object FlagHeight {
+    val Settings.flagHeight: Int
+        get() = get(KEY, DEFAULT)
+
+    var Settings.SettingsEditor.flagHeight: Int
+        get() = settings[KEY, DEFAULT]
+        set(value) = KEY set value
+
+    private const val KEY = "flag:height"
+
+    const val DEFAULT = 64
+}
+
+object FlagColors {
+    val Settings.flagColors: IntArray
+        get() = getInts(KEY) ?: intArrayOf()
+
+    var Settings.SettingsEditor.flagColors: IntArray
+        get() = settings.getInts(KEY) ?: intArrayOf()
+        set(value) = setInts(KEY, value)
+
+    private const val KEY = "flag:colors"
+}

@@ -34,6 +34,7 @@ import io.posidon.android.conveniencelib.Device
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.slablauncher.BuildConfig
+import io.posidon.android.slablauncher.ui.settings.flag.FlagSettingsActivity
 import io.posidon.android.slablauncher.util.chooseDefaultLauncher
 import io.posidon.android.slablauncher.util.storage.ColumnCount.dockColumnCount
 import io.posidon.android.slablauncher.util.storage.DoAlignMediaPlayerToTop.alignMediaPlayerToTop
@@ -164,9 +165,8 @@ class HomeLongPressPopup(
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_color_dropper),
                 ) {
                     AlertDialog.Builder(context)
-                        .setSingleChoiceItems(
+                        .setItems(
                             context.resources.getStringArray(R.array.color_theme_gens).copyOf(context.resources.getInteger(R.integer.color_theme_gens_available)),
-                            settings.colorTheme
                         ) { d, i ->
                             settings.edit(context) {
                                 colorTheme =
@@ -183,9 +183,8 @@ class HomeLongPressPopup(
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_lightness),
                 ) {
                     AlertDialog.Builder(context)
-                        .setSingleChoiceItems(
+                        .setItems(
                             R.array.color_theme_day_night,
-                            settings.colorThemeDayNight.ordinal
                         ) { d, i ->
                             settings.edit(context) {
                                 setColorThemeDayNight(context.resources.getStringArray(R.array.color_theme_day_night_data)[i].toInt())
@@ -298,6 +297,13 @@ class HomeLongPressPopup(
                         }
                     }
                 ),
+                SettingsItem(context.getString(R.string.dash), isTitle = true),
+                SettingsItem(
+                    context.getString(R.string.flag),
+                    icon = ContextCompat.getDrawable(context, R.drawable.ic_slab),
+                ) {
+                    context.startActivity(Intent(context, FlagSettingsActivity::class.java))
+                },
                 SettingsItem(context.getString(R.string.all_apps), isTitle = true),
                 SettingsItem(
                     context.getString(R.string.auto_show_keyboard),

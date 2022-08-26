@@ -82,9 +82,7 @@ class IconPackPickerActivity : SettingsActivity() {
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
-        ): Boolean {
-            return adapter.onItemMove(recyclerView.context, viewHolder, target)
-        }
+        ) = adapter.onItemMove(recyclerView.context, viewHolder, target)
     }
 
     class IconPack(

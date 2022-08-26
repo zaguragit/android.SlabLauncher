@@ -30,9 +30,13 @@ import io.posidon.android.slablauncher.ui.home.main.HomeArea
 import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.home.main.dash.media.MediaPlayer
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
+import io.posidon.android.slablauncher.ui.view.FlagView
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
 import io.posidon.android.slablauncher.util.drawable.setBackgroundColorFast
+import io.posidon.android.slablauncher.util.storage.DoFlag.doFlag
+import io.posidon.android.slablauncher.util.storage.FlagColors.flagColors
+import io.posidon.android.slablauncher.util.storage.FlagHeight.flagHeight
 
 @SuppressLint("ClickableViewAccessibility")
 class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivity) {
@@ -44,9 +48,9 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
 
     private val notificationArea = card.findViewById<ViewGroup>(R.id.notification_area)!!
 
-    private val separators = arrayOf<View>(
-        card.findViewById(R.id.separator),
-    )
+    private val separator = card.findViewById<View>(R.id.separator)
+
+    private val flag = card.findViewById<FlagView>(R.id.flag)
 
     private val notificationsAdapter = NotificationAdapter()
     private val notificationsRecycler = view.findViewById<RecyclerView>(R.id.notifications)!!.apply {
@@ -137,11 +141,11 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
         mainActivity.runOnUiThread {
             if (new.isEmpty()) {
                 notificationArea.isVisible = false
-                separators[0].isVisible = false
+                separator.isVisible = false
                 return@runOnUiThread
             }
             notificationArea.isVisible = true
-            separators[0].isVisible = true
+            separator.isVisible = !mainActivity.settings.doFlag
             val shownCount = new.size.coerceAtMost(4)
             notificationsAdapter.updateItems(new.subList(0, shownCount))
             val more = new.size - shownCount
@@ -156,7 +160,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
 
     fun updateColorTheme() {
         val s = ColorTheme.separator
-        separators.forEach { it.setBackgroundColorFast(s) }
+        separator.setBackgroundColorFast(s)
         card.setCardBackgroundColor(ColorTheme.cardBG)
         date.setTextColor(ColorTheme.cardTitle)
         alarm.setTextColor(ColorTheme.cardDescription)
@@ -180,6 +184,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
             alarm.isVisible = true
         }
         updateNotifications(NotificationService.notifications)
+        updateFlag()
     }
 
     fun updateBlur() {
@@ -189,5 +194,17 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
 
     fun onWindowFocusChanged(hasFocus: Boolean) {
         mediaPlayer.onWindowFocusChanged(hasFocus)
+    }
+
+    fun updateFlag() {
+        if (!mainActivity.settings.doFlag) {
+            flag.isVisible = false
+            return
+        }
+        flag.isVisible = true
+        flag.colors = mainActivity.settings.flagColors
+        flag.updateLayoutParams {
+            height = mainActivity.settings.flagHeight.dp.toPixels(flag)
+        }
     }
 }

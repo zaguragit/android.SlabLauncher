@@ -13,6 +13,9 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.concurrent.thread
 import kotlin.concurrent.withLock
+import kotlin.properties.ReadOnlyProperty
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 private val settingsFileLock = ReentrantLock()
 
@@ -56,7 +59,7 @@ class Settings(
 
     private val singles: HashMap<String, Single<*>> = HashMap()
 
-    private val lists: HashMap<String, Array<String>> = HashMap()
+    private val lists: HashMap<String, Array<Single<*>>> = HashMap()
 
     private var isInitialized: Boolean = false
 
@@ -83,12 +86,17 @@ class Settings(
 
         operator fun set(key: String, value: Array<String>?) {
             if (value == null) settings.lists.keys.remove(key)
-            else settings.lists[key] = value
+            else settings.lists[key] = value.map(::SingleString).toTypedArray()
         }
 
         fun setStrings(key: String, value: Array<String>?) {
             if (value == null) settings.lists.keys.remove(key)
-            else settings.lists[key] = value
+            else settings.lists[key] = value.map(::SingleString).toTypedArray()
+        }
+
+        fun setInts(key: String, value: IntArray?) {
+            if (value == null) settings.lists.keys.remove(key)
+            else settings.lists[key] = value.map(::SingleInt).toTypedArray()
         }
 
         @JvmName("set1")
@@ -130,26 +138,12 @@ class Settings(
     inline fun getBoolOr(key: String, default: () -> Boolean): Boolean = getBoolean(key) ?: default()
     inline fun getStringOr(key: String, default: () -> String): String = getString(key) ?: default()
 
-
-    fun getInt(key: String): Int? {
-        return singles[key]?.toInt()
-    }
-
-    fun getFloat(key: String): Float? {
-        return singles[key]?.toFloat()
-    }
-
-    fun getBoolean(key: String): Boolean? {
-        return singles[key]?.toBool()
-    }
-
-    fun getString(key: String): String? {
-        return singles[key]?.toString()
-    }
-
-    fun getStrings(key: String): Array<String>? {
-        return lists[key]
-    }
+    fun getInt(key: String): Int? = singles[key]?.toInt()
+    fun getFloat(key: String): Float? = singles[key]?.toFloat()
+    fun getBoolean(key: String): Boolean? = singles[key]?.toBool()
+    fun getString(key: String): String? = singles[key]?.toString()
+    fun getStrings(key: String): Array<String>? = lists[key]?.map { it.toString() }?.toTypedArray()
+    fun getInts(key: String): IntArray? = lists[key]?.map { it.toInt() }?.toIntArray()
 
     fun init(context: Context) {
         settingsFileLock.withLock {
@@ -160,14 +154,17 @@ class Settings(
         }
     }
 
+    private fun parseString(string: String): Single<*> = string
+        .toBooleanStrictOrNull()?.let(::SingleBool)
+        ?: string.toIntOrNull()?.let(::SingleInt)
+        ?: string.toFloatOrNull()?.let(::SingleFloat)
+        ?: string.let(::SingleString)
+
     private fun initializeData(it: ObjectInputStream): Boolean {
         val root = JSONObject(it.readUTF())
         return fill(singles, root.getJSONArray("singles")) {
             val string = getString(it)
-            string.toBooleanStrictOrNull()?.let(::SingleBool)
-                ?: string.toIntOrNull()?.let(::SingleInt)
-                ?: string.toFloatOrNull()?.let(::SingleFloat)
-                ?: string.let(::SingleString)
+            parseString(string)
         } or
         fill(lists, root.getJSONArray("list")) {
             val json = getJSONArray(it)
@@ -177,7 +174,7 @@ class Settings(
                 list.add(json.getString(i))
                 i++
             }
-            list.toTypedArray()
+            list.map(::parseString).toTypedArray()
         }
     }
 

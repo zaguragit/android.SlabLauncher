@@ -39,6 +39,14 @@
         <string name="system">System</string>
         <string name="blur">Translucency</string>
 
+        <string name="dash">Dash</string>
+        <string name="flag">Flag</string>
+
+        <string name="enable">Enable</string>
+        <string name="height">Height</string>
+        <string name="apply_from_preset">Apply from preset</string>
+        <string name="add_color">Add color</string>
+
         <string name="other">Other</string>
 
         <string name="choose_default_launcher">Choose default launcher</string>

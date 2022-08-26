@@ -27,4 +27,11 @@
         <item>1</item>
         <item>2</item>
     </string-array>
+
+    <string-array name="flag_presets">
+        <item>Ace</item>
+        <item>Non-Binary</item>
+        <item>Rainbow</item>
+        <item>Trans</item>
+    </string-array>
 </resources>

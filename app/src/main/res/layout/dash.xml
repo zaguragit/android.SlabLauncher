@@ -45,6 +45,10 @@
                 android:id="@+id/separator"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"/>
+            <io.posidon.android.slablauncher.ui.view.FlagView
+                android:id="@+id/flag"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"/>
             <LinearLayout
                 android:id="@+id/notification_area"
                 android:layout_width="match_parent"
