@@ -19,8 +19,8 @@ object Statement {
             val c = Calendar.getInstance()
             c.timeInMillis = nextAlarm.triggerTime
             val alarmHour = c[Calendar.HOUR_OF_DAY]
-            val diff = abs(alarmHour - hour).let { if (it < 0) it + 24 else it }
-            if (diff <= 3) {
+            val diff = arrayOf(alarmHour - hour, alarmHour - hour + 24).minBy(::abs)
+            if (diff in 0..3) {
                 return context.getString(
                     R.string.next_alarm_at_x,
                     "$alarmHour:${c[Calendar.MINUTE].toString().padStart(2, '0')}", diff

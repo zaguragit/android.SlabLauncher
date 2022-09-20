@@ -88,6 +88,6 @@
         <string name="good_night">Good night!</string>
         <string name="new_year">Happy new year!</string>
         <string name="default_greeting">Do your best</string>
-        <string name="next_alarm_at_x">Next alarm at %s, in %sh</string>
+        <string name="next_alarm_at_x">Next alarm at %s, in %dh</string>
     <!-- statements end -->
 </resources>

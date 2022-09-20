@@ -249,7 +249,7 @@ class HomeArea(
 
     fun updateSuggestions(pinnedItems: List<LauncherItem>) {
         val columns = launcherContext.settings.suggestionColumnCount
-        suggestionsAdapter.updateItems((SuggestionsManager.get() - pinnedItems.let {
+        suggestionsAdapter.updateItems(SuggestionsManager.get().minus(pinnedItems.let {
             val s = launcherContext.settings.dockRowCount * columns
             if (it.size > s) it.subList(0, s)
             else it
