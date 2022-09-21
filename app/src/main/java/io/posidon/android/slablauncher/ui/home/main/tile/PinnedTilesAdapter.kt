@@ -6,19 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.cardview.widget.CardView
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
+import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.LauncherItem
+import io.posidon.android.slablauncher.providers.notification.NotificationService
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.main.HomeAreaFragment
-import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.DropTargetViewHolder
-import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.TileViewHolder
-import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.bindDropTargetViewHolder
+import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.*
 
 class PinnedTilesAdapter(
     val activity: MainActivity,
@@ -34,8 +33,9 @@ class PinnedTilesAdapter(
     val tileCount get() = items.size
 
     override fun getItemViewType(i: Int): Int {
-        return when (i) {
-            dropTargetIndex -> 1
+        return when {
+            i == dropTargetIndex -> -1
+            NotificationService.mediaItem?.sourcePackageName?.let { (items[i] as? App)?.packageName == it } ?: false -> 1
             else -> 0
         }
     }
@@ -58,10 +58,12 @@ class PinnedTilesAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            1 -> DropTargetViewHolder(LayoutInflater.from(parent.context)
+            -1 -> DropTargetViewHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.tile_drop_target, parent, false))
-            else -> TileViewHolder(LayoutInflater.from(parent.context)
-                .inflate(R.layout.tile, parent, false) as CardView)
+            1 -> MediaTileViewHolder(LayoutInflater.from(parent.context)
+                .inflate(R.layout.tile_media, parent, false))
+            else -> ShortcutTileViewHolder(LayoutInflater.from(parent.context)
+                .inflate(R.layout.tile, parent, false))
         }
     }
 
@@ -85,7 +87,7 @@ class PinnedTilesAdapter(
     }
 
     override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-        if (holder is TileViewHolder)
+        if (holder is ShortcutTileViewHolder)
             holder.recycle()
     }
 

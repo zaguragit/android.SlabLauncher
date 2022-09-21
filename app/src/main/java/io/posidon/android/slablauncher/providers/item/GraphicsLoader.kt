@@ -3,10 +3,7 @@ package io.posidon.android.slablauncher.providers.item
 import android.content.ContentUris
 import android.content.Context
 import android.content.pm.LauncherApps
-import android.graphics.Color
-import android.graphics.ColorMatrix
-import android.graphics.ColorMatrixColorFilter
-import android.graphics.Paint
+import android.graphics.*
 import android.graphics.drawable.*
 import android.net.Uri
 import android.provider.ContactsContract
@@ -34,6 +31,8 @@ import io.posidon.android.slablauncher.util.storage.Settings
 import java.io.FileNotFoundException
 import java.lang.ref.WeakReference
 import java.util.concurrent.Future
+import kotlin.math.abs
+import kotlin.math.min
 import kotlin.random.Random
 
 class GraphicsLoader {
@@ -67,14 +66,14 @@ class GraphicsLoader {
         app: App,
     ): IconData<Extra> = loader.load(context, app.packageName, app.name, app.userHandle)
 
-    inline fun load(
+    fun load(
         context: Context,
         shortcut: ShortcutItem,
     ): IconData<Extra> {
         val d = context.getSystemService(LauncherApps::class.java).getShortcutIconDrawable(
             shortcut.shortcutInfo,
             context.resources.displayMetrics.densityDpi
-        ) ?: NonDrawable()
+        )?.let { modifyIcon(it, forceMask = true).first } ?: NonDrawable()
         return IconData(d, Extra(d, 0))
     }
 
@@ -106,11 +105,13 @@ class GraphicsLoader {
         } catch (e: FileNotFoundException) {
             genProfilePic(contact.label, tmpLab, textP)
         }
-        pic.setBounds(0, 0, pic.intrinsicWidth, pic.intrinsicHeight)
+        val w = pic.intrinsicWidth
+        val h = pic.intrinsicHeight
+        pic.setBounds(0, 0, w, h)
         val i = IconData(
             MaskedDrawable(
                 pic,
-                IconTheming.getSystemAdaptiveIconPath(pic.intrinsicWidth, pic.intrinsicHeight)
+                makeCirclePath(w, h)
             ),
             Extra(
                 pic,
@@ -137,10 +138,7 @@ class GraphicsLoader {
             density = context.resources.configuration.densityDpi,
             packPackages = settings.getStrings("icon_packs") ?: emptyArray(),
             iconModifier = { _, _, profile, icon, resizableBackground ->
-                val (ic, extra) = modifyIcon(
-                    icon,
-                    resizableBackground,
-                )
+                val (ic, extra) = modifyIcon(icon)
                 val isUserRunning = isUserRunning(profile)
                 if (!isUserRunning) {
                     extra.color = run {
@@ -155,45 +153,12 @@ class GraphicsLoader {
         )
     }
 
-    private fun modifyIcon(
-        icon: Drawable?,
-        resizableBackground: Drawable?
-    ): Pair<Drawable, Extra> {
+    private fun modifyIcon(icon: Drawable?, forceMask: Boolean = false): Pair<Drawable, Extra> {
         var color = 0
         val image: LayerDrawable
         val finalIcon: Drawable
 
         when {
-            resizableBackground != null -> {
-                val bitmap = resizableBackground.toBitmap(8, 8)
-                val palette = Palette.from(bitmap).generate()
-                val d = palette.dominantSwatch
-                color = d?.rgb ?: color
-                if (resizableBackground !is BitmapDrawable || resizableBackground.bitmap != bitmap) bitmap.recycle()
-                image = LayerDrawable(arrayOf(
-                    resizableBackground,
-                    icon
-                )).apply {
-                    val i = (intrinsicWidth / 4f).toInt()
-                    setLayerInset(0, i, i, i, i)
-                    setLayerInset(1, i, i, i, i)
-                }
-                val bg = (resizableBackground.clone() ?: resizableBackground).mutate()
-                val fg = (icon?.clone() ?: icon)?.mutate()
-                val maskable = LayerDrawable(arrayOf(
-                    bg,
-                    fg
-                )).apply {
-                    val i = (intrinsicWidth / 8f).toInt()
-                    setLayerInset(0, i, i, i, i)
-                    setLayerInset(1, i, i, i, i)
-                    setBounds(0, 0, intrinsicWidth, intrinsicHeight)
-                }
-                finalIcon = MaskedDrawable(
-                    maskable,
-                    IconTheming.getSystemAdaptiveIconPath(maskable.intrinsicWidth, maskable.intrinsicHeight),
-                )
-            }
             icon is AdaptiveIconDrawable &&
             icon.background != null -> {
                 val iconForeground: Drawable? = icon.foreground
@@ -210,7 +175,7 @@ class GraphicsLoader {
                     is GradientDrawable -> {
                         val bitmap = b.toBitmap(8, 8)
                         color = b.color?.defaultColor ?: Palette.from(bitmap).generate().getDominantColor(0)
-                        if (b !is BitmapDrawable || b.bitmap != bitmap) bitmap.recycle()
+                        bitmap.recycle()
                         background = icon.background
                     }
                     else -> {
@@ -230,14 +195,14 @@ class GraphicsLoader {
                     bg,
                     fg
                 )).apply {
-                    val i = -(intrinsicWidth / 6f).toInt()
+                    val i = -(intrinsicWidth / 8f).toInt()
                     setLayerInset(0, i, i, i, i)
                     setLayerInset(1, i, i, i, i)
                     setBounds(0, 0, intrinsicWidth, intrinsicHeight)
                 }
                 finalIcon = MaskedDrawable(
                     maskable,
-                    IconTheming.getSystemAdaptiveIconPath(maskable.intrinsicWidth, maskable.intrinsicHeight),
+                    makeCirclePath(maskable.intrinsicWidth, maskable.intrinsicHeight),
                 )
             }
             else -> {
@@ -254,11 +219,15 @@ class GraphicsLoader {
                     FastColorDrawable(color),
                     icon
                 )).apply {
-                    val i = (intrinsicWidth / 4f).toInt()
+                    val i = if (forceMask) 0 else intrinsicWidth / 4
                     setLayerInset(0, i, i, i, i)
                     setLayerInset(1, i, i, i, i)
+                    setBounds(0, 0, intrinsicWidth, intrinsicHeight)
                 }
-                finalIcon = (icon?.clone() ?: icon)?.mutate() ?: NonDrawable()
+                finalIcon = if (forceMask && icon != null) MaskedDrawable(
+                    image,
+                    makeCirclePath(image.intrinsicWidth, image.intrinsicHeight),
+                ) else (icon?.clone() ?: icon)?.mutate() ?: NonDrawable()
             }
         }
         return finalIcon to Extra(image, color)
@@ -310,6 +279,11 @@ class GraphicsLoader {
             realName[0],
             paint
         )
+    }
+
+    private fun makeCirclePath(w: Int, h: Int) = Path().apply {
+        fillType = Path.FillType.INVERSE_EVEN_ODD
+        addCircle(w / 2f, h / 2f, min(w, h) / 2f - 2, Path.Direction.CCW)
     }
 
     companion object {

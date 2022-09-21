@@ -6,23 +6,58 @@
         <item name="cardElevation">@dimen/item_card_elevation</item>
     </style>
 
+    <style name="SlabLauncher.TileArea.Item.Icon" parent="SlabLauncher">
+        <item name="android:padding">8dp</item>
+    </style>
+
+    <style name="SlabLauncher.TileArea.Item.Label" parent="SlabLauncher">
+        <item name="android:textSize">16sp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:lines">1</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="SlabLauncher.TileArea.Item.Shortcut.List" parent="SlabLauncher">
+        <item name="android:layout_marginEnd">12dp</item>
+    </style>
+
+    <style name="SlabLauncher.TileArea.Item.Shortcut.Icon" parent="SlabLauncher">
+        <item name="android:layout_marginStart">12dp</item>
+        <item name="android:layout_marginEnd">4dp</item>
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:layout_marginHorizontal">12dp</item>
+    </style>
+
+    <style name="SlabLauncher.TileArea.Media.Title" parent="SlabLauncher">
+        <item name="android:textSize">16sp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:lines">1</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="SlabLauncher.TileArea.Media.Subtitle" parent="SlabLauncher">
+        <item name="android:textSize">12sp</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:lines">1</item>
+        <item name="android:paddingTop">@dimen/feed_card_spacing</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="SlabLauncher.TileArea.Media.ButtonContainer" parent="SlabLauncher">
+        <item name="android:layout_marginHorizontal">8dp</item>
+    </style>
+
+    <style name="SlabLauncher.TileArea.Media.Button" parent="SlabLauncher">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
     <style name="SlabLauncher.TileArea.Suggestions.Item.Card" parent="SlabLauncher">
         <item name="cardCornerRadius">99dp</item>
         <item name="android:layout_margin">@dimen/item_card_margin</item>
         <item name="cardElevation">@dimen/item_card_elevation</item>
-    </style>
-
-    <style name="SlabLauncher.TileArea.Suggestions.Item.Icon" parent="SlabLauncher">
-        <item name="android:layout_marginStart">10dp</item>
-        <item name="android:layout_marginEnd">8dp</item>
-        <item name="android:layout_width">24dp</item>
-        <item name="android:layout_height">24dp</item>
-    </style>
-
-    <style name="SlabLauncher.TileArea.Suggestions.Item.Label" parent="SlabLauncher">
-        <item name="android:layout_marginEnd">12dp</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:lines">1</item>
     </style>
 </resources>

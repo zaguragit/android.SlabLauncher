@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.WallpaperManager
-import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.*
@@ -12,21 +11,16 @@ import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.view.doOnLayout
-import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.util.blur.AcrylicBlur
 import io.posidon.android.slablauncher.util.storage.*
 import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
-import io.posidon.android.slablauncher.util.storage.DockRowCount.dockRowCount
 import io.posidon.android.conveniencelib.*
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
 import kotlin.concurrent.thread
@@ -35,16 +29,6 @@ var acrylicBlur: AcrylicBlur? = null
     private set
 
 class HomeAreaFragment : Fragment() {
-
-    companion object {
-        fun calculateDockHeight(context: Context, settings: Settings): Int {
-            val tileMargin = context.resources.getDimension(R.dimen.item_card_margin)
-            val tileWidth = (Device.screenWidth(context) - tileMargin * 2) / HomeArea.calculateColumns(context, settings) - tileMargin * 2
-            val tileHeight = tileWidth / HomeArea.WIDTH_TO_HEIGHT
-            val dockHeight = settings.dockRowCount * (tileHeight + tileMargin * 2)
-            return (tileMargin + dockHeight.toInt()).toInt()
-        }
-    }
 
     private lateinit var homeArea: HomeArea
     private lateinit var launcherContext: LauncherContext

@@ -13,9 +13,9 @@ class LightColorTheme(
     override val accentColor = palette.primary
     override val secondaryAccentColor = palette.secondary
 
-    override val uiBG = palette.neutralVeryLight
-    override val uiTitle = palette.neutralVeryDark
-    override val uiDescription = palette.neutralDark
+    override val uiBG = palette.neutralDark
+    override val uiTitle = palette.neutralVeryLight
+    override val uiDescription = palette.neutralLight
     override val uiHint = palette.neutralMedium
 
     override val cardBG = 0xffffffff.toInt()
@@ -49,17 +49,7 @@ class LightColorTheme(
 
     override fun tileColor(iconBackgroundColor: Int) = when {
         iconBackgroundColor == 0 -> palette.neutralMedium
-        iconBackgroundColor.alpha == 0 -> ColorTheme.labClosestVibrant(iconBackgroundColor, arrayOf(
-            palette.neutralVeryDark,
-            palette.neutralDark,
-            palette.neutralMedium,
-            palette.neutralLight,
-            palette.neutralVeryLight,
-            palette.primary,
-            palette.secondary,
-            ColorPalette.wallColor,
-        ))
-        else -> hueTintClosest(iconBackgroundColor, arrayOf(
+        else -> hueTintClosest(iconBackgroundColor, cardBG, arrayOf(
             palette.neutralVeryDark,
             palette.neutralDark,
             palette.neutralMedium,

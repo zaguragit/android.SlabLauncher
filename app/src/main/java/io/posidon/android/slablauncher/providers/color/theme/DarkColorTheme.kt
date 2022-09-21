@@ -5,7 +5,6 @@ import androidx.core.graphics.alpha
 import androidx.core.graphics.luminance
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme.Companion.hueTintClosest
-import io.posidon.android.slablauncher.providers.color.theme.ColorTheme.Companion.labClosestVibrant
 
 class DarkColorTheme(
     val palette: ColorPalette,
@@ -50,17 +49,7 @@ class DarkColorTheme(
 
     override fun tileColor(iconBackgroundColor: Int) = when {
         iconBackgroundColor == 0 -> palette.neutralMedium
-        iconBackgroundColor.alpha == 0 -> labClosestVibrant(iconBackgroundColor, arrayOf(
-            palette.neutralVeryDark,
-            palette.neutralDark,
-            palette.neutralMedium,
-            palette.neutralLight,
-            palette.neutralVeryLight,
-            palette.primary,
-            palette.secondary,
-            ColorPalette.wallColor,
-        ))
-        else -> hueTintClosest(iconBackgroundColor, arrayOf(
+        else -> hueTintClosest(iconBackgroundColor, cardBG, arrayOf(
             palette.neutralVeryDark,
             palette.neutralDark,
             palette.neutralMedium,

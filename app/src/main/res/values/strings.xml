@@ -20,11 +20,8 @@
         <string name="greeting">Greeting</string>
 
         <string name="layout">Layout</string>
-        <string name="columns">Columns</string>
-        <string name="dock_rows">Dock rows</string>
         <string name="show_app_suggestions">Show suggestions strip</string>
         <string name="suggestion_count">Suggestion count</string>
-        <string name="align_media_player_top_top">Align media player to top</string>
 
         <string name="tiles">Tiles</string>
 

@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.conveniencelib.Device
+import io.posidon.android.conveniencelib.units.dp
+import io.posidon.android.conveniencelib.units.toFloatPixels
+import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.LauncherItem
@@ -25,11 +28,7 @@ import io.posidon.android.slablauncher.ui.home.main.tile.PinnedTilesAdapter
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
-import io.posidon.android.slablauncher.util.storage.ColumnCount.dockColumnCount
-import io.posidon.android.slablauncher.util.storage.DoAlignMediaPlayerToTop.alignMediaPlayerToTop
 import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
-import io.posidon.android.slablauncher.util.storage.DockRowCount.dockRowCount
-import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.android.slablauncher.util.storage.SuggestionColumnCount.suggestionColumnCount
 import io.posidon.ksugar.delegates.observable
 import kotlin.math.abs
@@ -43,16 +42,13 @@ class HomeArea(
 ) {
 
     companion object {
-        const val WIDTH_TO_HEIGHT = 6f / 5f
-        const val SUGGESTION_WIDTH_TO_HEIGHT = 5f / 3f
+        val ITEM_HEIGHT = 64.dp
+        const val SUGGESTION_WIDTH_TO_HEIGHT = 5f / 4f
 
-        fun calculateColumns(context: Context, settings: Settings): Int =
-            Device.screenWidth(context) / (
-                min(
-                    Device.screenWidth(context),
-                    Device.screenHeight(context)
-                ) / settings.dockColumnCount.coerceAtLeast(1)
-            )
+        fun calculateColumns(context: Context): Int =
+            Device.screenWidth(context).let {
+                it / (min(it, Device.screenHeight(context)))
+            }
     }
 
 
@@ -68,16 +64,6 @@ class HomeArea(
 
     init {
         val activity = fragment.requireActivity() as MainActivity
-        view.setOnScrollChangeListener { v, _, scrollY, _, _ ->
-            activity.overlayOpacity = run {
-                val tileMargin = v.resources.getDimension(R.dimen.item_card_margin)
-                val tileWidth = (Device.screenWidth(v.context) - tileMargin * 2) / calculateColumns(view.context, launcherContext.settings) - tileMargin * 2
-                val tileHeight = tileWidth / WIDTH_TO_HEIGHT
-                val dockRowHeight = (tileHeight + tileMargin * 2)
-                (scrollY / dockRowHeight).coerceAtMost(1f)
-            }
-            activity.updateBlurLevel()
-        }
         view.setOnDragListener(::onDrag)
     }
 
@@ -110,9 +96,9 @@ class HomeArea(
     fun getPinnedItemIndex(x: Float, y: Float): Int {
         var y = y + scrollY - dash.view.height
         if (y < 0) return -1
-        val x = x / pinnedRecycler.width * calculateColumns(view.context, launcherContext.settings)
-        y = ((y - pinnedRecycler.paddingTop) / pinnedRecycler.width * calculateColumns(view.context, launcherContext.settings)) * WIDTH_TO_HEIGHT
-        val i = y.toInt() * calculateColumns(view.context, launcherContext.settings) + x.toInt()
+        val x = x / pinnedRecycler.width * calculateColumns(view.context)
+        y = (y - pinnedRecycler.paddingTop) / (ITEM_HEIGHT.toFloatPixels(view) + view.resources.getDimension(R.dimen.item_card_margin) * 2)
+        val i = y.toInt() * calculateColumns(view.context) + x.toInt()
         return i.coerceAtMost(pinnedAdapter.tileCount)
     }
 
@@ -167,9 +153,7 @@ class HomeArea(
                     }
                 }
                 showDropTarget(i, state)
-                val rowHeight = pinnedRecycler.width /
-                    (pinnedRecycler.layoutManager as GridLayoutManager).spanCount /
-                    WIDTH_TO_HEIGHT
+                val rowHeight = ITEM_HEIGHT.toFloatPixels(view)
                 if (event.y > view.height - rowHeight / 2) {
                     val r = (view.height - event.y) / rowHeight * 2
                     val t = (690 + 640 * r).toInt()
@@ -214,27 +198,15 @@ class HomeArea(
 
     fun updateLayout() {
         suggestionsRecycler.isVisible = launcherContext.settings.doSuggestionStrip
-        dash.playerSpacer.isVisible = !launcherContext.settings.alignMediaPlayerToTop
-        dash.suggestionsSpacer.isVisible = launcherContext.settings.alignMediaPlayerToTop
-        val columns = calculateColumns(view.context, launcherContext.settings)
         val suggestionColumns = launcherContext.settings.suggestionColumnCount
-        pinnedRecycler.layoutManager = GridLayoutManager(
+        pinnedRecycler.layoutManager = LinearLayoutManager(
             view.context,
-            columns,
             RecyclerView.VERTICAL,
             false
         )
         suggestionsRecycler.layoutManager = GridLayoutManager(view.context, suggestionColumns, RecyclerView.VERTICAL, false)
         if (launcherContext.appManager.apps.isNotEmpty())
             updateSuggestions(launcherContext.appManager.pinnedItems)
-        dash.view.doOnLayout {
-            it.updateLayoutParams {
-                height = fragment.requireView().height - HomeAreaFragment.calculateDockHeight(
-                    it.context,
-                    launcherContext.settings
-                ) - ((fragment.requireActivity() as MainActivity).getSearchBarInset() - it.resources.getDimension(R.dimen.item_card_margin).toInt()) / 2
-            }
-        }
     }
 
     fun updateColorTheme() {
@@ -244,13 +216,14 @@ class HomeArea(
     }
 
     fun onWindowFocusChanged(hasFocus: Boolean) {
-        dash.onWindowFocusChanged(hasFocus)
+        if (hasFocus)
+            pinnedAdapter.notifyItemRangeChanged(0, pinnedAdapter.itemCount)
     }
 
     fun updateSuggestions(pinnedItems: List<LauncherItem>) {
         val columns = launcherContext.settings.suggestionColumnCount
         suggestionsAdapter.updateItems(SuggestionsManager.get().minus(pinnedItems.let {
-            val s = launcherContext.settings.dockRowCount * columns
+            val s = (Device.screenHeight(view.context) - pinnedRecycler.top) / ITEM_HEIGHT.toPixels(view) * columns
             if (it.size > s) it.subList(0, s)
             else it
         }.toSet()).let {

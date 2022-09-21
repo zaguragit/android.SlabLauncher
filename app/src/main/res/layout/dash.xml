@@ -67,17 +67,6 @@
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-    <View
-        android:id="@+id/player_spacer"
-        android:layout_width="0px"
-        android:layout_height="0px"
-        android:layout_weight="1"/>
-    <include layout="@layout/dash_media_player"/>
-    <View
-        android:id="@+id/suggestions_spacer"
-        android:layout_width="0px"
-        android:layout_height="0px"
-        android:layout_weight="1"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/suggestions_recycler"
         android:layout_width="match_parent"

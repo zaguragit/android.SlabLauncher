@@ -29,15 +29,12 @@ import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doS
 import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.monochromatism
-import io.posidon.android.slablauncher.util.storage.DockRowCount.dockRowCount
 import io.posidon.android.conveniencelib.Device
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.slablauncher.BuildConfig
 import io.posidon.android.slablauncher.ui.settings.flag.FlagSettingsActivity
 import io.posidon.android.slablauncher.util.chooseDefaultLauncher
-import io.posidon.android.slablauncher.util.storage.ColumnCount.dockColumnCount
-import io.posidon.android.slablauncher.util.storage.DoAlignMediaPlayerToTop.alignMediaPlayerToTop
 import io.posidon.android.slablauncher.util.storage.GreetingSetting.getDefaultGreeting
 import io.posidon.android.slablauncher.util.storage.GreetingSetting.setDefaultGreeting
 import io.posidon.android.slablauncher.util.storage.SuggestionColumnCount.suggestionColumnCount
@@ -219,30 +216,6 @@ class HomeLongPressPopup(
                 ),
                 SettingsItem(context.getString(R.string.layout), isTitle = true),
                 SettingsItem(
-                    context.getString(R.string.columns),
-                    icon = ContextCompat.getDrawable(context, R.drawable.ic_slab),
-                    value = settings.dockColumnCount - 2,
-                    states = 5,
-                    onValueChange = { _, value ->
-                        settings.edit(context) {
-                            dockColumnCount = value + 2
-                            updateLayout()
-                        }
-                    }
-                ),
-                SettingsItem(
-                    context.getString(R.string.dock_rows),
-                    icon = ContextCompat.getDrawable(context, R.drawable.ic_slab),
-                    value = settings.dockRowCount,
-                    states = 5,
-                    onValueChange = { _, value ->
-                        settings.edit(context) {
-                            dockRowCount = value
-                            updateLayout()
-                        }
-                    }
-                ),
-                SettingsItem(
                     context.getString(R.string.show_app_suggestions),
                     icon = ContextCompat.getDrawable(context, R.drawable.ic_visible),
                     value = settings.doSuggestionStrip,
@@ -262,18 +235,6 @@ class HomeLongPressPopup(
                     onValueChange = { _, value ->
                         settings.edit(context) {
                             suggestionColumnCount = value + 2
-                            updateLayout()
-                        }
-                    }
-                ),
-                SettingsItem(
-                    context.getString(R.string.align_media_player_top_top),
-                    icon = ContextCompat.getDrawable(context, R.drawable.ic_play),
-                    value = settings.alignMediaPlayerToTop,
-                    states = 2,
-                    onValueChange = { _, value ->
-                        settings.edit(context) {
-                            alignMediaPlayerToTop = value
                             updateLayout()
                         }
                     }

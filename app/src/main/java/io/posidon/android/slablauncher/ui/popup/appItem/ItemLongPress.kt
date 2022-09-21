@@ -50,7 +50,7 @@ object ItemLongPress {
                 separatorStatic.setBackgroundColorFast(ColorTheme.separator)
                 recyclerViewStatic.isNestedScrollingEnabled = false
                 recyclerViewStatic.layoutManager = LinearLayoutManager(context)
-                recyclerViewStatic.adapter = ShortcutAdapter(shortcuts, textColor, graphicsLoader)
+                recyclerViewStatic.adapter = LongPressShortcutAdapter(shortcuts, textColor, graphicsLoader)
             }
             if (dynamicShortcuts.isNullOrEmpty()) {
                 separatorDynamic.isVisible = false
@@ -59,7 +59,7 @@ object ItemLongPress {
                 separatorDynamic.setBackgroundColorFast(ColorTheme.separator)
                 recyclerViewDynamic.isNestedScrollingEnabled = false
                 recyclerViewDynamic.layoutManager = LinearLayoutManager(context)
-                recyclerViewDynamic.adapter = ShortcutAdapter(dynamicShortcuts, textColor, graphicsLoader)
+                recyclerViewDynamic.adapter = LongPressShortcutAdapter(dynamicShortcuts, textColor, graphicsLoader)
             }
         }
         val window = PopupWindow(content, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true)

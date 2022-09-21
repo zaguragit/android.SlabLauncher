@@ -37,34 +37,6 @@ object ColorThemeSetting {
     const val DEFAULT = 0
 }
 
-object DockRowCount {
-
-    val Settings.dockRowCount: Int
-        get() = get(KEY, DEFAULT)
-
-    var Settings.SettingsEditor.dockRowCount: Int
-        get() = settings[KEY, DEFAULT]
-        set(value) = KEY set value
-
-    private const val KEY = "dock:rows"
-
-    const val DEFAULT = 3
-}
-
-object ColumnCount {
-
-    val Settings.dockColumnCount: Int
-        get() = get(KEY, DEFAULT)
-
-    var Settings.SettingsEditor.dockColumnCount: Int
-        get() = settings[KEY, DEFAULT]
-        set(value) = KEY set value
-
-    private const val KEY = "dock:columns"
-
-    const val DEFAULT = 5
-}
-
 object SuggestionColumnCount {
 
     val Settings.suggestionColumnCount: Int
@@ -151,19 +123,6 @@ object DoSuggestionStripSetting {
     private const val KEY = "suggestions:show"
 
     const val DEFAULT = true
-}
-
-object DoAlignMediaPlayerToTop {
-    val Settings.alignMediaPlayerToTop: Boolean
-        get() = get(KEY, DEFAULT)
-
-    var Settings.SettingsEditor.alignMediaPlayerToTop: Boolean
-        get() = settings[KEY, DEFAULT]
-        set(value) = KEY set value
-
-    private const val KEY = "media_player:align_top"
-
-    const val DEFAULT = false
 }
 
 object DoFlag {

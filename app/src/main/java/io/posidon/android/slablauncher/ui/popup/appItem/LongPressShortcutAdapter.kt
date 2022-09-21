@@ -7,20 +7,20 @@ import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.ShortcutItem
 import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 
-class ShortcutAdapter(
+class LongPressShortcutAdapter(
     private val shortcuts: List<ShortcutItem>,
     private val txtColor: Int,
     val graphicsLoader: GraphicsLoader,
-) : RecyclerView.Adapter<ShortcutViewHolder>() {
+) : RecyclerView.Adapter<LongPressShortcutViewHolder>() {
 
     override fun getItemCount(): Int = shortcuts.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShortcutViewHolder {
-        return ShortcutViewHolder(LayoutInflater.from(parent.context)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LongPressShortcutViewHolder {
+        return LongPressShortcutViewHolder(LayoutInflater.from(parent.context)
             .inflate(R.layout.long_press_item_popup_item, parent, false))
     }
 
-    override fun onBindViewHolder(holder: ShortcutViewHolder, i: Int) {
+    override fun onBindViewHolder(holder: LongPressShortcutViewHolder, i: Int) {
         val s = shortcuts[i]
         holder.label.text = s.label
         holder.label.setTextColor(txtColor)

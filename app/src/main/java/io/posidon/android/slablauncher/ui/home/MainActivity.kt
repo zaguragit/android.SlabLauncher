@@ -31,8 +31,6 @@ import androidx.core.view.*
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import io.posidon.android.conveniencelib.Device
@@ -44,7 +42,6 @@ import io.posidon.android.slablauncher.BuildConfig
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.App
-import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.providers.color.ColorThemeOptions
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
@@ -52,27 +49,20 @@ import io.posidon.android.slablauncher.providers.item.AppCallback
 import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 import io.posidon.android.slablauncher.providers.personality.Statement
 import io.posidon.android.slablauncher.providers.suggestions.SuggestionsManager
-import io.posidon.android.slablauncher.ui.home.main.HomeArea
 import io.posidon.android.slablauncher.ui.home.main.HomeAreaFragment
 import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.home.main.loadBlur
-import io.posidon.android.slablauncher.ui.home.main.suggestion.SuggestionsAdapter
 import io.posidon.android.slablauncher.ui.home.sideList.SideListFragment
 import io.posidon.android.slablauncher.ui.popup.PopupUtils
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.util.StackTraceActivity
 import io.posidon.android.slablauncher.util.drawable.FastColorDrawable
-import io.posidon.android.slablauncher.util.drawable.setBackgroundColorFast
 import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorTheme
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
 import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
 import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScreenOpenedSetting.doAutoKeyboardInAllApps
-import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
-import io.posidon.android.slablauncher.util.storage.DockRowCount.dockRowCount
 import kotlin.concurrent.thread
-import kotlin.math.max
-import kotlin.math.min
 
 
 class MainActivity : FragmentActivity() {
@@ -163,7 +153,6 @@ class MainActivity : FragmentActivity() {
             ) {
                 val wallpaperOffset = position + positionOffset
                 wallpaperManager.setWallpaperOffsets(viewPager.windowToken, wallpaperOffset, 0f)
-                setBlurLevel(wallpaperOffset)
                 if (blurBG.drawable != null) {
                     blurBG.offset = wallpaperOffset
                     searchBarBlurBG.offset = wallpaperOffset
@@ -436,94 +425,34 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    private fun createTileAreaBackdropDrawable(blur: Bitmap): Drawable {
-        val paint = Paint().apply {
-            val r = blur.height / Device.screenHeight(this@MainActivity).toFloat()
-            val a = blur.height.toFloat() - searchBarContainer.height * r
-            shader = LinearGradient(
-                0f,
-                a - (HomeAreaFragment.calculateDockHeight(this@MainActivity, settings) + 32.dp.toFloatPixels(this@MainActivity) + getSearchBarInset()) * r,
-                0f,
-                a,
-                intArrayOf(
-                    0,
-                    0xdd000000.toInt()
-                ),
-                floatArrayOf(
-                    0f, .8f
-                ),
-                Shader.TileMode.CLAMP
-            )
-            xfermode = PorterDuff.Mode.DST_IN.toXfermode()
-        }
-        val bitmap = Bitmap.createBitmap(blur.width, blur.height, blur.config).applyCanvas {
-            val y = (height - blur.height).toFloat()
-            drawBitmap(blur, y, 0f, Paint())
-            drawRect(0f, y, width.toFloat(), blur.height.toFloat(), paint)
-        }
-        return BitmapDrawable(resources, bitmap)
-    }
-
     private fun updateCurrentBlurBackground() {
+        viewPager.background?.alpha = if (acrylicBlur == null) 255 else 190
         blurBG.drawable = acrylicBlur?.let { b ->
             LayerDrawable(
                 arrayOf(
-                    BitmapDrawable(resources, b.partialBlurSmall),
                     BitmapDrawable(resources, b.partialBlurMedium),
-                    BitmapDrawable(resources, b.fullBlur),
-                    BitmapDrawable(resources, b.insaneBlur),
-                    createTileAreaBackdropDrawable(b.smoothBlur),
+                    BitmapDrawable(resources, b.fullBlur).apply {
+                        alpha = 150
+                    },
+                    BitmapDrawable(resources, b.insaneBlur).apply {
+                        alpha = 120
+                    },
                 )
             )
         }
         searchBarBlurBG.drawable = acrylicBlur?.let { b ->
-            LayerDrawable(
-                arrayOf(
-                    BitmapDrawable(resources, b.smoothBlur),
-                    BitmapDrawable(resources, b.insaneBlur),
-                )
-            )
+            BitmapDrawable(resources, b.insaneBlur).apply {
+                alpha = 50
+            }
         }
-        updateBlurLevel()
+        blurBG.invalidate()
+        searchBarBlurBG.invalidate()
     }
 
     fun getSearchBarInset(): Int =
         (resources.getDimension(R.dimen.search_bar_height) + resources.getDimension(R.dimen.item_card_margin) * 2).toInt()
 
-    var overlayOpacity = 0f
-    var blurLevel = 0f
-        private set
-    fun updateBlurLevel() {
-        setBlurLevel(blurLevel)
-        blurBG.invalidate()
-        searchBarBlurBG.invalidate()
-    }
-    private fun setBlurLevel(f: Float) {
-        blurLevel = f
-        val invF = 1 - f
-        val l = blurBG.drawable as? LayerDrawable ?: run {
-            viewPager.background?.alpha = (127 * overlayOpacity * invF + 255 * f).toInt()
-            return
-        }
-        val x = f * 3f
-        l.getDrawable(0).alpha = if (x > 2f) 0 else (255 * x.coerceAtMost(1f)).toInt()
-        l.getDrawable(1).alpha = if (x < 1f) 0 else (255 * (x - 1f).coerceAtMost(1f)).toInt()
-        l.getDrawable(2).alpha = if (x < 2f) 0 else (255 * (x - 2f)).toInt()
-        l.getDrawable(3).alpha = (200 * overlayOpacity * invF + 100 * f).toInt()
-        l.getDrawable(4).alpha = (255 * (1f - overlayOpacity) * invF).toInt()
-        viewPager.background?.alpha = (127 * overlayOpacity * invF + (191) * f).toInt()
-        val sl = searchBarBlurBG.drawable as? LayerDrawable ?: return
-        sl.getDrawable(0).alpha = ((36 + 200 * min(invF, 1 - overlayOpacity)) * 0.36f).toInt()
-        sl.getDrawable(1).alpha = (32 + 210 * max(f, overlayOpacity) * 0.16f).toInt()
-    }
-
     fun updateLayout() {
         onLayoutChangeListeners.forEach { (_, l) -> l() }
-        (blurBG.drawable as? LayerDrawable)?.run {
-            acrylicBlur?.let {
-                setDrawable(4, createTileAreaBackdropDrawable(it.smoothBlur))
-                blurBG.invalidate()
-            }
-        }
     }
 }

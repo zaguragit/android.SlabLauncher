@@ -7,10 +7,8 @@ import android.icu.util.Calendar
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,11 +22,9 @@ import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.notification.NotificationData
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.notification.NotificationService
-import io.posidon.android.slablauncher.providers.personality.Statement
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.main.HomeArea
 import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
-import io.posidon.android.slablauncher.ui.home.main.dash.media.MediaPlayer
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.ui.view.FlagView
 import io.posidon.android.slablauncher.ui.view.SeeThroughView
@@ -57,11 +53,6 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
         layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
         adapter = notificationsAdapter
     }
-
-    val mediaPlayer = MediaPlayer(view.findViewById(R.id.media_player), mainActivity::updateLayout)
-
-    val playerSpacer = view.findViewById<View>(R.id.player_spacer)
-    val suggestionsSpacer = view.findViewById<View>(R.id.suggestions_spacer)
 
     private val notificationMoreText = view.findViewById<TextView>(R.id.x_more)!!.apply {
         setOnClickListener {
@@ -168,8 +159,6 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
 
         notificationMoreText.setTextColor(ColorTheme.cardDescription)
         notificationsAdapter.notifyItemRangeChanged(0, notificationsAdapter.itemCount)
-
-        mediaPlayer.updateColorTheme()
     }
 
     @SuppressLint("SetTextI18n")
@@ -188,12 +177,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
     }
 
     fun updateBlur() {
-        blurBG.drawable = acrylicBlur?.smoothBlurDrawable
-        mediaPlayer.updateBlur()
-    }
-
-    fun onWindowFocusChanged(hasFocus: Boolean) {
-        mediaPlayer.onWindowFocusChanged(hasFocus)
+        blurBG.drawable = acrylicBlur?.partialBlurMediumDrawable
     }
 
     fun updateFlag() {
