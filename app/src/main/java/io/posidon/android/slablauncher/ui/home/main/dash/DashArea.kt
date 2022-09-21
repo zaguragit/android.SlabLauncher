@@ -2,6 +2,8 @@ package io.posidon.android.slablauncher.ui.home.main.dash
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.icu.util.Calendar
 import android.view.MotionEvent
@@ -126,6 +128,15 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
                 if (homeArea.scrollY == 0) popupHeight else HomeLongPressPopup.calculateHeight(v.context),
             )
         }
+        date.setOnClickListener(::openClockApp)
+        alarm.setOnClickListener(::openClockApp)
+    }
+
+    private fun openClockApp(v: View) {
+        val i = Intent("android.intent.action.SHOW_ALARMS")
+        try {
+            v.context.startActivity(i)
+        } catch (_: ActivityNotFoundException) {}
     }
 
     private fun updateNotifications(new: List<NotificationData>) {
