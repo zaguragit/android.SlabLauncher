@@ -101,7 +101,7 @@ class GraphicsLoader {
             textP
         ) else try {
             val inputStream = context.contentResolver.openInputStream(iconUri)
-            Drawable.createFromStream(inputStream, iconUri.toString())
+            Drawable.createFromStream(inputStream, iconUri.toString())!!
         } catch (e: FileNotFoundException) {
             genProfilePic(contact.label, tmpLab, textP)
         }

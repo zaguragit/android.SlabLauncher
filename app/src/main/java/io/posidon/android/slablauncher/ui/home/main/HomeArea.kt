@@ -96,9 +96,9 @@ class HomeArea(
     fun getPinnedItemIndex(x: Float, y: Float): Int {
         var y = y + scrollY - dash.view.height
         if (y < 0) return -1
-        val x = x / pinnedRecycler.width * calculateColumns(view.context)
+        val x = x / pinnedRecycler.width
         y = (y - pinnedRecycler.paddingTop) / (ITEM_HEIGHT.toFloatPixels(view) + view.resources.getDimension(R.dimen.item_card_margin) * 2)
-        val i = y.toInt() * calculateColumns(view.context) + x.toInt()
+        val i = (y.toInt() + x.toInt()) * calculateColumns(view.context)
         return i.coerceAtMost(pinnedAdapter.tileCount)
     }
 

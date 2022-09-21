@@ -73,7 +73,7 @@ class PinnedTilesAdapter(
             bindDropTargetViewHolder(holder)
             return
         }
-        val item = items[adapterPositionToI(ii)]
+        val item = items[adapterPositionToI(ii).coerceAtLeast(0)]
         holder as TileViewHolder
         holder.bind(
             item,
