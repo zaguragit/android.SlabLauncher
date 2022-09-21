@@ -35,7 +35,7 @@ class PinnedTilesAdapter(
     override fun getItemViewType(i: Int): Int {
         return when {
             i == dropTargetIndex -> -1
-            NotificationService.mediaItem?.sourcePackageName?.let { (items[i] as? App)?.packageName == it } ?: false -> 1
+            NotificationService.mediaItem?.sourcePackageName?.let { (items.getOrNull(i) as? App)?.packageName == it } ?: false -> 1
             else -> 0
         }
     }
