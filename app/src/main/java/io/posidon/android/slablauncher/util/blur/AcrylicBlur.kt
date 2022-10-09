@@ -23,7 +23,6 @@ class AcrylicBlur private constructor(
     val fullBlur: Bitmap,
     val smoothBlur: Bitmap,
     val partialBlurMedium: Bitmap,
-    val partialBlurSmall: Bitmap,
     val insaneBlur: Bitmap,
 ) {
 
@@ -33,8 +32,6 @@ class AcrylicBlur private constructor(
         private set
     var partialBlurMediumDrawable: Drawable = BitmapDrawable(resources, partialBlurMedium)
         private set
-    var partialBlurSmallDrawable: Drawable = BitmapDrawable(resources, partialBlurSmall)
-        private set
     var insaneBlurDrawable: Drawable = BitmapDrawable(resources, insaneBlur)
         private set
 
@@ -43,18 +40,15 @@ class AcrylicBlur private constructor(
             (fullBlurDrawable as BitmapDrawable).bitmap = null
             (smoothBlurDrawable as BitmapDrawable).bitmap = null
             (partialBlurMediumDrawable as BitmapDrawable).bitmap = null
-            (partialBlurSmallDrawable as BitmapDrawable).bitmap = null
             (insaneBlurDrawable as BitmapDrawable).bitmap = null
             fullBlurDrawable = NonDrawable()
             smoothBlurDrawable = NonDrawable()
             partialBlurMediumDrawable = NonDrawable()
-            partialBlurSmallDrawable = NonDrawable()
             insaneBlurDrawable = NonDrawable()
         }
         fullBlur.recycle()
         smoothBlur.recycle()
         partialBlurMedium.recycle()
-        partialBlurSmall.recycle()
         insaneBlur.recycle()
     }
 
@@ -62,15 +56,14 @@ class AcrylicBlur private constructor(
         fun blurWallpaper(context: Context, drawable: Drawable): AcrylicBlur {
             val h = Device.screenHeight(context).coerceAtMost(2040)
             val w = h * drawable.intrinsicWidth / drawable.intrinsicHeight
-            val b = drawable.toBitmap(w / 12, h / 12)
+            val b = drawable.toBitmap(w / 8, h / 8)
             val sb = drawable.toBitmap(48, 48 * h / w)
             val insaneBlur = fastBlur(sb, 8)
-            val smoothBlur = fastBlur(b, 1.dp.toPixels(context))
-            val partialBlurMedium = fastBlur(b, .6.dp.toPixels(context))
-            val partialBlurSmall = fastBlur(b, .3.dp.toPixels(context))
+            val smoothBlur = fastBlur(b, 1.5.dp.toPixels(context))
+            val partialBlurMedium = fastBlur(b, 1.dp.toPixels(context))
             val nb = Bitmap.createScaledBitmap(smoothBlur, w, h, false)
             val fullBlur = NoiseBlur.blur(nb, 18.dp.toFloatPixels(context))
-            return AcrylicBlur(context.resources, fullBlur, smoothBlur, partialBlurMedium, partialBlurSmall, insaneBlur)
+            return AcrylicBlur(context.resources, fullBlur, smoothBlur, partialBlurMedium, insaneBlur)
         }
 
         inline fun blurWallpaper(

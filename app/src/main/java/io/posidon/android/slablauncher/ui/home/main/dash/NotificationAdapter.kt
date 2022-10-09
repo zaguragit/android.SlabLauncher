@@ -10,52 +10,38 @@ import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toPixels
+import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.notification.NotificationData
+import io.posidon.android.slablauncher.data.notification.NotificationGroupData
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.ui.home.main.dash.viewHolder.NotificationViewHolder
 
-class NotificationAdapter : RecyclerView.Adapter<NotificationViewHolder>() {
+class NotificationAdapter(val launcherContext: LauncherContext) : RecyclerView.Adapter<NotificationViewHolder>() {
 
-    private var data = emptyList<NotificationData>()
+    private var data = emptyList<NotificationGroupData>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
-        return NotificationViewHolder(LayoutInflater.from(parent.context)
-            .inflate(R.layout.notification, parent, false)).apply {
+        return NotificationViewHolder(parent).apply {
             itemView.setOnClickListener {
-                data[bindingAdapterPosition].open()
+                data[bindingAdapterPosition].run {
+                    if (notifications.size == 1)
+                        notifications[0].open()
+                    else if (sourcePackageName != null)
+                        launcherContext.appManager.getAppByPackage(sourcePackageName)?.open(parent.context, itemView)
+                }
             }
         }
     }
 
     override fun onBindViewHolder(holder: NotificationViewHolder, i: Int) {
         val notification = data[i]
-        holder.source.text = notification.source
-        holder.title.text = notification.title
-        holder.text.text = notification.description
-
-        holder.source.setTextColor(ColorTheme.cardDescription)
-        holder.title.setTextColor(ColorTheme.cardTitle)
-        holder.text.setTextColor(ColorTheme.cardDescription)
-        val img = notification.image
-        if (img == null) {
-            holder.imageCard.isVisible = false
-        } else {
-            holder.image.setImageDrawable(img)
-            holder.itemView.doOnLayout {
-                holder.imageCard.updateLayoutParams {
-                    width = (
-                        it.height * img.intrinsicWidth / img.intrinsicHeight
-                    ).coerceAtMost(256.dp.toPixels(it))
-                }
-            }
-            holder.imageCard.isVisible = true
-        }
+        holder.onBind(notification)
     }
 
     override fun getItemCount() = data.size
 
-    fun updateItems(data: List<NotificationData>) {
+    fun updateItems(data: List<NotificationGroupData>) {
         this.data = data
         notifyDataSetChanged()
     }

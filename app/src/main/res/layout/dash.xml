@@ -5,69 +5,54 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-    <androidx.cardview.widget.CardView
-        style="@style/SlabLauncher.Dash.Card"
-        android:id="@+id/card"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <io.posidon.android.slablauncher.ui.view.SeeThroughView
-            android:id="@+id/dash_blur_bg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:alpha=".2"/>
-        <LinearLayout
-            android:id="@+id/container"
-            android:layout_width="match_parent"
+    <LinearLayout
+        style="@style/SlabLauncher.Dash.Top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="bottom"
+        android:layout_gravity="center_horizontal">
+        <TextClock
+            style="@style/SlabLauncher.Dash.Date"
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <LinearLayout
-                style="@style/SlabLauncher.Dash.Top"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="bottom"
-                android:layout_gravity="center_horizontal">
-                <TextClock
-                    style="@style/SlabLauncher.Dash.Date"
-                    android:id="@+id/date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:format24Hour="d MMMM, cccc"
-                    android:format12Hour="d MMMM, cccc"/>
-                <TextView
-                    style="@style/SlabLauncher.Dash.Alarm"
-                    android:id="@+id/alarm"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_alarm"/>
-            </LinearLayout>
-            <View
-                android:id="@+id/separator"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"/>
-            <io.posidon.android.slablauncher.ui.view.FlagView
-                android:id="@+id/flag"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"/>
-            <LinearLayout
-                android:id="@+id/notification_area"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <androidx.recyclerview.widget.RecyclerView
-                    style="@style/SlabLauncher.Notification.Recycler"
-                    android:id="@+id/notifications"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-                <TextView
-                    style="@style/SlabLauncher.Notification.XMoreText"
-                    android:id="@+id/x_more"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+            android:format24Hour="d MMMM, cccc"
+            android:format12Hour="d MMMM, cccc"/>
+        <TextView
+            style="@style/SlabLauncher.Dash.Alarm"
+            android:id="@+id/alarm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_alarm"/>
+    </LinearLayout>
+    <io.posidon.android.slablauncher.ui.view.FlagView
+        style="@style/SlabLauncher.Dash.Flag"
+        android:id="@+id/flag"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+    <LinearLayout
+        android:id="@+id/notifications_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <androidx.recyclerview.widget.RecyclerView
+            style="@style/SlabLauncher.Notification.Recycler"
+            android:id="@+id/notifications"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <TextView
+            style="@style/SlabLauncher.Notification.XMoreText"
+            android:id="@+id/x_more"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
     <androidx.recyclerview.widget.RecyclerView
+        style="@style/SlabLauncher.Dash.Row"
         android:id="@+id/suggestions_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

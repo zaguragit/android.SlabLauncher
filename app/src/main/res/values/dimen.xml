@@ -3,9 +3,9 @@
     <dimen name="feed_card_padding">12dp</dimen>
     <dimen name="feed_card_spacing">6dp</dimen>
 
-    <dimen name="large_card_radius">22dp</dimen>
+    <dimen name="large_card_radius">25dp</dimen>
 
-    <dimen name="item_card_radius">15dp</dimen>
+    <dimen name="item_card_radius">18dp</dimen>
     <dimen name="item_card_elevation">2dp</dimen>
     <dimen name="item_card_margin">5dp</dimen>
 
@@ -17,4 +17,5 @@
 
     <dimen name="search_title_container_height">128dp</dimen>
     <dimen name="search_bar_height">52dp</dimen>
+    <dimen name="search_bar_radius">99dp</dimen>
 </resources>

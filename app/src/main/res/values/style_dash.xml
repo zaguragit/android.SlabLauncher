@@ -6,6 +6,14 @@
         <item name="cardElevation">@dimen/item_card_elevation</item>
     </style>
 
+    <style name="SlabLauncher.Dash.Flag" parent="SlabLauncher">
+        <item name="android:layout_marginVertical">@dimen/item_card_margin</item>
+    </style>
+
+    <style name="SlabLauncher.Dash.Row" parent="SlabLauncher">
+        <item name="android:layout_marginHorizontal">@dimen/item_card_margin</item>
+    </style>
+
     <style name="SlabLauncher.Dash.Top" parent="SlabLauncher">
         <item name="android:layout_marginTop">22dp</item>
         <item name="android:layout_marginBottom">22dp</item>

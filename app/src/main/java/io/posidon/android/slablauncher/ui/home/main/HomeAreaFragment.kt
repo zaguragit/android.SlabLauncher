@@ -100,7 +100,7 @@ class HomeAreaFragment : Fragment() {
                 bottomMargin = b
             }
         }
-        homeArea.dash.view.setPadding(t, requireContext().getStatusBarHeight(), t, 0)
+        homeArea.dash.view.setPadding(0, requireContext().getStatusBarHeight(), 0, 0)
         homeArea.updateLayout()
     }
 

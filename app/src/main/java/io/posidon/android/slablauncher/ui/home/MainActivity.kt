@@ -441,7 +441,7 @@ class MainActivity : FragmentActivity() {
             )
         }
         searchBarBlurBG.drawable = acrylicBlur?.let { b ->
-            BitmapDrawable(resources, b.insaneBlur).apply {
+            BitmapDrawable(resources, b.smoothBlur).apply {
                 alpha = 50
             }
         }

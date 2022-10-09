@@ -155,8 +155,8 @@ interface ColorTheme {
 
             val lab = DoubleArray(3)
             colorToLAB(HSLToColor(tmp), lab)
-            lab[0] = DoubleArray(3).also { colorToLAB(lightnessOf, it) }[0] * 0.8
-            lab[0] += DoubleArray(3).also { colorToLAB(baseColor, it) }[0] * 0.2
+            lab[0] = DoubleArray(3).also { colorToLAB(lightnessOf, it) }[0] * 0.9
+            lab[0] += DoubleArray(3).also { colorToLAB(baseColor, it) }[0] * 0.1
 
             return LABToColor(lab[0], lab[1], lab[2])
         }

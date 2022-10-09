@@ -28,8 +28,8 @@ class DarkColorTheme(
     override val buttonColor = palette.neutralMedium
     override val buttonColorCallToAction = palette.secondary
 
-    override val searchBarBG = ColorUtils.blendARGB(cardBG, accentColor, 0.3f)
-    override val searchBarFG = palette.neutralLight
+    override val searchBarBG = cardBG
+    override val searchBarFG = cardTitle
 
     override fun adjustColorForContrast(base: Int, tint: Int): Int {
         return if (base.luminance > .7f) {
@@ -47,8 +47,8 @@ class DarkColorTheme(
         }
     }
 
-    override fun tileColor(iconBackgroundColor: Int) = when {
-        iconBackgroundColor == 0 -> palette.neutralMedium
+    override fun tileColor(iconBackgroundColor: Int) = when (iconBackgroundColor) {
+        0 -> palette.neutralMedium
         else -> hueTintClosest(iconBackgroundColor, cardBG, arrayOf(
             palette.neutralVeryDark,
             palette.neutralDark,

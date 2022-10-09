@@ -35,7 +35,6 @@ import kotlin.contracts.contract
 class ShortcutTileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), TileViewHolder {
 
     private val card = itemView.findViewById<CardView>(R.id.card)!!
-    private val backgroundView = itemView.findViewById<ImageView>(R.id.background_image)!!
     private val icon = itemView.findViewById<ImageView>(R.id.icon)!!
     private val label = itemView.findViewById<TextView>(R.id.label)!!
     private val shortcutsRecycler = itemView.findViewById<RecyclerView>(R.id.shortcuts)!!.apply {
@@ -72,7 +71,6 @@ class ShortcutTileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
             card.setCardBackgroundColor(itemColor)
             icon.setImageDrawable(iconData.icon)
             icon.alpha = 1f
-            card.cardElevation = itemView.context.resources.getDimension(R.dimen.item_card_elevation)
 
             if (settings.doMonochrome) {
                 icon.colorFilter = ColorMatrixColorFilter(ColorMatrix().apply {
@@ -80,7 +78,6 @@ class ShortcutTileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                 })
                 if (item is App && !itemView.context.isUserRunning(item.userHandle)) {
                     icon.alpha = 0.7f
-                    card.cardElevation = 0f
                     card.setCardBackgroundColor(0)
                 }
             } else icon.colorFilter = null
@@ -96,7 +93,6 @@ class ShortcutTileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     ) {
         blurBG.drawable = acrylicBlur?.insaneBlurDrawable
         icon.setImageDrawable(null)
-        backgroundView.setImageDrawable(null)
         card.setCardBackgroundColor(ColorTheme.cardBG)
 
         label.text = item.label
@@ -146,6 +142,5 @@ class ShortcutTileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     override fun recycle() {
         icon.setImageDrawable(null)
-        backgroundView.setImageDrawable(null)
     }
 }

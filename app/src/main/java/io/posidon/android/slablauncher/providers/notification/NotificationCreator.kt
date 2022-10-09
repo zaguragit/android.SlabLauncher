@@ -11,6 +11,7 @@ import android.service.notification.StatusBarNotification
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import io.posidon.android.slablauncher.data.notification.NotificationData
+import io.posidon.android.slablauncher.data.notification.NotificationGroupData
 import io.posidon.android.slablauncher.data.notification.TempNotificationData
 
 object NotificationCreator {
@@ -128,28 +129,30 @@ object NotificationCreator {
         val autoCancel = notification.notification.flags and Notification.FLAG_AUTO_CANCEL != 0
 
         return TempNotificationData(
-            NotificationData(
-                icon = icon,
+            group = NotificationGroupData(
                 source = source,
                 title = title?.toString() ?: "",
-                description = text?.toString(),
-                image = bigPic,
                 sourcePackageName = notification.packageName,
-                open = {
-                    try {
-                        notification.notification.contentIntent?.send()
-                        if (autoCancel)
+                notifications = listOf(NotificationData(
+                    icon = icon,
+                    description = text?.toString(),
+                    image = bigPic,
+                    open = {
+                        try {
+                            notification.notification.contentIntent?.send()
+                            if (autoCancel)
+                                service.cancelNotification(key)
+                        }
+                        catch (e: Exception) {
                             service.cancelNotification(key)
-                    }
-                    catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    },
+                    cancel = {
                         service.cancelNotification(key)
-                        e.printStackTrace()
                     }
-                },
-                cancel = {
-                    service.cancelNotification(key)
-                }
-            ),
+                ),
+            )),
             millis = notification.postTime,
             importance = importance.coerceAtLeast(0),
             isConversation = isConversation,

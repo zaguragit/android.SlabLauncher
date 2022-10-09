@@ -10,7 +10,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,14 +21,13 @@ import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.notification.NotificationData
+import io.posidon.android.slablauncher.data.notification.NotificationGroupData
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.notification.NotificationService
 import io.posidon.android.slablauncher.ui.home.MainActivity
 import io.posidon.android.slablauncher.ui.home.main.HomeArea
-import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.ui.view.FlagView
-import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
 import io.posidon.android.slablauncher.util.drawable.setBackgroundColorFast
 import io.posidon.android.slablauncher.util.storage.DoFlag.doFlag
@@ -39,18 +37,15 @@ import io.posidon.android.slablauncher.util.storage.FlagHeight.flagHeight
 @SuppressLint("ClickableViewAccessibility")
 class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivity) {
 
-    val card = view.findViewById<CardView>(R.id.card)!!
-    val container = card.findViewById<View>(R.id.container)!!
-    private val date = card.findViewById<TextView>(R.id.date)!!
-    private val alarm = card.findViewById<TextView>(R.id.alarm)!!
+    private val notificationArea = view.findViewById<ViewGroup>(R.id.notifications_area)!!
+    private val date = view.findViewById<TextView>(R.id.date)!!
+    private val alarm = view.findViewById<TextView>(R.id.alarm)!!
 
-    private val notificationArea = card.findViewById<ViewGroup>(R.id.notification_area)!!
+    private val separator = view.findViewById<View>(R.id.separator)
 
-    private val separator = card.findViewById<View>(R.id.separator)
+    private val flag = view.findViewById<FlagView>(R.id.flag)
 
-    private val flag = card.findViewById<FlagView>(R.id.flag)
-
-    private val notificationsAdapter = NotificationAdapter()
+    private val notificationsAdapter = NotificationAdapter(mainActivity.launcherContext)
     private val notificationsRecycler = view.findViewById<RecyclerView>(R.id.notifications)!!.apply {
         layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
         adapter = notificationsAdapter
@@ -62,18 +57,11 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
         }
     }
 
-    private val blurBG = view.findViewById<SeeThroughView>(R.id.dash_blur_bg)!!.apply {
-        viewTreeObserver.addOnPreDrawListener {
-            invalidate()
-            true
-        }
-    }
-
     private val popupHeight get() = (
         view.height -
         view.context.getStatusBarHeight() -
         view.resources.getDimension(R.dimen.item_card_margin).toInt() * 2
-    ).coerceAtLeast(512.dp.toPixels(view))
+    ).coerceAtLeast(480.dp.toPixels(view))
 
     private val popupWidth get() =
         view.width - view.resources.getDimension(R.dimen.item_card_margin).toInt() * 4
@@ -92,44 +80,37 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
             false
         }
         view.setOnLongClickListener {
-            val loc = IntArray(2)
-            it.getLocationOnScreen(loc)
-            val m = it.resources.getDimension(R.dimen.item_card_margin)
-            HomeLongPressPopup.show(
-                it,
-                if (homeArea.scrollY == 0) Device.screenWidth(it.context) / 2f else popupX,
-                if (homeArea.scrollY == 0) popupHeight / 2f + view.context.getStatusBarHeight() + m else popupY,
-                mainActivity.settings,
-                mainActivity::reloadColorPaletteSync,
-                mainActivity::updateColorTheme,
-                mainActivity::invalidateItemGraphics,
-                mainActivity::reloadBlur,
-                mainActivity::updateLayout,
-                mainActivity::updateGreeting,
-                if (homeArea.scrollY == 0) popupWidth else ViewGroup.LayoutParams.WRAP_CONTENT,
-                if (homeArea.scrollY == 0) popupHeight else HomeLongPressPopup.calculateHeight(it.context),
-            )
+            showSettingsPopup(it, homeArea, popupX, popupY)
             true
         }
         RecyclerViewLongPressHelper.setOnLongPressListener(notificationsRecycler) { v, x, y ->
-            val m = v.resources.getDimension(R.dimen.item_card_margin)
-            HomeLongPressPopup.show(
-                v,
-                if (homeArea.scrollY == 0) Device.screenWidth(v.context) / 2f else x,
-                if (homeArea.scrollY == 0) popupHeight / 2f + view.context.getStatusBarHeight() + m else y,
-                mainActivity.settings,
-                mainActivity::reloadColorPaletteSync,
-                mainActivity::updateColorTheme,
-                mainActivity::invalidateItemGraphics,
-                mainActivity::reloadBlur,
-                mainActivity::updateLayout,
-                mainActivity::updateGreeting,
-                if (homeArea.scrollY == 0) popupWidth else ViewGroup.LayoutParams.WRAP_CONTENT,
-                if (homeArea.scrollY == 0) popupHeight else HomeLongPressPopup.calculateHeight(v.context),
-            )
+            showSettingsPopup(v, homeArea, x, y)
         }
         date.setOnClickListener(::openClockApp)
         alarm.setOnClickListener(::openClockApp)
+    }
+
+    private fun showSettingsPopup(
+        v: View,
+        homeArea: HomeArea,
+        x: Float,
+        y: Float
+    ) {
+        val m = v.resources.getDimension(R.dimen.item_card_margin)
+        HomeLongPressPopup.show(
+            v,
+            if (homeArea.scrollY == 0) Device.screenWidth(v.context) / 2f else x,
+            if (homeArea.scrollY == 0) popupHeight / 2f + view.context.getStatusBarHeight() + m else y,
+            mainActivity.settings,
+            mainActivity::reloadColorPaletteSync,
+            mainActivity::updateColorTheme,
+            mainActivity::invalidateItemGraphics,
+            mainActivity::reloadBlur,
+            mainActivity::updateLayout,
+            mainActivity::updateGreeting,
+            if (homeArea.scrollY == 0) popupWidth else ViewGroup.LayoutParams.WRAP_CONTENT,
+            if (homeArea.scrollY == 0) popupHeight else HomeLongPressPopup.calculateHeight(v.context),
+        )
     }
 
     private fun openClockApp(v: View) {
@@ -139,7 +120,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
         } catch (_: ActivityNotFoundException) {}
     }
 
-    private fun updateNotifications(new: List<NotificationData>) {
+    private fun updateNotifications(new: List<NotificationGroupData>) {
         mainActivity.runOnUiThread {
             if (new.isEmpty()) {
                 notificationArea.isVisible = false
@@ -148,7 +129,7 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
             }
             notificationArea.isVisible = true
             separator.isVisible = !mainActivity.settings.doFlag
-            val shownCount = new.size.coerceAtMost(4)
+            val shownCount = new.size.coerceAtMost(3)
             notificationsAdapter.updateItems(new.subList(0, shownCount))
             val more = new.size - shownCount
             if (more != 0) {
@@ -163,12 +144,11 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
     fun updateColorTheme() {
         val s = ColorTheme.separator
         separator.setBackgroundColorFast(s)
-        card.setCardBackgroundColor(ColorTheme.cardBG)
-        date.setTextColor(ColorTheme.cardTitle)
-        alarm.setTextColor(ColorTheme.cardDescription)
-        alarm.compoundDrawableTintList = ColorStateList.valueOf(ColorTheme.cardDescription)
+        date.setTextColor(ColorTheme.uiTitle)
+        alarm.setTextColor(ColorTheme.uiDescription)
+        alarm.compoundDrawableTintList = ColorStateList.valueOf(ColorTheme.uiDescription)
 
-        notificationMoreText.setTextColor(ColorTheme.cardDescription)
+        notificationMoreText.setTextColor(ColorTheme.uiDescription)
         notificationsAdapter.notifyItemRangeChanged(0, notificationsAdapter.itemCount)
     }
 
@@ -188,7 +168,6 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
     }
 
     fun updateBlur() {
-        blurBG.drawable = acrylicBlur?.partialBlurMediumDrawable
     }
 
     fun updateFlag() {
