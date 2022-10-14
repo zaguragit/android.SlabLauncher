@@ -31,10 +31,6 @@
         android:id="@+id/flag"
         android:layout_width="match_parent"
         android:layout_height="0dp"/>
-    <View
-        android:id="@+id/separator"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"/>
     <androidx.recyclerview.widget.RecyclerView
         style="@style/SlabLauncher.Notification.Recycler"
         android:id="@+id/notifications"

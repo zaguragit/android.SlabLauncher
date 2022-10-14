@@ -27,7 +27,6 @@ import io.posidon.android.slablauncher.ui.home.main.HomeArea
 import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
 import io.posidon.android.slablauncher.ui.view.FlagView
 import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
-import io.posidon.android.slablauncher.util.drawable.setBackgroundColorFast
 import io.posidon.android.slablauncher.util.storage.DoFlag.doFlag
 import io.posidon.android.slablauncher.util.storage.FlagColors.flagColors
 import io.posidon.android.slablauncher.util.storage.FlagHeight.flagHeight
@@ -37,8 +36,6 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
 
     private val date = view.findViewById<TextView>(R.id.date)!!
     private val alarm = view.findViewById<TextView>(R.id.alarm)!!
-
-    private val separator = view.findViewById<View>(R.id.separator)
 
     private val flag = view.findViewById<FlagView>(R.id.flag)
 
@@ -115,18 +112,14 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
         mainActivity.runOnUiThread {
             if (new.isEmpty()) {
                 notificationsRecycler.isVisible = false
-                separator.isVisible = false
                 return@runOnUiThread
             }
             notificationsRecycler.isVisible = true
-            separator.isVisible = !mainActivity.settings.doFlag
             notificationsAdapter.updateItems(new.subList(0, new.size.coerceAtMost(3)))
         }
     }
 
     fun updateColorTheme() {
-        val s = ColorTheme.separator
-        separator.setBackgroundColorFast(s)
         date.setTextColor(ColorTheme.uiTitle)
         alarm.setTextColor(ColorTheme.uiDescription)
         alarm.compoundDrawableTintList = ColorStateList.valueOf(ColorTheme.uiDescription)
