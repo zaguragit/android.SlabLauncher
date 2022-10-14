@@ -9,6 +9,10 @@ import kotlin.math.abs
 
 object RecyclerViewLongPressHelper {
 
+    inline fun setOnLongPressListener(recyclerView: RecyclerView, crossinline listener: (recyclerView: RecyclerView) -> Unit) {
+        setOnLongPressListener(recyclerView) { v, _, _ -> listener(v) }
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     fun setOnLongPressListener(recyclerView: RecyclerView, listener: (recyclerView: RecyclerView, x: Float, y: Float) -> Unit) {
         var popupX = 0f

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/card"
@@ -10,28 +9,14 @@
         android:id="@+id/blur_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha=".3"/>
-    <LinearLayout
+        android:alpha=".4"/>
+    <io.posidon.android.slablauncher.ui.view.HorizontalAspectRatioLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-        <ImageView
-            style="@style/SlabLauncher.TileArea.Item.Icon"
-            android:id="@+id/icon"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            tools:ignore="Suspicious0dp"/>
-        <TextView
-            style="@style/SlabLauncher.TileArea.Item.Label"
-            android:id="@+id/label"
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+        android:layout_height="wrap_content">
         <androidx.recyclerview.widget.RecyclerView
             style="@style/SlabLauncher.TileArea.Item.Shortcut.List"
             android:id="@+id/shortcuts"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </io.posidon.android.slablauncher.ui.view.HorizontalAspectRatioLayout>
 </androidx.cardview.widget.CardView>

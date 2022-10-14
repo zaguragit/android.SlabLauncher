@@ -12,9 +12,6 @@
     <dimen name="summary_card_notification_margin">14dp</dimen>
     <dimen name="summary_card_notification_spacing">6dp</dimen>
 
-    <dimen name="summary_card_image_radius">8dp</dimen>
-    <dimen name="summary_card_image_elevation">1dp</dimen>
-
     <dimen name="search_title_container_height">128dp</dimen>
     <dimen name="search_bar_height">52dp</dimen>
     <dimen name="search_bar_radius">99dp</dimen>

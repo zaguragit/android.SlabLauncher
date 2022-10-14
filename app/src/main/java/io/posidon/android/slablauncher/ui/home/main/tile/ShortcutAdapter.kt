@@ -4,13 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.R
-import io.posidon.android.slablauncher.data.items.ShortcutItem
+import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.ShortcutViewHolder
+import io.posidon.android.slablauncher.util.storage.Settings
 
 class ShortcutAdapter(
-    private val shortcuts: List<ShortcutItem>,
+    private val shortcuts: List<LauncherItem>,
     val graphicsLoader: GraphicsLoader,
+    val settings: Settings,
 ) : RecyclerView.Adapter<ShortcutViewHolder>() {
 
     override fun getItemCount(): Int = shortcuts.size
@@ -22,10 +24,6 @@ class ShortcutAdapter(
 
     override fun onBindViewHolder(holder: ShortcutViewHolder, i: Int) {
         val s = shortcuts[i]
-        val iconData = graphicsLoader.load(holder.itemView.context, s)
-        holder.icon.setImageDrawable(iconData.icon)
-        holder.itemView.setOnClickListener {
-            s.open(it.context, it)
-        }
+        holder.onBind(s, graphicsLoader, settings)
     }
 }

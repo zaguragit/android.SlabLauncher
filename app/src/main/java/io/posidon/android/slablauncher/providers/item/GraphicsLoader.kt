@@ -14,7 +14,6 @@ import io.posidon.android.conveniencelib.drawable.MaskedDrawable
 import io.posidon.android.conveniencelib.drawable.clone
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toPixels
-import io.posidon.android.launcherutil.IconTheming
 import io.posidon.android.launcherutil.Launcher
 import io.posidon.android.launcherutil.isUserRunning
 import io.posidon.android.launcherutil.loader.AppIconLoader
@@ -31,7 +30,6 @@ import io.posidon.android.slablauncher.util.storage.Settings
 import java.io.FileNotFoundException
 import java.lang.ref.WeakReference
 import java.util.concurrent.Future
-import kotlin.math.abs
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -187,7 +185,7 @@ class GraphicsLoader {
                 }
                 image = LayerDrawable(arrayOf(
                     background,
-                    iconForeground
+                    iconForeground,
                 ))
                 val bg = (background.clone() ?: background).mutate()
                 val fg = (iconForeground?.clone() ?: iconForeground)?.mutate()

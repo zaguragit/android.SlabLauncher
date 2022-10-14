@@ -35,22 +35,11 @@
         android:id="@+id/separator"
         android:layout_width="match_parent"
         android:layout_height="1dp"/>
-    <LinearLayout
-        android:id="@+id/notifications_area"
+    <androidx.recyclerview.widget.RecyclerView
+        style="@style/SlabLauncher.Notification.Recycler"
+        android:id="@+id/notifications"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <androidx.recyclerview.widget.RecyclerView
-            style="@style/SlabLauncher.Notification.Recycler"
-            android:id="@+id/notifications"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <TextView
-            style="@style/SlabLauncher.Notification.XMoreText"
-            android:id="@+id/x_more"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+        android:layout_height="wrap_content"/>
     <androidx.recyclerview.widget.RecyclerView
         style="@style/SlabLauncher.Dash.Row"
         android:id="@+id/suggestions_recycler"

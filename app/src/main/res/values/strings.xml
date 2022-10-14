@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="slab_launcher_crashed">Slab Launcher crashed</string>
     <string name="send_bug_report">Send bug report</string>
 
@@ -6,8 +6,6 @@
     <string name="search_in_duckduckgo">Search on DuckDuckGo</string>
 
     <string name="properties">Properties</string>
-
-    <string name="x_more" tools:ignore="PluralsCandidate">+%1$d more</string>
 
     <string name="results_for_x">Results for \"%s\"</string>
     <string name="all_apps">All apps</string>

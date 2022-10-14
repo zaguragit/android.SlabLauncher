@@ -6,12 +6,9 @@ import android.content.Context
 import android.view.DragEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
-import androidx.core.view.updateLayoutParams
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.conveniencelib.Device
 import io.posidon.android.conveniencelib.units.dp
@@ -26,13 +23,10 @@ import io.posidon.android.slablauncher.ui.home.main.dash.DashArea
 import io.posidon.android.slablauncher.ui.home.main.suggestion.SuggestionsAdapter
 import io.posidon.android.slablauncher.ui.home.main.tile.PinnedTilesAdapter
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
-import io.posidon.android.slablauncher.ui.popup.home.HomeLongPressPopup
-import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
 import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
 import io.posidon.android.slablauncher.util.storage.SuggestionColumnCount.suggestionColumnCount
 import io.posidon.ksugar.delegates.observable
 import kotlin.math.abs
-import kotlin.math.min
 import kotlin.properties.Delegates
 
 class HomeArea(
@@ -42,13 +36,11 @@ class HomeArea(
 ) {
 
     companion object {
-        val ITEM_HEIGHT = 64.dp
+        val ITEM_HEIGHT = 128.dp
         const val SUGGESTION_WIDTH_TO_HEIGHT = 5f / 4f
 
         fun calculateColumns(context: Context): Int =
-            Device.screenWidth(context).let {
-                it / (min(it, Device.screenHeight(context)))
-            }
+            Device.screenWidth(context) / ITEM_HEIGHT.toPixels(context)
     }
 
 
@@ -63,7 +55,6 @@ class HomeArea(
     }
 
     init {
-        val activity = fragment.requireActivity() as MainActivity
         view.setOnDragListener(::onDrag)
     }
 
@@ -72,20 +63,6 @@ class HomeArea(
     val pinnedRecycler = view.findViewById<RecyclerView>(R.id.pinned_recycler).apply {
         adapter = pinnedAdapter
         background.alpha = 0
-        val activity = fragment.requireActivity() as MainActivity
-
-        RecyclerViewLongPressHelper.setOnLongPressListener(this) { v, x, y ->
-            HomeLongPressPopup.show(
-                v, x, y,
-                launcherContext.settings,
-                activity::reloadColorPaletteSync,
-                activity::updateColorTheme,
-                activity::invalidateItemGraphics,
-                activity::reloadBlur,
-                activity::updateLayout,
-                activity::updateGreeting,
-            )
-        }
     }
 
     fun showDropTarget(i: Int, state: ItemLongPress.State?) {
@@ -96,9 +73,10 @@ class HomeArea(
     fun getPinnedItemIndex(x: Float, y: Float): Int {
         var y = y + scrollY - dash.view.height
         if (y < 0) return -1
-        val x = x / pinnedRecycler.width
-        y = (y - pinnedRecycler.paddingTop) / (ITEM_HEIGHT.toFloatPixels(view) + view.resources.getDimension(R.dimen.item_card_margin) * 2)
-        val i = (y.toInt() + x.toInt()) * calculateColumns(view.context)
+        val c = calculateColumns(view.context)
+        val x = x / pinnedRecycler.width * c
+        y = (y - pinnedRecycler.paddingTop) / pinnedRecycler.width * c
+        val i = y.toInt() * c + x.toInt()
         return i.coerceAtMost(pinnedAdapter.tileCount)
     }
 
@@ -199,8 +177,9 @@ class HomeArea(
     fun updateLayout() {
         suggestionsRecycler.isVisible = launcherContext.settings.doSuggestionStrip
         val suggestionColumns = launcherContext.settings.suggestionColumnCount
-        pinnedRecycler.layoutManager = LinearLayoutManager(
+        pinnedRecycler.layoutManager = GridLayoutManager(
             view.context,
+            calculateColumns(view.context),
             RecyclerView.VERTICAL,
             false
         )

@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/card"
-    style="@style/SlabLauncher.TileArea.Item.Card">
+    style="@style/SlabLauncher.Notification.Item.Card">
     <io.posidon.android.slablauncher.ui.view.BackdropImageView
         android:id="@+id/background_image"
         android:layout_width="match_parent"

@@ -4,6 +4,12 @@
         <item name="android:layout_marginHorizontal">@dimen/item_card_margin</item>
         <item name="android:layout_marginTop">@dimen/item_card_margin</item>
     </style>
+
+    <style name="SlabLauncher.Notification.Item.Card" parent="SlabLauncher">
+        <item name="cardCornerRadius">@dimen/item_card_radius</item>
+        <item name="android:layout_margin">@dimen/item_card_margin</item>
+        <item name="cardElevation">@dimen/item_card_elevation</item>
+    </style>
     <style name="SlabLauncher.Notification.Item.Container" parent="SlabLauncher">
         <item name="android:layout_margin">@dimen/summary_card_notification_margin</item>
     </style>
@@ -35,23 +41,5 @@
         <item name="android:textSize">16sp</item>
         <item name="android:ellipsize">end</item>
         <item name="android:maxLines">4</item>
-    </style>
-
-    <style name="SlabLauncher.Notification.Item.ImageCard" parent="SlabLauncher">
-        <item name="cardCornerRadius">@dimen/summary_card_image_radius</item>
-        <item name="cardElevation">@dimen/summary_card_image_elevation</item>
-    </style>
-
-    <style name="SlabLauncher.Notification.Item.Image" parent="SlabLauncher">
-        <item name="android:scaleType">centerCrop</item>
-    </style>
-
-    <style name="SlabLauncher.Notification.XMoreText" parent="SlabLauncher">
-        <item name="android:layout_margin">@dimen/item_card_margin</item>
-        <item name="android:gravity">center</item>
-        <item name="android:padding">@dimen/summary_card_notification_spacing</item>
-        <item name="android:includeFontPadding">false</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:background">@drawable/button_bg_invisible</item>
     </style>
 </resources>

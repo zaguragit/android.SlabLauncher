@@ -16,11 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.conveniencelib.Device
 import io.posidon.android.conveniencelib.getStatusBarHeight
-import io.posidon.android.conveniencelib.pullStatusbar
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.slablauncher.R
-import io.posidon.android.slablauncher.data.notification.NotificationData
 import io.posidon.android.slablauncher.data.notification.NotificationGroupData
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.notification.NotificationService
@@ -37,7 +35,6 @@ import io.posidon.android.slablauncher.util.storage.FlagHeight.flagHeight
 @SuppressLint("ClickableViewAccessibility")
 class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivity) {
 
-    private val notificationArea = view.findViewById<ViewGroup>(R.id.notifications_area)!!
     private val date = view.findViewById<TextView>(R.id.date)!!
     private val alarm = view.findViewById<TextView>(R.id.alarm)!!
 
@@ -49,12 +46,6 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
     private val notificationsRecycler = view.findViewById<RecyclerView>(R.id.notifications)!!.apply {
         layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
         adapter = notificationsAdapter
-    }
-
-    private val notificationMoreText = view.findViewById<TextView>(R.id.x_more)!!.apply {
-        setOnClickListener {
-            it.context.pullStatusbar()
-        }
     }
 
     private val popupHeight get() = (
@@ -123,21 +114,13 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
     private fun updateNotifications(new: List<NotificationGroupData>) {
         mainActivity.runOnUiThread {
             if (new.isEmpty()) {
-                notificationArea.isVisible = false
+                notificationsRecycler.isVisible = false
                 separator.isVisible = false
                 return@runOnUiThread
             }
-            notificationArea.isVisible = true
+            notificationsRecycler.isVisible = true
             separator.isVisible = !mainActivity.settings.doFlag
-            val shownCount = new.size.coerceAtMost(3)
-            notificationsAdapter.updateItems(new.subList(0, shownCount))
-            val more = new.size - shownCount
-            if (more != 0) {
-                notificationMoreText.text = view.context.getString(R.string.x_more, more)
-                notificationMoreText.isVisible = true
-            } else {
-                notificationMoreText.isVisible = false
-            }
+            notificationsAdapter.updateItems(new.subList(0, new.size.coerceAtMost(3)))
         }
     }
 
@@ -148,7 +131,6 @@ class DashArea(val view: View, homeArea: HomeArea, val mainActivity: MainActivit
         alarm.setTextColor(ColorTheme.uiDescription)
         alarm.compoundDrawableTintList = ColorStateList.valueOf(ColorTheme.uiDescription)
 
-        notificationMoreText.setTextColor(ColorTheme.uiDescription)
         notificationsAdapter.notifyItemRangeChanged(0, notificationsAdapter.itemCount)
     }
 
