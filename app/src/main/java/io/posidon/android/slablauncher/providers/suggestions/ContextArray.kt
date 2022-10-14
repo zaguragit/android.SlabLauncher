@@ -12,8 +12,8 @@ value class ContextArray(
     constructor(list: List<Float>) : this(list.toFloatArray())
 
     inline var hour: Float
-        get() = data[CONTEXT_DATA_HOUR_OF_DAY] * 12f
-        set(value) = data.set(CONTEXT_DATA_HOUR_OF_DAY, value / 12f)
+        get() = data[CONTEXT_DATA_HOUR_OF_DAY] * 6f
+        set(value) = data.set(CONTEXT_DATA_HOUR_OF_DAY, value / 6f)
 
     inline var battery: Float
         get() = data[CONTEXT_DATA_BATTERY] * 100f
@@ -31,9 +31,13 @@ value class ContextArray(
         get() = data[CONTEXT_DATA_IS_PLUGGED_IN] != 0f
         set(value) = data.set(CONTEXT_DATA_IS_PLUGGED_IN, if (value) 1f else 0f)
 
-    inline var isWeekend: Boolean
-        get() = data[CONTEXT_DATA_IS_WEEKEND] != 0f
-        set(value) = data.set(CONTEXT_DATA_IS_WEEKEND, if (value) 2f else 0f)
+    inline var weekDay: Float
+        get() = data[CONTEXT_DATA_IS_WEEK_DAY] * 7f
+        set(value) = data.set(CONTEXT_DATA_IS_WEEK_DAY, value / 7f)
+
+    inline var dayOfYear: Float
+        get() = data[CONTEXT_DATA_DAY_OF_YEAR] * 365f
+        set(value) = data.set(CONTEXT_DATA_DAY_OF_YEAR, value / 365f)
 
     companion object {
         const val CONTEXT_DATA_HOUR_OF_DAY = 0
@@ -41,8 +45,9 @@ value class ContextArray(
         const val CONTEXT_DATA_HAS_HEADSET = 2
         const val CONTEXT_DATA_HAS_WIFI = 3
         const val CONTEXT_DATA_IS_PLUGGED_IN = 4
-        const val CONTEXT_DATA_IS_WEEKEND = 5
-        const val CONTEXT_DATA_SIZE = 6
+        const val CONTEXT_DATA_IS_WEEK_DAY = 5
+        const val CONTEXT_DATA_DAY_OF_YEAR = 6
+        const val CONTEXT_DATA_SIZE = 7
 
         fun differentiator(i: Int, a: Float, b: Float): Float {
             val base = abs(a - b)

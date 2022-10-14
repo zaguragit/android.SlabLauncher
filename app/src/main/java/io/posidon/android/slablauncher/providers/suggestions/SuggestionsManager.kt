@@ -22,6 +22,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.concurrent.thread
 import kotlin.concurrent.withLock
+import kotlin.math.abs
 import kotlin.math.pow
 
 object SuggestionsManager {
@@ -94,18 +95,19 @@ object SuggestionsManager {
         val currentData = ContextArray()
         getCurrentContext(context, currentData)
 
-        val timeBased = if (stats != null) appsByPackage.sortedBy {
+        val timeBased = if (stats != null) appsByPackage
+            .filter { it.packageName != BuildConfig.APPLICATION_ID }.sortedBy {
             val lastUse = stats[it.packageName]?.lastTimeUsed
             if (lastUse == null) 1f else run {
                 val c = Calendar.getInstance()
                 c.timeInMillis = System.currentTimeMillis() - lastUse
                 (c[Calendar.MINUTE] / 20f).coerceAtMost(1f).pow(2)
             }
-        }.filter { it.packageName != BuildConfig.APPLICATION_ID } else emptyList()
+        } else emptyList()
 
         contextLock.withLock {
             this.patternBased = run {
-                val sortedEntries = contextMap.entries.sortedBy { (item, data) ->
+                val sortedEntries = contextMap.entries.sortedBy { (_, data) ->
                     contextMap.calculateDistance(currentData, data)
                 }
                 sortedEntries.mapTo(ArrayList()) { it.key }.run {
@@ -122,23 +124,23 @@ object SuggestionsManager {
         val rightNow = Calendar.getInstance()
 
         val batteryLevel = batteryManager
-            .getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+            .getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY).toFloat()
         val isPluggedIn = batteryManager
             .getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS) == BatteryManager.BATTERY_STATUS_CHARGING
         val currentHourIn24Format = rightNow[Calendar.HOUR_OF_DAY] + rightNow[Calendar.MINUTE] / 60f + rightNow[Calendar.SECOND] / 60f / 60f
-        val isWeekend = rightNow[Calendar.DAY_OF_WEEK].let {
-            it == Calendar.SATURDAY || it == Calendar.SUNDAY
-        }
+        val weekDay = rightNow[Calendar.DAY_OF_WEEK].toFloat()
         val isHeadSetConnected = audioManager.getDevices(AudioManager.GET_DEVICES_OUTPUTS).isNotEmpty()
         val connManager = context.getSystemService(WifiManager::class.java)
         val isWifiOn = connManager!!.isWifiEnabled
+        val dayOfYear = rightNow[Calendar.DAY_OF_YEAR].toFloat()
 
         out.hour = currentHourIn24Format
-        out.battery = batteryLevel.toFloat()
+        out.battery = batteryLevel
         out.hasHeadset = isHeadSetConnected
         out.hasWifi = isWifiOn
         out.isPluggedIn = isPluggedIn
-        out.isWeekend = isWeekend
+        out.weekDay = weekDay
+        out.dayOfYear = dayOfYear
     }
 
     private fun loadFromStorage(
@@ -148,14 +150,28 @@ object SuggestionsManager {
     ) {
         suggestionData.getStrings("stats:app_opening_contexts")?.let {
             val contextMap = ContextMap<LauncherItem>(ContextArray.CONTEXT_DATA_SIZE, ContextArray::differentiator)
+            val dayOfYear = Calendar.getInstance()[Calendar.DAY_OF_YEAR]
             it.forEach { itemRepresentation ->
-                appManager.tryParseLauncherItem(itemRepresentation, context)?.let { item ->
-                    suggestionData.getStrings("stats:app_opening_context:$itemRepresentation")
-                        ?.map(String::toFloat)?.let { floats ->
-                            contextMap[item] = floats.chunked(ContextArray.CONTEXT_DATA_SIZE).map(::ContextArray)
+                val k = "stats:app_opening_context:$itemRepresentation"
+                val openingContext = suggestionData.getStrings(k)
+                    ?.also {
+                        if (it.size % ContextArray.CONTEXT_DATA_SIZE == 0) {
+                            suggestionData.edit(context) {
+                                setStrings(k, null)
+                            }
+                            return@forEach
                         }
+                    }
+                    ?.map(String::toFloat)
+                    ?.chunked(ContextArray.CONTEXT_DATA_SIZE)
+                    ?.map(::ContextArray)
+                    ?.filter { abs(it.dayOfYear - dayOfYear) < 30 }
+                    ?: return@forEach
+
+                appManager.tryParseLauncherItem(itemRepresentation, context)?.let { item ->
+                    contextMap[item] = openingContext
                 } ?: suggestionData.edit(context) {
-                    setStrings("stats:app_opening_context:$itemRepresentation", null)
+                    setStrings(k, null)
                 }
             }
             this.contextMap = contextMap

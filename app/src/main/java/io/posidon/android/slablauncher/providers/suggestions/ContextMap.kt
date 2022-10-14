@@ -50,7 +50,7 @@ class ContextMap<T>(
                     it.sortBy { (_, c) -> c }
                 }[0]
             }
-            matches.sortBy { (array, closest) ->
+            matches.sortBy { (_, closest) ->
                 closest.second
             }
             var amountOfFiledMixAttempts = 0
