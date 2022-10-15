@@ -13,16 +13,15 @@ import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.slablauncher.LauncherContext
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.App
+import io.posidon.android.slablauncher.data.items.ContactItem
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.providers.notification.NotificationService
 import io.posidon.android.slablauncher.ui.home.MainActivity
-import io.posidon.android.slablauncher.ui.home.main.HomeAreaFragment
 import io.posidon.android.slablauncher.ui.home.main.tile.viewHolders.*
 
 class PinnedTilesAdapter(
     val activity: MainActivity,
     private val launcherContext: LauncherContext,
-    val fragment: HomeAreaFragment,
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var dropTargetIndex = -1
@@ -35,7 +34,9 @@ class PinnedTilesAdapter(
     override fun getItemViewType(i: Int): Int {
         return when {
             i == dropTargetIndex -> -1
-            NotificationService.mediaItem?.sourcePackageName?.let { (items.getOrNull(i) as? App)?.packageName == it } ?: false -> 1
+            items[adapterPositionToI(i)] is ContactItem -> 2
+            NotificationService.mediaItem?.sourcePackageName
+                ?.let { (items[adapterPositionToI(i)] as? App)?.packageName == it } ?: false -> 1
             else -> 0
         }
     }
@@ -44,11 +45,11 @@ class PinnedTilesAdapter(
         return when {
             dropTargetIndex == -1 -> position
             dropTargetIndex < position -> position - 1
-            else -> position - 1
+            else -> position
         }
     }
 
-    fun iToAdapterPosition(i: Int): Int {
+    private fun iToAdapterPosition(i: Int): Int {
         return when {
             dropTargetIndex == -1 -> i
             dropTargetIndex < i -> i + 1
@@ -61,7 +62,17 @@ class PinnedTilesAdapter(
             -1 -> DropTargetViewHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.tile_drop_target, parent, false))
             1 -> MediaTileViewHolder(LayoutInflater.from(parent.context)
-                .inflate(R.layout.tile_media, parent, false))
+                .inflate(R.layout.tile_media, parent, false)).apply {
+                icon.setOnClickListener {
+                    items[bindingAdapterPosition].open(it.context, it)
+                }
+            }
+            2 -> BigImageTileViewHolder(LayoutInflater.from(parent.context)
+                .inflate(R.layout.tile_big_image, parent, false)).apply {
+                itemView.setOnClickListener {
+                    items[bindingAdapterPosition].open(it.context, it)
+                }
+            }
             else -> ShortcutTileViewHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.tile, parent, false))
         }
@@ -114,7 +125,7 @@ class PinnedTilesAdapter(
 
     fun onDragOut(view: View, i: Int) {
         view.isVisible = true
-        items.removeAt(i)
+        items.removeAt(adapterPositionToI(i))
         dropTargetIndex = i
         notifyItemChanged(i)
         updatePins(view.context)

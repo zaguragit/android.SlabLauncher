@@ -19,10 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/search_bar_height"
         android:layout_gravity="bottom">
-        <io.posidon.android.slablauncher.ui.view.SeeThroughView
-            android:id="@+id/search_bar_blur_bg"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
         <TextView
             style="@style/SlabLauncher.SearchBar.Statement"
             android:id="@+id/statement"

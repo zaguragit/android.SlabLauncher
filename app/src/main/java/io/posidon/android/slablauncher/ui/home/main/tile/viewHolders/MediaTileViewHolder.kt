@@ -16,23 +16,14 @@ import io.posidon.android.slablauncher.data.notification.MediaPlayerData
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.item.GraphicsLoader
 import io.posidon.android.slablauncher.providers.notification.NotificationService
-import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
-import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.util.storage.Settings
 
 class MediaTileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), TileViewHolder {
 
     private val card = itemView.findViewById<CardView>(R.id.card)!!
     private val backgroundView = itemView.findViewById<ImageView>(R.id.background_image)!!
-    private val icon = itemView.findViewById<ImageView>(R.id.icon)!!
-
-    private val blurBG = itemView.findViewById<SeeThroughView>(R.id.blur_bg)!!.apply {
-        viewTreeObserver.addOnPreDrawListener {
-            invalidate()
-            true
-        }
-    }
+    val icon = itemView.findViewById<ImageView>(R.id.icon)!!
 
     private val buttonPrev = itemView.findViewById<ImageView>(R.id.button_prev)!!.apply {
         setOnClickListener {
@@ -60,7 +51,6 @@ class MediaTileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), T
         graphicsLoader: GraphicsLoader,
         onDragStart: (View) -> Unit,
     ) {
-        blurBG.drawable = acrylicBlur?.insaneBlurDrawable
         icon.setImageDrawable(null)
         backgroundView.setImageDrawable(null)
         card.setCardBackgroundColor(ColorTheme.cardBG)

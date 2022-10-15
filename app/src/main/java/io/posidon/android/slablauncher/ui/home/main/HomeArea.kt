@@ -58,7 +58,7 @@ class HomeArea(
         view.setOnDragListener(::onDrag)
     }
 
-    val pinnedAdapter = PinnedTilesAdapter(fragment.requireActivity() as MainActivity, launcherContext, fragment)
+    val pinnedAdapter = PinnedTilesAdapter(fragment.requireActivity() as MainActivity, launcherContext)
     @SuppressLint("ClickableViewAccessibility")
     val pinnedRecycler = view.findViewById<RecyclerView>(R.id.pinned_recycler).apply {
         adapter = pinnedAdapter
@@ -70,13 +70,13 @@ class HomeArea(
         state?.view ?: pinnedAdapter.showDropTarget(i)
     }
 
-    fun getPinnedItemIndex(x: Float, y: Float): Int {
-        var y = y + scrollY - dash.view.height
-        if (y < 0) return -1
+    fun getTileGridIndex(x: Int, y: Int): Int {
+        val relativeY: Int = y + scrollY - dash.view.height - pinnedRecycler.paddingTop
+        if (relativeY < 0) return -1
         val c = calculateColumns(view.context)
-        val x = x / pinnedRecycler.width * c
-        y = (y - pinnedRecycler.paddingTop) / pinnedRecycler.width * c
-        val i = y.toInt() * c + x.toInt()
+        val gridY = relativeY * c / pinnedRecycler.width
+        val gridX = x * c / pinnedRecycler.width
+        val i = gridY * c + gridX
         return i.coerceAtMost(pinnedAdapter.tileCount)
     }
 
@@ -106,7 +106,7 @@ class HomeArea(
                 val state = event.localState as? ItemLongPress.State?
                 val v = state?.view
                 v?.visibility = View.INVISIBLE
-                val i = getPinnedItemIndex(event.x, event.y)
+                val i = getTileGridIndex(event.x.toInt(), event.y.toInt())
                 if (v == null)
                     highlightDropArea = true
                 showDropTarget(i, state)
@@ -115,13 +115,13 @@ class HomeArea(
                 val state = event.localState as? ItemLongPress.State?
                 val v = state?.view
                 val location = state?.location
-                val i = getPinnedItemIndex(event.x, event.y)
+                val i = getTileGridIndex(event.x.toInt(), event.y.toInt())
                 if (v != null && location != null) {
                     val x = abs(event.x - location[0] - v.measuredWidth / 2f)
                     val y = abs(event.y - location[1] - v.measuredHeight / 2f)
                     if (x > v.measuredWidth / 3.5f || y > v.measuredHeight / 3.5f) {
                         ItemLongPress.currentPopup?.dismiss()
-                        val i = getPinnedItemIndex(location[0].toFloat(), location[1].toFloat())
+                        val i = getTileGridIndex(location[0], location[1])
                         if (i != -1) {
                             pinnedAdapter.onDragOut(v, i)
                         }
@@ -160,7 +160,7 @@ class HomeArea(
                 val v = (event.localState as? ItemLongPress.State?)?.view
                 v?.isVisible = true
                 ItemLongPress.currentPopup?.update()
-                val i = getPinnedItemIndex(event.x, event.y)
+                val i = getTileGridIndex(event.x.toInt(), event.y.toInt())
                 if (i == -1)
                     return true
                 v ?: onDrop(view, i, event.clipData)

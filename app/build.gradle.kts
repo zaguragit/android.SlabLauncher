@@ -32,6 +32,7 @@ android {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
     implementation("com.willowtreeapps:fuzzywuzzy-kotlin-jvm:0.9.0")
+    implementation("dev.kdrag0n:colorkt:1.0.5")
 
     implementation("io.posidon:android.launcherutil:22.0")
     implementation("io.posidon:android.libduckduckgo:22.0")
@@ -41,7 +42,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.palette:palette-ktx:1.0.0")
     implementation("androidx.cardview:cardview:1.0.0")
-    implementation("androidx.fragment:fragment-ktx:1.5.2")
+    implementation("androidx.fragment:fragment-ktx:1.5.3")
     implementation("androidx.recyclerview:recyclerview:1.2.1")
     implementation("androidx.viewpager2:viewpager2:1.0.0")
 

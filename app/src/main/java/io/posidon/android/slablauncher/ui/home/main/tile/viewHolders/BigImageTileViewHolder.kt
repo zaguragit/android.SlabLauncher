@@ -1,29 +1,33 @@
 package io.posidon.android.slablauncher.ui.home.main.tile.viewHolders
 
 import android.app.Activity
-import android.content.pm.LauncherApps
 import android.view.View
+import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import io.posidon.android.conveniencelib.getNavigationBarHeight
+import io.posidon.android.launcherutil.loader.IconData
 import io.posidon.android.slablauncher.R
 import io.posidon.android.slablauncher.data.items.App
 import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.item.GraphicsLoader
-import io.posidon.android.slablauncher.ui.home.main.tile.ShortcutAdapter
 import io.posidon.android.slablauncher.ui.popup.appItem.ItemLongPress
-import io.posidon.android.slablauncher.ui.view.recycler.RecyclerViewLongPressHelper
 import io.posidon.android.slablauncher.util.storage.Settings
 
-class ShortcutTileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), TileViewHolder {
+class BigImageTileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), TileViewHolder {
 
     private val card = itemView.findViewById<CardView>(R.id.card)!!
 
-    private val shortcutsRecycler = itemView.findViewById<RecyclerView>(R.id.shortcuts)!!.apply {
-        layoutManager = GridLayoutManager(context, 2, RecyclerView.VERTICAL, false)
+    private val backgroundImage = itemView.findViewById<ImageView>(R.id.background_image)!!
+
+    private fun updateGraphics(
+        iconData: IconData<GraphicsLoader.Extra>,
+    ) {
+        itemView.post {
+            backgroundImage.setImageDrawable(iconData.extra.tile)
+        }
     }
 
     override fun bind(
@@ -36,22 +40,7 @@ class ShortcutTileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         itemView.isVisible = true
         card.setCardBackgroundColor(ColorTheme.cardBG)
 
-        val shortcuts = listOf(item) + (item as? App)?.let {
-            val l = activity.getSystemService(LauncherApps::class.java)
-            val s = it.getStaticShortcuts(l)
-            if (s.size > 3) s.subList(0, 3)
-            else if (s.size == 3) s
-            else (s + it.getDynamicShortcuts(l)).let { it.subList(0, it.size.coerceAtMost(3)) }
-        }.orEmpty()
-
-        val shortcutsAdapter = ShortcutAdapter(shortcuts, graphicsLoader, settings) {
-            onLongPress(itemView, item, activity, graphicsLoader, onDragStart)
-        }
-        shortcutsRecycler.adapter = shortcutsAdapter
-
-        RecyclerViewLongPressHelper.setOnLongPressListener(shortcutsRecycler) { v ->
-            onLongPress(itemView, item, activity, graphicsLoader, onDragStart)
-        }
+        graphicsLoader.load(itemView.context, item, ::updateGraphics)
 
         itemView.setOnLongClickListener { v ->
             onLongPress(v, item, activity, graphicsLoader, onDragStart)

@@ -8,9 +8,7 @@ import android.content.*
 import android.content.pm.LauncherApps
 import android.content.res.ColorStateList
 import android.content.res.Configuration
-import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.icu.util.Calendar
 import android.net.Uri
@@ -25,18 +23,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
-import androidx.core.graphics.applyCanvas
-import androidx.core.graphics.toXfermode
-import androidx.core.view.*
+import androidx.core.view.doOnPreDraw
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import io.posidon.android.conveniencelib.Device
 import io.posidon.android.conveniencelib.getNavigationBarHeight
-import io.posidon.android.conveniencelib.units.dp
-import io.posidon.android.conveniencelib.units.toFloatPixels
 import io.posidon.android.launcherutil.liveWallpaper.LiveWallpaper
 import io.posidon.android.slablauncher.BuildConfig
 import io.posidon.android.slablauncher.LauncherContext
@@ -62,6 +57,12 @@ import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorT
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
 import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
 import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScreenOpenedSetting.doAutoKeyboardInAllApps
+import kotlin.collections.HashMap
+import kotlin.collections.List
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.forEach
+import kotlin.collections.set
 import kotlin.concurrent.thread
 
 
@@ -102,7 +103,6 @@ class MainActivity : FragmentActivity() {
 
         blurBG = findViewById(R.id.blur_bg)
         searchBarContainer = findViewById(R.id.search_bar_container)!!
-        searchBarBlurBG = searchBarContainer.findViewById(R.id.search_bar_blur_bg)!!
         searchBarText = searchBarContainer.findViewById(R.id.search_bar_text)!!
         searchBarIcon = searchBarContainer.findViewById(R.id.search_bar_icon)!!
         statementView = searchBarContainer.findViewById(R.id.statement)!!
@@ -155,7 +155,6 @@ class MainActivity : FragmentActivity() {
                 wallpaperManager.setWallpaperOffsets(viewPager.windowToken, wallpaperOffset, 0f)
                 if (blurBG.drawable != null) {
                     blurBG.offset = wallpaperOffset
-                    searchBarBlurBG.offset = wallpaperOffset
                 }
                 onPageScrollListeners.forEach { (_, l) -> l(wallpaperOffset) }
                 statementView.alpha = 1 - wallpaperOffset
@@ -440,13 +439,7 @@ class MainActivity : FragmentActivity() {
                 )
             )
         }
-        searchBarBlurBG.drawable = acrylicBlur?.let { b ->
-            BitmapDrawable(resources, b.smoothBlur).apply {
-                alpha = 50
-            }
-        }
         blurBG.invalidate()
-        searchBarBlurBG.invalidate()
     }
 
     fun getSearchBarInset(): Int =

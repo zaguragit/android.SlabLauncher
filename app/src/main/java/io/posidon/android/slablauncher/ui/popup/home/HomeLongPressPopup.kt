@@ -12,31 +12,29 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.posidon.android.slablauncher.R
-import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
-import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
-import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
-import io.posidon.android.slablauncher.ui.popup.PopupUtils
-import io.posidon.android.slablauncher.ui.settings.SettingsAdapter
-import io.posidon.android.slablauncher.ui.settings.SettingsItem
-import io.posidon.android.slablauncher.ui.settings.iconPackPicker.IconPackPickerActivity
-import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorTheme
-import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
-import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.setColorThemeDayNight
-import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
-import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScreenOpenedSetting.doAutoKeyboardInAllApps
-import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
-import io.posidon.android.slablauncher.util.storage.Settings
-import io.posidon.android.slablauncher.ui.view.SeeThroughView
-import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.monochromatism
 import io.posidon.android.conveniencelib.Device
 import io.posidon.android.conveniencelib.units.dp
 import io.posidon.android.conveniencelib.units.toPixels
 import io.posidon.android.slablauncher.BuildConfig
+import io.posidon.android.slablauncher.R
+import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
+import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
+import io.posidon.android.slablauncher.ui.popup.PopupUtils
+import io.posidon.android.slablauncher.ui.settings.SettingsAdapter
+import io.posidon.android.slablauncher.ui.settings.SettingsItem
 import io.posidon.android.slablauncher.ui.settings.flag.FlagSettingsActivity
+import io.posidon.android.slablauncher.ui.settings.iconPackPicker.IconPackPickerActivity
 import io.posidon.android.slablauncher.util.chooseDefaultLauncher
+import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorTheme
+import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
+import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.setColorThemeDayNight
+import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
+import io.posidon.android.slablauncher.util.storage.DoMonochromeIconsSetting.monochromatism
+import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScreenOpenedSetting.doAutoKeyboardInAllApps
+import io.posidon.android.slablauncher.util.storage.DoSuggestionStripSetting.doSuggestionStrip
 import io.posidon.android.slablauncher.util.storage.GreetingSetting.getDefaultGreeting
 import io.posidon.android.slablauncher.util.storage.GreetingSetting.setDefaultGreeting
+import io.posidon.android.slablauncher.util.storage.Settings
 import io.posidon.android.slablauncher.util.storage.SuggestionColumnCount.suggestionColumnCount
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.thread
@@ -79,14 +77,11 @@ class HomeLongPressPopup(
             )
             PopupUtils.setCurrent(window)
 
-            val blurBG = content.findViewById<SeeThroughView>(R.id.blur_bg)
-
             val cardView = content.findViewById<CardView>(R.id.card)
             val popupAdapter = SettingsAdapter()
             val updateLock = ReentrantLock()
 
             val popup = HomeLongPressPopup {
-                blurBG.drawable = acrylicBlur?.smoothBlurDrawable
                 cardView.setCardBackgroundColor(ColorTheme.cardBG)
                 popupAdapter.updateItems(
                     createMainAdapter(

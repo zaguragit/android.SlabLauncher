@@ -109,7 +109,7 @@ class GraphicsLoader {
         val i = IconData(
             MaskedDrawable(
                 pic,
-                makeCirclePath(w, h)
+                makeSquarePath(w, h)
             ),
             Extra(
                 pic,
@@ -200,7 +200,7 @@ class GraphicsLoader {
                 }
                 finalIcon = MaskedDrawable(
                     maskable,
-                    makeCirclePath(maskable.intrinsicWidth, maskable.intrinsicHeight),
+                    (if (forceMask) ::makeCirclePath else ::makeSquarePath)(maskable.intrinsicWidth, maskable.intrinsicHeight),
                 )
             }
             else -> {
@@ -224,7 +224,7 @@ class GraphicsLoader {
                 }
                 finalIcon = if (forceMask && icon != null) MaskedDrawable(
                     image,
-                    makeCirclePath(image.intrinsicWidth, image.intrinsicHeight),
+                    (if (forceMask) ::makeCirclePath else ::makeSquarePath)(image.intrinsicWidth, image.intrinsicHeight),
                 ) else (icon?.clone() ?: icon)?.mutate() ?: NonDrawable()
             }
         }
@@ -282,6 +282,11 @@ class GraphicsLoader {
     private fun makeCirclePath(w: Int, h: Int) = Path().apply {
         fillType = Path.FillType.INVERSE_EVEN_ODD
         addCircle(w / 2f, h / 2f, min(w, h) / 2f - 2, Path.Direction.CCW)
+    }
+
+    private fun makeSquarePath(w: Int, h: Int) = Path().apply {
+        fillType = Path.FillType.INVERSE_EVEN_ODD
+        addRoundRect(0f, 0f, w.toFloat(), h.toFloat(), FloatArray(8) { w / 4f }, Path.Direction.CCW)
     }
 
     companion object {

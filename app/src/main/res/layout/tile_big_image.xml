@@ -8,9 +8,8 @@
     <io.posidon.android.slablauncher.ui.view.HorizontalAspectRatioLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <androidx.recyclerview.widget.RecyclerView
-            style="@style/SlabLauncher.TileArea.Item.Shortcut.List"
-            android:id="@+id/shortcuts"
+        <io.posidon.android.slablauncher.ui.view.BackdropImageView
+            android:id="@+id/background_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </io.posidon.android.slablauncher.ui.view.HorizontalAspectRatioLayout>
