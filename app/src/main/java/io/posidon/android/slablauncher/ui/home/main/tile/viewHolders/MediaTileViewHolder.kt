@@ -66,7 +66,7 @@ class MediaTileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), T
         itemView.setOnLongClickListener { v ->
             if (item is App) {
                 val color = graphicsLoader.load(itemView.context, item).extra.color
-                val backgroundColor = ColorTheme.tintPopup(color)
+                val backgroundColor = ColorTheme.tintCard(color)
                 ItemLongPress.onItemLongPress(
                     v,
                     backgroundColor,

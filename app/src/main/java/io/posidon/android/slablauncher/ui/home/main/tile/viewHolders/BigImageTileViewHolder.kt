@@ -57,7 +57,7 @@ class BigImageTileViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     ) {
         if (item is App) {
             val color = graphicsLoader.load(itemView.context, item).extra.color
-            val backgroundColor = ColorTheme.tintPopup(color)
+            val backgroundColor = ColorTheme.tintCard(color)
             ItemLongPress.onItemLongPress(
                 v,
                 backgroundColor,

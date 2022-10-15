@@ -22,9 +22,7 @@ import io.posidon.android.slablauncher.data.items.LauncherItem
 import io.posidon.android.slablauncher.data.items.showProperties
 import io.posidon.android.slablauncher.providers.color.theme.ColorTheme
 import io.posidon.android.slablauncher.providers.item.GraphicsLoader
-import io.posidon.android.slablauncher.ui.home.main.acrylicBlur
 import io.posidon.android.slablauncher.ui.popup.PopupUtils
-import io.posidon.android.slablauncher.ui.view.SeeThroughView
 import io.posidon.android.slablauncher.util.drawable.setBackgroundColorFast
 
 object ItemLongPress {
@@ -66,9 +64,6 @@ object ItemLongPress {
         window.setOnDismissListener {
             currentPopup = null
         }
-
-        val blurBG = content.findViewById<SeeThroughView>(R.id.blur_bg)
-        blurBG.drawable = acrylicBlur?.insaneBlurDrawable
 
         val propertiesButton = content.findViewById<View>(R.id.properties_item)
         val propertiesText = propertiesButton.findViewById<TextView>(R.id.properties_text)

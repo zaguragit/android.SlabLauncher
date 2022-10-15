@@ -1,10 +1,8 @@
 package io.posidon.android.slablauncher.providers.color.theme
 
 import androidx.core.graphics.ColorUtils
-import androidx.core.graphics.alpha
 import androidx.core.graphics.luminance
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
-import io.posidon.android.slablauncher.providers.color.theme.ColorTheme.Companion.hueTintClosest
 
 class LightColorTheme(
     val palette: ColorPalette,
@@ -18,7 +16,7 @@ class LightColorTheme(
     override val uiDescription = palette.neutralLight
     override val uiHint = palette.neutralMedium
 
-    override val cardBG = 0xffffffff.toInt()
+    override val cardBG = palette.neutralVeryLight
     override val cardTitle = palette.neutralVeryDark
     override val cardDescription = palette.neutralDark
     override val cardHint = palette.neutralMedium
@@ -45,19 +43,5 @@ class LightColorTheme(
             lab[2] *= .75
             ColorUtils.LABToColor(lab[0], lab[1], lab[2])
         }
-    }
-
-    override fun tileColor(iconBackgroundColor: Int) = when (iconBackgroundColor) {
-        0 -> palette.neutralMedium
-        else -> hueTintClosest(iconBackgroundColor, cardBG, arrayOf(
-            palette.neutralVeryDark,
-            palette.neutralDark,
-            palette.neutralMedium,
-            palette.neutralLight,
-            palette.neutralVeryLight,
-            palette.primary,
-            palette.secondary,
-            ColorPalette.wallColor,
-        ))
     }
 }

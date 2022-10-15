@@ -23,33 +23,23 @@ class AcrylicBlur private constructor(
     val fullBlur: Bitmap,
     val smoothBlur: Bitmap,
     val partialBlurMedium: Bitmap,
-    val insaneBlur: Bitmap,
 ) {
 
     var fullBlurDrawable: Drawable = BitmapDrawable(resources, fullBlur)
         private set
     var smoothBlurDrawable: Drawable = BitmapDrawable(resources, smoothBlur)
         private set
-    var partialBlurMediumDrawable: Drawable = BitmapDrawable(resources, partialBlurMedium)
-        private set
-    var insaneBlurDrawable: Drawable = BitmapDrawable(resources, insaneBlur)
-        private set
 
     fun recycle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             (fullBlurDrawable as BitmapDrawable).bitmap = null
             (smoothBlurDrawable as BitmapDrawable).bitmap = null
-            (partialBlurMediumDrawable as BitmapDrawable).bitmap = null
-            (insaneBlurDrawable as BitmapDrawable).bitmap = null
             fullBlurDrawable = NonDrawable()
             smoothBlurDrawable = NonDrawable()
-            partialBlurMediumDrawable = NonDrawable()
-            insaneBlurDrawable = NonDrawable()
         }
         fullBlur.recycle()
         smoothBlur.recycle()
         partialBlurMedium.recycle()
-        insaneBlur.recycle()
     }
 
     companion object {
@@ -57,13 +47,11 @@ class AcrylicBlur private constructor(
             val h = Device.screenHeight(context).coerceAtMost(2040)
             val w = h * drawable.intrinsicWidth / drawable.intrinsicHeight
             val b = drawable.toBitmap(w / 8, h / 8)
-            val sb = drawable.toBitmap(48, 48 * h / w)
-            val insaneBlur = fastBlur(sb, 8)
             val smoothBlur = fastBlur(b, 1.5.dp.toPixels(context))
             val partialBlurMedium = fastBlur(b, 1.dp.toPixels(context))
             val nb = Bitmap.createScaledBitmap(smoothBlur, w, h, false)
             val fullBlur = NoiseBlur.blur(nb, 18.dp.toFloatPixels(context))
-            return AcrylicBlur(context.resources, fullBlur, smoothBlur, partialBlurMedium, insaneBlur)
+            return AcrylicBlur(context.resources, fullBlur, smoothBlur, partialBlurMedium)
         }
 
         inline fun blurWallpaper(

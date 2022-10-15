@@ -57,11 +57,8 @@ import io.posidon.android.slablauncher.util.storage.ColorExtractorSetting.colorT
 import io.posidon.android.slablauncher.util.storage.ColorThemeSetting.colorThemeDayNight
 import io.posidon.android.slablauncher.util.storage.DoBlurSetting.doBlur
 import io.posidon.android.slablauncher.util.storage.DoShowKeyboardOnAllAppsScreenOpenedSetting.doAutoKeyboardInAllApps
-import kotlin.collections.HashMap
-import kotlin.collections.List
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.forEach
 import kotlin.collections.set
 import kotlin.concurrent.thread
 
@@ -425,16 +422,13 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun updateCurrentBlurBackground() {
-        viewPager.background?.alpha = if (acrylicBlur == null) 255 else 190
+        viewPager.background?.alpha = if (acrylicBlur == null) 255 else 210
         blurBG.drawable = acrylicBlur?.let { b ->
             LayerDrawable(
                 arrayOf(
                     BitmapDrawable(resources, b.partialBlurMedium),
                     BitmapDrawable(resources, b.fullBlur).apply {
-                        alpha = 150
-                    },
-                    BitmapDrawable(resources, b.insaneBlur).apply {
-                        alpha = 120
+                        alpha = 170
                     },
                 )
             )

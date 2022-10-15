@@ -108,6 +108,7 @@ object NotificationCreator {
 
         val source = getSource(context, notification)
         val icon = getSmallIcon(context, notification)!!
+        val color = notification.notification.color
 
         val channel = NotificationManagerCompat.from(context).getNotificationChannel(notification.notification.channelId)
         val importance = channel?.importance?.let { getImportance(it) } ?: 0
@@ -137,6 +138,7 @@ object NotificationCreator {
                     icon = icon,
                     description = text?.toString(),
                     image = bigPic,
+                    color = color,
                     open = {
                         try {
                             notification.notification.contentIntent?.send()

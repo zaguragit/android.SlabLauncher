@@ -2,10 +2,13 @@ package io.posidon.android.slablauncher.providers.color.theme
 
 import androidx.core.graphics.ColorUtils.*
 import androidx.core.graphics.luminance
+import dev.kdrag0n.colorkt.rgb.LinearSrgb.Companion.toLinear
+import dev.kdrag0n.colorkt.rgb.Srgb
+import dev.kdrag0n.colorkt.ucs.lab.Oklab.Companion.toOklab
+import dev.kdrag0n.colorkt.ucs.lch.Oklch.Companion.toOklch
 import io.posidon.android.slablauncher.providers.color.pallete.ColorPalette
 import io.posidon.android.slablauncher.providers.color.pallete.DefaultPalette
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sign
 
@@ -35,8 +38,6 @@ interface ColorTheme {
     val searchBarFG: Int
 
     fun adjustColorForContrast(base: Int, tint: Int): Int
-
-    fun tileColor(iconBackgroundColor: Int): Int
 
     companion object : ColorTheme {
 
@@ -83,37 +84,39 @@ interface ColorTheme {
         override fun adjustColorForContrast(base: Int, tint: Int): Int =
             colorThemeInstance.adjustColorForContrast(base, tint)
 
-        override fun tileColor(iconBackgroundColor: Int): Int =
-            colorThemeInstance.tileColor(iconBackgroundColor)
-
-
-        fun tintPopup(color: Int): Int {
-            return tintWithColor(cardBG, tileColor(color))
+        fun tileColor(iconBackgroundColor: Int) = when (iconBackgroundColor) {
+            0 -> ColorPalette.getCurrent().neutralMedium
+            else -> hueTintClosest(iconBackgroundColor, cardBG, arrayOf(
+                ColorPalette.getCurrent().neutralVeryDark,
+                ColorPalette.getCurrent().neutralDark,
+                ColorPalette.getCurrent().neutralMedium,
+                ColorPalette.getCurrent().neutralLight,
+                ColorPalette.getCurrent().neutralVeryLight,
+                ColorPalette.getCurrent().primary,
+                ColorPalette.getCurrent().secondary,
+                ColorPalette.wallColor,
+            ))
         }
 
-        fun titleColorForBG(background: Int): Int {
-            return (if (background.luminance > .6f) 0 else 0xffffff) or 0xff000000.toInt()
+        fun tintCard(color: Int): Int {
+            return tintWithColor(cardBG, color)
         }
 
-        fun textColorForBG(background: Int): Int {
-            return (if (background.luminance > .6f) 0 else 0xffffff) or 0xd2000000.toInt()
+        private fun fgColorForBG(background: Int): Int {
+            val l = if (background.luminance > .6f) 0.2 else 0.94
+            return Srgb(background).toLinear().toOklab().copy(L = l).toLinearSrgb().toSrgb().toRgb8()
         }
 
-        fun hintColorForBG(background: Int): Int {
-            return (if (background.luminance > .6f) 0 else 0xffffff) or 0x55000000
-        }
-
+        fun titleColorForBG(background: Int): Int = fgColorForBG(background) or 0xff000000.toInt()
+        fun textColorForBG(background: Int): Int = fgColorForBG(background) or 0xd2000000.toInt()
+        fun hintColorForBG(background: Int): Int = fgColorForBG(background) or 0x55000000
 
         fun tintWithColor(base: Int, color: Int): Int {
-            val tintLAB = DoubleArray(3)
-            val baseLAB = DoubleArray(3)
-            colorToLAB(color, tintLAB)
-            colorToLAB(base, baseLAB)
-            if (baseLAB[0] <= tintLAB[0]) {
-                tintLAB[1] *= 1.5
-                tintLAB[2] *= 1.5
-            }
-            return LABToColor(baseLAB[0], tintLAB[1], tintLAB[2]) and 0xffffff or (base and 0xff000000.toInt())
+            val baseLab = Srgb(base).toLinear().toOklab()
+            return Srgb(color).toLinear().toOklab()
+                .copy(L = baseLab.L)
+                .toOklch().let { it.copy(chroma = it.chroma.coerceAtMost(baseLab.toOklch().chroma + 0.05)) }.toOklab()
+                .toLinearSrgb().toSrgb().toRgb8() or (base and 0xff000000.toInt())
         }
 
         fun hueTintClosest(baseColor: Int, lightnessOf: Int, palette: Array<Int>): Int {

@@ -83,7 +83,7 @@ class SuggestionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
         itemView.setOnLongClickListener { v ->
             val color = graphicsLoader.load(itemView.context, item).extra.color
-            val backgroundColor = ColorTheme.tintPopup(color)
+            val backgroundColor = ColorTheme.tintCard(color)
             ItemLongPress.onItemLongPress(
                 v,
                 backgroundColor,

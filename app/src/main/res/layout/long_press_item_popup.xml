@@ -6,11 +6,6 @@
     android:layout_height="wrap_content"
     android:id="@+id/card"
     style="@style/SlabLauncher.ItemPopup.Card">
-    <io.posidon.android.slablauncher.ui.view.SeeThroughView
-        android:id="@+id/blur_bg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.3"/>
     <LinearLayout
         style="@style/SlabLauncher.ItemPopup.Container"
         android:id="@+id/container"

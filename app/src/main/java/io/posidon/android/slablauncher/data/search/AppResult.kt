@@ -23,7 +23,7 @@ class AppResult(
     override var relevance = Relevance(0f)
     override val onLongPress = { graphicsLoader: GraphicsLoader, v: View, activity: Activity ->
         val color = graphicsLoader.load(v.context, app).extra.color
-        val backgroundColor = ColorTheme.tintPopup(color)
+        val backgroundColor = ColorTheme.tintCard(color)
         ItemLongPress.onItemLongPress(
             v,
             backgroundColor,

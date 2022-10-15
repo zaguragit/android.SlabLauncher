@@ -1,5 +1,6 @@
 package io.posidon.android.slablauncher.ui.home.main.dash.viewHolder
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -24,17 +25,22 @@ class NotificationViewHolder(
     val text = itemView.findViewById<TextView>(R.id.text)
 
     fun onBind(notification: NotificationGroupData) {
-        card.setCardBackgroundColor(ColorTheme.cardBG)
+        val color = ColorTheme.tintCard(notification.notifications[0].color)
+        val colorTitle = ColorTheme.titleColorForBG(color)
+        val colorText = ColorTheme.textColorForBG(color)
+
+        card.setCardBackgroundColor(color)
         source.text = notification.source
         title.text = notification.title
         text.text = if (notification.notifications.size == 1)
             notification.notifications[0].description
         else notification.notifications.mapNotNull { it.description }.joinToString("\n") { "• $it" }
 
-        source.setTextColor(ColorTheme.uiDescription)
-        title.setTextColor(ColorTheme.uiTitle)
-        text.setTextColor(ColorTheme.uiDescription)
+        source.setTextColor(colorText)
+        title.setTextColor(colorTitle)
+        text.setTextColor(colorText)
         icon.setImageDrawable(notification.notifications.first().icon)
+        icon.imageTintList = ColorStateList.valueOf(colorTitle)
         val img = notification.notifications.first().image
         if (img == null) {
             image.isVisible = false

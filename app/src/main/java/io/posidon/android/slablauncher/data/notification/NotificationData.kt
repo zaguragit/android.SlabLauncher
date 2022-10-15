@@ -6,6 +6,7 @@ class NotificationData(
     val icon: Drawable,
     val description: String?,
     val image: Drawable?,
+    val color: Int,
     val open: () -> Unit,
     val cancel: () -> Unit,
 )
